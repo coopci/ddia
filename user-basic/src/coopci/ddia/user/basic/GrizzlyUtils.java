@@ -1,0 +1,21 @@
+package coopci.ddia.user.basic;
+
+import java.io.IOException;
+
+import org.glassfish.grizzly.http.server.Response;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import coopci.ddia.Result;
+
+public class GrizzlyUtils {
+
+	public static void writeJson(Response response, Result result) throws IOException {
+		ObjectMapper objectMapper = new ObjectMapper();
+		String content = objectMapper.writeValueAsString(result);
+		response.setContentType("application/json;charset=utf-8");
+		response.getWriter().write(content);
+		return;
+	}
+}
