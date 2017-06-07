@@ -14,6 +14,7 @@ public class GrizzlyUtils {
 	public static void writeJson(Response response, Result result) throws IOException {
 		ObjectMapper objectMapper = new ObjectMapper();
 		String content = objectMapper.writeValueAsString(result);
+		response.setStatus(result.code);
 		response.setContentType("application/json;charset=utf-8");
 		response.getWriter().write(content);
 		return;

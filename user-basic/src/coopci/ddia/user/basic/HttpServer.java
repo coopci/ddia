@@ -18,7 +18,7 @@ import coopci.ddia.user.basic.handlers.sms.LoginSubmitVcodeHandler;
 
 
 public class HttpServer {
-	public static void main(String[] argv) {
+	public static void main(String[] argv) throws Exception {
 		Engine engine = new Engine();
 		engine.init();
 		
@@ -49,7 +49,7 @@ public class HttpServer {
 		LoginSubmitVcodeHandler loginSubmitVcodeHandler = new LoginSubmitVcodeHandler();
 		loginSubmitVcodeHandler.setEngine(engine);
 		server.getServerConfiguration().addHttpHandler(
-				loginSubmitPhoneHandler,
+				loginSubmitVcodeHandler,
 				"/login/submit_vcode");
 		
 		
