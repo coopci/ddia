@@ -36,6 +36,7 @@ import com.mongodb.client.model.UpdateOptions;
 
 import coopci.ddia.LoginResult;
 import coopci.ddia.Result;
+import coopci.ddia.UidResult;
 
 public class Engine {
 	// 用来生成sessionid。 生成sessid的规则是: base64( rsa (userid + timestamp + secret) ) 
@@ -361,6 +362,13 @@ public class Engine {
 		
 		this.removeVcode(phone);
 		
+		return res;
+	}
+	
+	public UidResult getUidBySessid(String sessidstr) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException {
+		UidResult res = new UidResult();
+		SessionId sessid = this.sessidPacker.unpack(sessidstr);
+		res.uid = sessid.uid;
 		return res;
 	}
 }

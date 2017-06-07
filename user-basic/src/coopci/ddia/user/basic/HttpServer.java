@@ -13,6 +13,7 @@ import org.glassfish.grizzly.http.server.Request;
 import org.glassfish.grizzly.http.server.Response;
 import org.glassfish.grizzly.threadpool.ThreadPoolConfig;
 
+import coopci.ddia.user.basic.handlers.sms.GetUidBySessidHandler;
 import coopci.ddia.user.basic.handlers.sms.LoginSubmitPhoneHandler;
 import coopci.ddia.user.basic.handlers.sms.LoginSubmitVcodeHandler;
 
@@ -52,6 +53,12 @@ public class HttpServer {
 				loginSubmitVcodeHandler,
 				"/login/submit_vcode");
 		
+		
+		GetUidBySessidHandler getUidBySessidHandler = new GetUidBySessidHandler();
+		getUidBySessidHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				getUidBySessidHandler,
+				"/user-basic/get_uid_by_sessid");
 		
 		try {
 			server.removeListener("grizzly"); // É¾µôÄ¬ÈÏµÄListener¡£
