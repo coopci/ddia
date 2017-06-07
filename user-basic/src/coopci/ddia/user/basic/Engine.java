@@ -13,6 +13,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
+import java.util.LinkedList;
 import java.util.UUID;
 
 import javax.crypto.BadPaddingException;
@@ -37,11 +38,9 @@ import com.mongodb.client.model.UpdateOptions;
 import coopci.ddia.LoginResult;
 import coopci.ddia.Result;
 import coopci.ddia.UidResult;
+import coopci.ddia.UserInfosResult;
 
 public class Engine {
-	// 用来生成sessionid。 生成sessid的规则是: base64( rsa (userid + timestamp + secret) ) 
-	// 这
-	String secret = "af33#swSDF"; 
 	
 	String RSAPrivateKeyFile = "private_key.pem";
 	String RSAPublicKeyFile = "public_key.pem";
@@ -51,10 +50,7 @@ public class Engine {
 	String mongodbDBCollVcode = "sms_vcode";    // 存短信验证码的collection, _id是手机号。
 	String mongodbDBCollUserInfo = "user_info"; // 存用户信息的collection, _id是用户id。
 	
-	
 	String mongodbDBCollPhoneUser = "phone_user"; // 用来维护 手机号的唯一性以及  手机号和user_id的对应关系。 _id是phone，  uid 字段存用户id。
-	
-	
 	String mongodbDBCollCounters = "counters"; // 用来维护 自增的 用户id。
 	
 	// 据http://mongodb.github.io/mongo-java-driver/2.13/getting-started/quick-tour/ 说:
@@ -260,6 +256,16 @@ public class Engine {
 		Document doc = iter.first();
 		return doc;
 	}
+	Document getMongoDocumentById(String dbname, String collname, long id) {
+		MongoClient client = this.getMongoClient();
+		MongoDatabase db = client.getDatabase(dbname);
+		MongoCollection<Document> collection = db.getCollection(collname);
+		Document filter = new Document();
+		filter.append("_id", id);
+		FindIterable<Document> iter = collection.find(filter);
+		Document doc = iter.first();
+		return doc;
+	}
 	void addPhoneUseridToMongo(String dbname, String collname, String phone, long uid) {
 		MongoClient client = this.getMongoClient();
 		MongoDatabase db = client.getDatabase(dbname);
@@ -359,9 +365,7 @@ public class Engine {
 		sessid.uid = uid;
 		String sessidstr = sessidPacker.pack(sessid);
 		res.sessid = sessidstr;
-		
 		this.removeVcode(phone);
-		
 		return res;
 	}
 	
@@ -370,5 +374,30 @@ public class Engine {
 		SessionId sessid = this.sessidPacker.unpack(sessidstr);
 		res.uid = sessid.uid;
 		return res;
+	}
+	
+	
+	public Result getUserinfoByUids(String uidslistStr, String fieldslistStr) {
+		UserInfosResult ret = new UserInfosResult();
+		String[] fieldslist = fieldslistStr.split(",");
+		for (String s : uidslistStr.split(",")) { 
+			try {
+				Long uid = Long.parseLong(s);
+				Document doc = this.getMongoDocumentById(this.mongodbDBName, this.mongodbDBCollUserInfo, uid);
+				if (doc != null) {
+					UserInfosResult.UserInfo ui = ret.addEmpty(uid);
+					
+					for (String fieldname : fieldslist) {
+						Object value = doc.get(fieldname);
+						if (value != null) {
+							ui.put(fieldname, value);
+						}
+					}
+				}
+			} catch (Exception ex){}
+		}
+		
+		
+		return ret;
 	}
 }
