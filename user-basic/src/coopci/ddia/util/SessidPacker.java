@@ -1,4 +1,4 @@
-package util;
+package coopci.ddia.util;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
@@ -22,7 +22,7 @@ public class SessidPacker {
 		desUtil.readKey(deskeyPath);
 	}
 	
-	protected String getSaltString(int len) {
+	static public String getSaltString(int len) {
         String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         StringBuilder salt = new StringBuilder();
         Random rnd = new Random();

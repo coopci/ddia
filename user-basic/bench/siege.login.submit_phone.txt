@@ -1,0 +1,2 @@
+http://localhost:8888/login/submit_phone POST phone=999990
+http://localhost:8888/login/submit_phone POST phone=999991

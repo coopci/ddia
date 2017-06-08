@@ -1,4 +1,4 @@
-package util;
+package coopci.ddia.util;
 /*
  * Copyright (c) 2000 David Flanagan.  All rights reserved.
  * This code is from the book Java Examples in a Nutshell, 2nd Edition.

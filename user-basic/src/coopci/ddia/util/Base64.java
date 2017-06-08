@@ -1,4 +1,4 @@
-package util;
+package coopci.ddia.util;
 
 /*
  * Copyright &copy; 2011 Rebecca G. Bettencourt / Kreative Software

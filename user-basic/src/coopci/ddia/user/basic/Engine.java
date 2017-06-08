@@ -23,8 +23,6 @@ import javax.crypto.NoSuchPaddingException;
 
 import org.bson.Document;
 
-import util.SessidPacker;
-
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoClientURI;
@@ -39,6 +37,8 @@ import coopci.ddia.LoginResult;
 import coopci.ddia.Result;
 import coopci.ddia.UidResult;
 import coopci.ddia.UserInfosResult;
+import coopci.ddia.util.SessidPacker;
+import coopci.ddia.util.Vcode;
 
 public class Engine {
 	
@@ -306,8 +306,12 @@ public class Engine {
 	
 	public Result loginSubmitPhone(String phone) {
 		Result res = new Result();
-		String vcode = "111111";
-		// TODO 生成一个 随机验证码 赋给vcode。
+		phone = phone.trim();
+		String vcode = Vcode.genNumVcode(6);
+
+		// TODO 把下面这行注释掉。
+		vcode = "111111";
+
 
 		this.saveSmsVcode(vcode, phone);
 		// TODO 把vcode用短信发到用户手机上。

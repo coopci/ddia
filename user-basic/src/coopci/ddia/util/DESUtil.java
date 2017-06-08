@@ -1,4 +1,4 @@
-package util;
+package coopci.ddia.util;
 
 import java.io.DataInputStream;
 import java.io.File;
