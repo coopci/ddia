@@ -9,7 +9,7 @@ import org.glassfish.grizzly.http.util.HttpStatus;
 import coopci.ddia.LoginResult;
 import coopci.ddia.Result;
 import coopci.ddia.user.basic.Engine;
-import coopci.ddia.user.basic.GrizzlyUtils;
+import coopci.ddia.GrizzlyUtils;
 
 public class LoginSubmitVcodeHandler  extends HttpHandler {
 	public Engine getEngine() {

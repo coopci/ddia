@@ -9,7 +9,7 @@ import org.glassfish.grizzly.http.util.HttpStatus;
 import coopci.ddia.Result;
 import coopci.ddia.UidResult;
 import coopci.ddia.user.basic.Engine;
-import coopci.ddia.user.basic.GrizzlyUtils;
+import coopci.ddia.GrizzlyUtils;
 
 public class GetUserinfoByUidsHandler extends HttpHandler {
 	public Engine getEngine() {

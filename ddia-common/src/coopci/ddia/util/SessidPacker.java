@@ -11,7 +11,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
-import coopci.ddia.user.basic.SessionId;
+import coopci.ddia.SessionId;
 
 public class SessidPacker {
 

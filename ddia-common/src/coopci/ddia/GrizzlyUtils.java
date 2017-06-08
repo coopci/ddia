@@ -1,4 +1,4 @@
-package coopci.ddia.user.basic;
+package coopci.ddia;
 
 import java.io.IOException;
 

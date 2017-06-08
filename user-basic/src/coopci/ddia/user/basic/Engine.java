@@ -13,8 +13,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
-import java.util.LinkedList;
-import java.util.UUID;
+
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -35,6 +34,7 @@ import com.mongodb.client.model.UpdateOptions;
 
 import coopci.ddia.LoginResult;
 import coopci.ddia.Result;
+import coopci.ddia.SessionId;
 import coopci.ddia.UidResult;
 import coopci.ddia.UserInfosResult;
 import coopci.ddia.util.SessidPacker;
