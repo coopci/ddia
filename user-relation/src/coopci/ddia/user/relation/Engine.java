@@ -17,6 +17,7 @@ import java.util.Base64;
 
 
 
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -33,6 +34,7 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.FindOneAndUpdateOptions;
 import com.mongodb.client.model.ReturnDocument;
 import com.mongodb.client.model.UpdateOptions;
+import com.mongodb.client.result.UpdateResult;
 
 import coopci.ddia.LoginResult;
 import coopci.ddia.Result;
@@ -86,12 +88,8 @@ public class Engine {
 	}
 	
 	
-	
-	
 	public void init() throws Exception {
 		connectMongo();
-		
-		
 		
 		return;
 	}
@@ -129,27 +127,49 @@ public class Engine {
 		return;
 	}
 	
-	
-	void saveMongoDocumentById(String dbname, String collname, Document doc, String id) {
+	// upsert : true
+	UpdateResult saveMongoDocumentById(String dbname, String collname, Document data, String id) {
 		MongoClient client = this.getMongoClient();
 		MongoDatabase db = client.getDatabase(dbname);
 		MongoCollection<Document> collection = db.getCollection(collname);
-		doc.append("_id", id);
-		try {
-			collection.insertOne(doc);
-		} catch (com.mongodb.MongoWriteException ex) {
-			// https://github.com/mongodb/mongo/blob/master/src/mongo/base/error_codes.err
-			if (ex.getCode() == 11000 ) {
-				// 11000 表示 DuplicateKey
-				return;
-			} else {
-				throw ex;
-			}
-		}
+		
+		
+		
+		Document filter = new Document();
+		filter.append("_id", id);
+		
+		Document update = new Document();
+		update.append("$set", data);
+		UpdateOptions opt = new UpdateOptions();
+		opt.upsert(true);
+		
+		UpdateResult r = collection.updateOne(filter, update, opt);
+		
+		
+		return r;
+	}
+	
+	// upsert : false
+	void updateMongoDocumentById(String dbname, String collname, Document data, String id) {
+		MongoClient client = this.getMongoClient();
+		MongoDatabase db = client.getDatabase(dbname);
+		MongoCollection<Document> collection = db.getCollection(collname);
+		
+		
+		
+		Document filter = new Document();
+		filter.append("_id", id);
+		
+		Document update = new Document();
+		update.append("$set", data);
+		UpdateOptions opt = new UpdateOptions();
+		opt.upsert(false);
+		
+		collection.updateOne(filter, update, opt);
+		
 		
 		return;
 	}
-	
 	
 	public Result follow(long fan, long followee) {
 		Result ret = new Result();
@@ -163,8 +183,11 @@ public class Engine {
 		docFollow.append("followee", followee);
 		docFollow.append("mutual", false);
 
-		this.saveMongoDocumentById(this.mongodbDBName, this.mongodbDBCollFollows, docFollow, coll_follows_id);
-		
+		UpdateResult ur = this.saveMongoDocumentById(this.mongodbDBName, this.mongodbDBCollFollows, docFollow, coll_follows_id);
+		if (ur.getUpsertedId() == null) {
+			
+			return ret;
+		}
 		
 		Document docFan = new Document();
 		docFan.append("fan", fan);
@@ -177,28 +200,12 @@ public class Engine {
 		Document doc = this.getMongoDocumentById(this.mongodbDBName, this.mongodbDBCollFollows, coll_follows_id_reverse);
 		if (doc != null) {
 			// 说明是互相关注
-			MongoClient client = this.getMongoClient();
-			MongoDatabase db = client.getDatabase(this.mongodbDBName);
-			MongoCollection<Document> collection = db.getCollection(this.mongodbDBCollFollows);
 			
-			
-			Document filter = new Document();
-			filter.append("_id", coll_follows_id);
-			Document update = new Document();
-			update.append("$set", new Document("mutual", true));
-			
-			
-			collection.updateOne(filter, update);
-			
-			
-			Document filter2 = new Document();
-			filter2.append("_id", coll_follows_id_reverse);
-			
-			
-			
-			collection.updateOne(filter2, update);
+			Document data = new Document();
+			data.append("mutual", true);
+			this.updateMongoDocumentById(this.mongodbDBName, this.mongodbDBCollFollows, data, coll_follows_id);
+			this.updateMongoDocumentById(this.mongodbDBName, this.mongodbDBCollFollows, data, coll_follows_id_reverse);
 		}
-		
 		
 		return ret;
 	} 
@@ -215,19 +222,10 @@ public class Engine {
 		this.removeMongoDocumentById(this.mongodbDBName, this.mongodbDBCollFollows, coll_follows_id);
 		this.removeMongoDocumentById(this.mongodbDBName, this.mongodbDBCollFans, coll_fan_id);
 		
-		
-		
-		MongoClient client = this.getMongoClient();
-		MongoDatabase db = client.getDatabase(this.mongodbDBName);
-		MongoCollection<Document> collection = db.getCollection(this.mongodbDBCollFollows);
-		Document filter = new Document();
-		filter.append("_id", coll_follows_id_reverse);
-		Document update = new Document();
-		update.append("$set", new Document("mutual", false));
-		collection.updateOne(filter, update);
-		
-		
-		
+		Document data = new Document();
+		data.append("mutual", false);
+		this.updateMongoDocumentById(this.mongodbDBName, this.mongodbDBCollFollows, data, coll_follows_id_reverse);
+	
 		return ret;
 	}
 	
