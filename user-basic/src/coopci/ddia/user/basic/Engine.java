@@ -15,6 +15,8 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
 
+
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -36,7 +38,8 @@ import coopci.ddia.LoginResult;
 import coopci.ddia.Result;
 import coopci.ddia.SessionId;
 import coopci.ddia.UidResult;
-import coopci.ddia.UserInfosResult;
+import coopci.ddia.results.UserInfo;
+import coopci.ddia.results.UserInfosResult;
 import coopci.ddia.util.SessidPacker;
 import coopci.ddia.util.Vcode;
 
@@ -389,7 +392,7 @@ public class Engine {
 				Long uid = Long.parseLong(s);
 				Document doc = this.getMongoDocumentById(this.mongodbDBName, this.mongodbDBCollUserInfo, uid);
 				if (doc != null) {
-					UserInfosResult.UserInfo ui = ret.addEmpty(uid);
+					UserInfo ui = ret.addEmpty(uid);
 					
 					for (String fieldname : fieldslist) {
 						Object value = doc.get(fieldname);

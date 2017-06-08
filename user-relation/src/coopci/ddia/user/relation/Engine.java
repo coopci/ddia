@@ -18,6 +18,7 @@ import java.util.Base64;
 
 
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -44,7 +45,8 @@ import coopci.ddia.LoginResult;
 import coopci.ddia.Result;
 import coopci.ddia.SessionId;
 import coopci.ddia.UidResult;
-import coopci.ddia.UserInfosResult;
+import coopci.ddia.results.ListResult;
+import coopci.ddia.results.UserInfo;
 import coopci.ddia.util.SessidPacker;
 import coopci.ddia.util.Vcode;
 
@@ -189,7 +191,7 @@ public class Engine {
 	
 	public Result follow(long fan, long followee) {
 		Result ret = new Result();
-		
+		Date now =  new Date();
 		String coll_follows_id = Long.toString(fan) + "=>" + Long.toString(followee);
 		String coll_fan_id = Long.toString(followee) + "=>" + Long.toString(fan);
 		
@@ -198,6 +200,7 @@ public class Engine {
 		docFollow.append("uid", fan);
 		docFollow.append("followee", followee);
 		docFollow.append("mutual", false);
+		docFollow.append("optime", now);
 
 		UpdateResult ur = this.saveMongoDocumentById(this.mongodbDBName, this.mongodbDBCollFollows, docFollow, coll_follows_id);
 		if (ur.getUpsertedId() == null) {
@@ -209,6 +212,7 @@ public class Engine {
 		docFan.append("fan", fan);
 		docFan.append("uid", followee);
 		docFan.append("_id", coll_fan_id);
+		docFollow.append("optime", now);
 		this.saveMongoDocumentById(this.mongodbDBName, this.mongodbDBCollFans, docFan, coll_fan_id);
 		
 		
@@ -246,7 +250,7 @@ public class Engine {
 	}
 	
 	public Result getFollowsList(long uid, int start, int end) {
-		UserInfosResult ret = new UserInfosResult();
+		ListResult ret = new ListResult();
 		
 		Document query = new Document();
 		query.append("uid", uid);
@@ -254,8 +258,12 @@ public class Engine {
 		
 		for (Document doc : docs) {
 			Long followee = doc.getLong("followee");
-			ret.addEmpty(followee);
-			// TODO 加上关注时间？
+			Date optime = doc.getDate("optime");
+			
+			UserInfo ui = new UserInfo();
+			ui.put("uid", followee);
+			ui.put("optime", optime);
+			ret.add(ui);
 		}
 		
 		return ret;
@@ -263,16 +271,20 @@ public class Engine {
 	
 	
 	public Result getFansList(long uid, int start, int end) {
-		UserInfosResult ret = new UserInfosResult();
+		ListResult ret = new ListResult();
 		
 		Document query = new Document();
 		query.append("uid", uid);
 		List<Document> docs = this.getMongoDocuments(this.mongodbDBName, this.mongodbDBCollFans, query, start, end - start);
 		
 		for (Document doc : docs) {
-			Long followee = doc.getLong("fan");
-			ret.addEmpty(followee);
-			// TODO 加上关注时间？
+			Long fan = doc.getLong("fan");
+			Date optime = doc.getDate("optime");
+			
+			UserInfo ui = new UserInfo();
+			ui.put("uid", fan);
+			ui.put("optime", optime);
+			ret.add(ui);
 		}
 		
 		return ret;
@@ -280,7 +292,7 @@ public class Engine {
 	
 	
 	public Result getMutualFollowsList(long uid, int start, int end) {
-		UserInfosResult ret = new UserInfosResult();
+		ListResult ret = new ListResult();
 		
 		Document query = new Document();
 		query.append("uid", uid);
@@ -289,8 +301,12 @@ public class Engine {
 		
 		for (Document doc : docs) {
 			Long followee = doc.getLong("followee");
-			ret.addEmpty(followee);
-			// TODO 加上关注时间？
+			Date optime = doc.getDate("optime");
+			
+			UserInfo ui = new UserInfo();
+			ui.put("uid", followee);
+			ui.put("optime", optime);
+			ret.add(ui);
 		}
 		
 		return ret;

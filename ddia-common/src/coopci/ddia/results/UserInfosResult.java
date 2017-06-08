@@ -1,10 +1,14 @@
-package coopci.ddia;
+package coopci.ddia.results;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+
+import coopci.ddia.Result;
 
 public class UserInfosResult extends Result {
 	
-	static public class UserInfo extends HashMap<String, Object>{}
+	
 	public HashMap<Long, UserInfo> data = new HashMap<Long, UserInfo>();
 	
 	public UserInfo addEmpty(Long uid) {
