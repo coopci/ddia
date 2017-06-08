@@ -14,6 +14,9 @@ import org.glassfish.grizzly.http.server.Response;
 import org.glassfish.grizzly.threadpool.ThreadPoolConfig;
 
 import coopci.ddia.user.relation.handlers.FollowHandler;
+import coopci.ddia.user.relation.handlers.GetFansHandler;
+import coopci.ddia.user.relation.handlers.GetFollowsHandler;
+import coopci.ddia.user.relation.handlers.GetMutualFollowsHandler;
 import coopci.ddia.user.relation.handlers.UnfollowHandler;
 
 
@@ -57,6 +60,28 @@ public class HttpServer {
 		server.getServerConfiguration().addHttpHandler(
 				unfollowHandler,
 				"/user-relation/unfollow");
+		
+		
+		GetFollowsHandler getFollowsHandler = new GetFollowsHandler();
+		getFollowsHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				getFollowsHandler,
+				"/user-relation/get_follows");
+		
+		GetMutualFollowsHandler getMutualFollowsHandler = new GetMutualFollowsHandler();
+		getMutualFollowsHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				getMutualFollowsHandler,
+				"/user-relation/get_mutual_follows");
+		
+		
+		GetFansHandler getFansHandler = new GetFansHandler();
+		getFansHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				getFansHandler,
+				"/user-relation/get_fans");
+		
+		
 		
 		try {
 			server.removeListener("grizzly");

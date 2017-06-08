@@ -18,6 +18,9 @@ import java.util.Base64;
 
 
 
+import java.util.LinkedList;
+import java.util.List;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -30,6 +33,7 @@ import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.FindOneAndUpdateOptions;
 import com.mongodb.client.model.ReturnDocument;
@@ -94,7 +98,19 @@ public class Engine {
 		return;
 	}
 	
-	
+	LinkedList<Document> getMongoDocuments(String dbname, String collname, Document query, int skip, int limit) {
+		MongoClient client = this.getMongoClient();
+		MongoDatabase db = client.getDatabase(dbname);
+		MongoCollection<Document> collection = db.getCollection(collname);
+		FindIterable<Document> iterable = collection.find(query).skip(skip).limit(limit);
+		LinkedList<Document> ret = new LinkedList<Document>();
+		MongoCursor<Document> cur = iterable.iterator();
+		
+		while(cur.hasNext()){
+			ret.add(cur.next());
+		}
+		return ret;
+	}
 	
 	Document getMongoDocumentById(String dbname, String collname, String id) {
 		MongoClient client = this.getMongoClient();
@@ -230,22 +246,53 @@ public class Engine {
 	}
 	
 	public Result getFollowsList(long uid, int start, int end) {
-		throw new UnsupportedOperationException();
-		// Result ret = new Result();
-		// return ret;
+		UserInfosResult ret = new UserInfosResult();
+		
+		Document query = new Document();
+		query.append("uid", uid);
+		List<Document> docs = this.getMongoDocuments(this.mongodbDBName, this.mongodbDBCollFollows, query, start, end - start);
+		
+		for (Document doc : docs) {
+			Long followee = doc.getLong("followee");
+			ret.addEmpty(followee);
+			// TODO 加上关注时间？
+		}
+		
+		return ret;
 	}
 	
 	
 	public Result getFansList(long uid, int start, int end) {
-		throw new UnsupportedOperationException();
-		// Result ret = new Result();
-		// return ret;
+		UserInfosResult ret = new UserInfosResult();
+		
+		Document query = new Document();
+		query.append("uid", uid);
+		List<Document> docs = this.getMongoDocuments(this.mongodbDBName, this.mongodbDBCollFans, query, start, end - start);
+		
+		for (Document doc : docs) {
+			Long followee = doc.getLong("fan");
+			ret.addEmpty(followee);
+			// TODO 加上关注时间？
+		}
+		
+		return ret;
 	}
 	
 	
 	public Result getMutualFollowsList(long uid, int start, int end) {
-		throw new UnsupportedOperationException();
-		// Result ret = new Result();
-		// return ret;
+		UserInfosResult ret = new UserInfosResult();
+		
+		Document query = new Document();
+		query.append("uid", uid);
+		query.append("mutual", true);
+		List<Document> docs = this.getMongoDocuments(this.mongodbDBName, this.mongodbDBCollFollows, query, start, end - start);
+		
+		for (Document doc : docs) {
+			Long followee = doc.getLong("followee");
+			ret.addEmpty(followee);
+			// TODO 加上关注时间？
+		}
+		
+		return ret;
 	}
 }
