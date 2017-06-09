@@ -13,6 +13,9 @@ import org.glassfish.grizzly.http.server.Request;
 import org.glassfish.grizzly.http.server.Response;
 import org.glassfish.grizzly.threadpool.ThreadPoolConfig;
 
+import coopci.ddia.b2c.renting.handlers.AddPledgeHandler;
+import coopci.ddia.b2c.renting.handlers.GetRentingStatusHandler;
+
 
 
 public class HttpServer {
@@ -40,43 +43,18 @@ public class HttpServer {
 	    },
 	    "/");
 		
-		
-		/*
-		FollowHandler followHandler = new FollowHandler();
-		followHandler.setEngine(engine);
+		AddPledgeHandler addPledgeHandler = new AddPledgeHandler();
+		addPledgeHandler.setEngine(engine);
 		server.getServerConfiguration().addHttpHandler(
-				followHandler,
-				"/user-relation/follow");
+				addPledgeHandler,
+				"/b2c-renting/add_pledge");
 		
-
-		UnfollowHandler unfollowHandler = new UnfollowHandler();
-		unfollowHandler.setEngine(engine);
+		
+		GetRentingStatusHandler getRentingStatusHandler = new GetRentingStatusHandler();
+		getRentingStatusHandler.setEngine(engine);
 		server.getServerConfiguration().addHttpHandler(
-				unfollowHandler,
-				"/user-relation/unfollow");
-		
-		
-		GetFollowsHandler getFollowsHandler = new GetFollowsHandler();
-		getFollowsHandler.setEngine(engine);
-		server.getServerConfiguration().addHttpHandler(
-				getFollowsHandler,
-				"/user-relation/get_follows");
-		
-		GetMutualFollowsHandler getMutualFollowsHandler = new GetMutualFollowsHandler();
-		getMutualFollowsHandler.setEngine(engine);
-		server.getServerConfiguration().addHttpHandler(
-				getMutualFollowsHandler,
-				"/user-relation/get_mutual_follows");
-		
-		
-		GetFansHandler getFansHandler = new GetFansHandler();
-		getFansHandler.setEngine(engine);
-		server.getServerConfiguration().addHttpHandler(
-				getFansHandler,
-				"/user-relation/get_fans");
-		
-		*/
-		
+				getRentingStatusHandler,
+				"/b2c-renting/get_renting_status");
 		
 		
 		try {

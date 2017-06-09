@@ -1,31 +1,7 @@
 package coopci.ddia.b2c.renting;
 
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
-import java.util.Base64;
-
-
-
-
-
 import java.util.Date;
 import java.util.LinkedList;
-import java.util.List;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 
 import org.bson.Document;
 
@@ -36,22 +12,17 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.FindOneAndUpdateOptions;
-import com.mongodb.client.model.ReturnDocument;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.UpdateResult;
 
-import coopci.ddia.LoginResult;
 import coopci.ddia.Result;
-import coopci.ddia.SessionId;
-import coopci.ddia.UidResult;
 import coopci.ddia.results.ListResult;
 import coopci.ddia.results.UserInfo;
-import coopci.ddia.util.SessidPacker;
-import coopci.ddia.util.Vcode;
 
 public class Engine {
+	public static String TRANX_LOG_STATUS_NEW = "new";
 	
+	public static String TRANX_LOG_TYPE_DEPOSIT = "deposit";
 	String mongoConnStr = "mongodb://localhost:27017/";
 	String mongodbDBName = "b2c_renting";     
 	String mongodbDBCollModels = "models";    // 物品的型号。每一个型号对应一个mongodb文档。
@@ -59,10 +30,13 @@ public class Engine {
 	
 	// 记录各个用户押金和当前租借情况的collection。每个document对应一个用户。
 	// _id是用户id
-	// pledge 是 当前押金总额。
 	// 
-	String mongodbDBCollPledge = "renting"; 
+	String mongodbDBCollRenting = "renting"; 
 	
+	
+	// 记录每一笔 交易， 包括充值，提现和扣费。
+	// 这个collection的作用除了时候查帐，还用来保证同一个事物不会被重复执行。
+	String mongodbDBCollTranxlogs = "tranx_log"; // _id, uid(sharding), type(deposit, withdraw, consume), amount, status
 	
 	
 	// 据http://mongodb.github.io/mongo-java-driver/2.13/getting-started/quick-tour/ 说:
@@ -174,6 +148,15 @@ public class Engine {
 		return r;
 	}
 	
+	
+	void insertMongoDocument(String dbname, String collname, Document data) {
+		MongoClient client = this.getMongoClient();
+		MongoDatabase db = client.getDatabase(dbname);
+		MongoCollection<Document> collection = db.getCollection(collname);
+		collection.insertOne(data);
+	}
+		
+		
 	// upsert : false
 	void updateMongoDocumentById(String dbname, String collname, Document data, String id) {
 		MongoClient client = this.getMongoClient();
@@ -219,14 +202,74 @@ public class Engine {
 		return ret;
 	} 
 	
+	
+	
+	public void applyTranxLog(long uid, String tranx_id) {
+		
+		// TODO 把下面的逻辑做好: 
+		
+		
+		// 如果 mongodbDBCollTranxlogs的status设置为new: 
+		//     给 this.mongodbDBCollRenting 的pledge字段加 数， 并同时设置pending.$tranx_id 为 存在。
+		//     mongodbDBCollTranxlogs的status设置为applied。
+		//     把 this.mongodbDBCollRenting pending.$tranx_id unset。
+		//     mongodbDBCollTranxlogs的status设置为done。
+		
+		// 如果 mongodbDBCollTranxlogs的status设置为applied: 
+		//     把 this.mongodbDBCollRenting pending.$tranx_id unset。
+		//     mongodbDBCollTranxlogs的status设置为done。
+		
+		// 如果 mongodbDBCollTranxlogs的status设置为done: 
+		//	    把 this.mongodbDBCollRenting pending.$tranx_id unset。
+		
+	}
 	/**
-	 * 给uid表示的用户增加押金
+	 * 给uid表示的用户增加押金。 
 	 * */
-	public Result addPledge(long uid, long amount) {
+	public Result addPledge(long uid, long amount, String tranx_id) {
 		Result ret = new Result();
+		
+		if (tranx_id == null || tranx_id.length() == 0) {
+			ret.code = 400;
+			ret.msg = "tranx_id is required.";
+			return ret;
+		}
 		Date now =  new Date();
 		
+		
+		Document tranxLog = new Document();
+		tranxLog.append("_id", tranx_id);
+		tranxLog.append("amount", amount);
+		tranxLog.append("uid", uid);
+		tranxLog.append("status", TRANX_LOG_STATUS_NEW);
+		tranxLog.append("type", TRANX_LOG_TYPE_DEPOSIT);
+		this.insertMongoDocument(this.mongodbDBName, this.mongodbDBCollTranxlogs, tranxLog);
+		
+		
+		
+		this.applyTranxLog(uid, tranx_id);
+		
+		
 		return ret;
+	}
+	
+	
+	public Result getRentingStatus(long uid) {
+		ListResult ret = new ListResult();
+		Date now =  new Date();
+		
+		Document doc = this.getMongoDocumentById(this.mongodbDBName, this.mongodbDBCollRenting, uid);
+		if (doc != null) {
+			UserInfo ui = new UserInfo();
+			long pledge = 0;
+			if (doc.containsKey("pledge")) {
+				pledge = doc.getLong("pledge");
+			} 
+			ui.put("pledge", pledge);
+			ret.add(ui);
+		}
+		return ret;
+		
 	}
 	
 	
