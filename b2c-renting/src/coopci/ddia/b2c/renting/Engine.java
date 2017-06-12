@@ -20,11 +20,21 @@ import coopci.ddia.results.ListResult;
 import coopci.ddia.results.UserInfo;
 
 public class Engine {
-	public static String TRANX_LOG_STATUS_NEW = "new";
+	public static String TRANX_LOG_STATUS_NEW = "new"; // 表示还没做。
+	public static String TRANX_LOG_STATUS_APPLIED = "applied"; // 表示 这个事务的效果已经体现到帐户上了，离彻底做完，只差把这个事务的状态改成TRANX_LOG_STATUS_DONE。
+	public static String TRANX_LOG_STATUS_DONE = "done"; // 表示已经彻底做完了。
+	
 	
 	public static String TRANX_LOG_TYPE_DEPOSIT = "deposit";
+	
+	public static String FIELD_NAME_PENDING_TRANX = "pending_tranx";
+	
+	
+	public static Document NON_EXISTS_FILTER = new Document( "$exists", false);
+	
+	
 	String mongoConnStr = "mongodb://localhost:27017/";
-	String mongodbDBName = "b2c_renting";     
+	String mongodbDBName = "b2c_renting";
 	String mongodbDBCollModels = "models";    // 物品的型号。每一个型号对应一个mongodb文档。
 	String mongodbDBCollItems = "items";          // 所有可被出借的物品。每一个物品对应一个mongodb文档。每个物品都应该有型号。
 	
@@ -95,6 +105,103 @@ public class Engine {
 		return ret;
 	}
 	
+	// 对于 uid 是sharding key 但是 uid 不是 _id 的collection，应该用这个函数。
+	Document getMongoDocumentByIdAndUid(String collname, String id, long uid) {
+		MongoClient client = this.getMongoClient();
+		MongoDatabase db = client.getDatabase(this.mongodbDBName);
+		MongoCollection<Document> collection = db.getCollection(collname);
+		Document filter = new Document();
+		filter.append("_id", id);
+		filter.append("uid", uid);
+		FindIterable<Document> iter = collection.find(filter);
+		Document doc = iter.first();
+		return doc;
+	}
+
+	
+	// 对于 uid 是sharding key 但是 uid 不是 _id 的collection，应该用这个函数。
+	// upsert: false
+	void updateMongoDocumentByIdAndUid(String collname, String id, long uid, Document updatevalue) {
+		MongoClient client = this.getMongoClient();
+		MongoDatabase db = client.getDatabase(this.mongodbDBName);
+		MongoCollection<Document> collection = db.getCollection(collname);
+		
+		Document filter = new Document();
+		filter.append("_id", id);
+		filter.append("uid", uid);
+		
+		Document update = new Document();
+		update.append("$set", updatevalue);
+		UpdateOptions opt = new UpdateOptions();
+		opt.upsert(false);
+		
+		collection.updateOne(filter, update, opt);
+		return;
+	}
+	
+	
+	
+	void applyTranxLogToRentingColl(long uid, Document tranxlog) {
+		String tranx_id = tranxlog.getString("_id");
+		Long amount = tranxlog.getLong("amount");
+		
+		String type = tranxlog.getString("type");
+		if (type == null) {
+			// TODO throw
+			return;
+		} else if (type.equals("deposit")) {
+			
+		} else if (type.equals("withdraw")) {
+			amount = -amount;
+		} else if (type.equals("consume")) {
+			amount = -amount;
+		} else if (type.equals("freeze")) {
+			amount = -amount;
+		} else {
+			return;
+			// TODO throw;
+		}
+		
+		MongoClient client = this.getMongoClient();
+		MongoDatabase db = client.getDatabase(this.mongodbDBName);
+		MongoCollection<Document> collection = db.getCollection(this.mongodbDBCollRenting);
+		
+		Document filter = new Document();
+		filter.append("_id", uid);
+		filter.append(FIELD_NAME_PENDING_TRANX + "." + tranx_id, NON_EXISTS_FILTER );
+		
+		
+		
+		Document update = new Document();
+		update.append("$set", new Document(FIELD_NAME_PENDING_TRANX + "." + tranx_id, amount));
+		update.append("$inc", new Document("pledge", amount));
+		UpdateOptions opt = new UpdateOptions();
+		opt.upsert(false);
+		
+		collection.updateOne(filter, update, opt);
+		return;
+		
+		
+	}
+	
+	
+		
+	void unsetPendingTranx(String tranx_id, long uid) {
+		MongoClient client = this.getMongoClient();
+		MongoDatabase db = client.getDatabase(this.mongodbDBName);
+		MongoCollection<Document> collection = db.getCollection(this.mongodbDBCollRenting);
+		
+		Document filter = new Document();
+		filter.append("_id", uid);
+		
+		Document update = new Document();
+		update.append("$unset", new Document(FIELD_NAME_PENDING_TRANX + "." + tranx_id, ""));
+		UpdateOptions opt = new UpdateOptions();
+		opt.upsert(false);
+		
+		collection.updateOne(filter, update, opt);
+		return;
+	}
 	Document getMongoDocumentById(String dbname, String collname, String id) {
 		MongoClient client = this.getMongoClient();
 		MongoDatabase db = client.getDatabase(dbname);
@@ -163,8 +270,6 @@ public class Engine {
 		MongoDatabase db = client.getDatabase(dbname);
 		MongoCollection<Document> collection = db.getCollection(collname);
 		
-		
-		
 		Document filter = new Document();
 		filter.append("_id", id);
 		
@@ -174,7 +279,6 @@ public class Engine {
 		opt.upsert(false);
 		
 		collection.updateOne(filter, update, opt);
-		
 		
 		return;
 	}
@@ -203,28 +307,43 @@ public class Engine {
 	} 
 	
 	
-	
+	// 执行tranx_id表示的事务。 也用与完成之前被打断的事务。
 	public void applyTranxLog(long uid, String tranx_id) {
 		
-		// TODO 把下面的逻辑做好: 
+		Document tranxlog = this.getMongoDocumentByIdAndUid(this.mongodbDBCollTranxlogs, tranx_id, uid);
+		String status = tranxlog.getString("status");
 		
-		
-		// 如果 mongodbDBCollTranxlogs的status设置为new: 
-		//     给 this.mongodbDBCollRenting 的pledge字段加 数， 并同时设置pending.$tranx_id 为 存在。
+		if (TRANX_LOG_STATUS_NEW.equals(status)) {
+			this.applyTranxLogToRentingColl(uid, tranxlog);
+			this.updateMongoDocumentByIdAndUid(this.mongodbDBCollTranxlogs, tranx_id, uid, 
+					new Document("status", TRANX_LOG_STATUS_APPLIED));
+			this.unsetPendingTranx(tranx_id, uid);
+			this.updateMongoDocumentByIdAndUid(this.mongodbDBCollTranxlogs, tranx_id, uid, 
+					new Document("status", TRANX_LOG_STATUS_DONE));
+		} else if (TRANX_LOG_STATUS_APPLIED.equals(status)) {
+			this.unsetPendingTranx(tranx_id, uid);
+			this.updateMongoDocumentByIdAndUid(this.mongodbDBCollTranxlogs, tranx_id, uid, 
+					new Document("status", TRANX_LOG_STATUS_DONE));
+		} else if (TRANX_LOG_STATUS_DONE.equals(status)) {
+			this.unsetPendingTranx(tranx_id, uid);
+		}
+		// 如果 mongodbDBCollTranxlogs的status为new: 
+		//     给 this.mongodbDBCollRenting 的pledge字段加 数， 并同时设置 pending_tranx.$tranx_id 为 存在。
 		//     mongodbDBCollTranxlogs的status设置为applied。
-		//     把 this.mongodbDBCollRenting pending.$tranx_id unset。
+		//     把 this.mongodbDBCollRenting pending_tranx.$tranx_id unset。
 		//     mongodbDBCollTranxlogs的status设置为done。
 		
-		// 如果 mongodbDBCollTranxlogs的status设置为applied: 
-		//     把 this.mongodbDBCollRenting pending.$tranx_id unset。
+		// 如果 mongodbDBCollTranxlogs的status为applied: 
+		//     把 this.mongodbDBCollRenting pending_tranx.$tranx_id unset。
 		//     mongodbDBCollTranxlogs的status设置为done。
 		
-		// 如果 mongodbDBCollTranxlogs的status设置为done: 
-		//	    把 this.mongodbDBCollRenting pending.$tranx_id unset。
+		// 如果 mongodbDBCollTranxlogs的status为done: 
+		//	    把 this.mongodbDBCollRenting pending_tranx.$tranx_id unset。
 		
 	}
 	/**
 	 * 给uid表示的用户增加押金。 
+	 * 这个里面要创建 事务记录。
 	 * */
 	public Result addPledge(long uid, long amount, String tranx_id) {
 		Result ret = new Result();
@@ -236,15 +355,19 @@ public class Engine {
 		}
 		Date now =  new Date();
 		
-		
-		Document tranxLog = new Document();
-		tranxLog.append("_id", tranx_id);
-		tranxLog.append("amount", amount);
-		tranxLog.append("uid", uid);
-		tranxLog.append("status", TRANX_LOG_STATUS_NEW);
-		tranxLog.append("type", TRANX_LOG_TYPE_DEPOSIT);
-		this.insertMongoDocument(this.mongodbDBName, this.mongodbDBCollTranxlogs, tranxLog);
-		
+		try {
+			Document tranxLog = new Document();
+			tranxLog.append("_id", tranx_id);
+			tranxLog.append("amount", amount);
+			tranxLog.append("uid", uid);
+			tranxLog.append("status", TRANX_LOG_STATUS_NEW);
+			tranxLog.append("type", TRANX_LOG_TYPE_DEPOSIT);
+			this.insertMongoDocument(this.mongodbDBName, this.mongodbDBCollTranxlogs, tranxLog);
+		} catch (com.mongodb.MongoWriteException ex) {
+			if (ex.getCode() == 11000) {
+				// 忽略这个错误，继续下面的 applyTranxLog 。因为applyTranxLog 也可以用来继续之前被打断的事务。
+			}
+		}
 		
 		
 		this.applyTranxLog(uid, tranx_id);
