@@ -8,6 +8,7 @@ import org.bson.Document;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoClientURI;
+import com.mongodb.MongoWriteException;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
@@ -17,6 +18,7 @@ import com.mongodb.client.result.UpdateResult;
 
 import coopci.ddia.Result;
 import coopci.ddia.results.ListResult;
+import coopci.ddia.results.RentingStatusResult;
 import coopci.ddia.results.UserInfo;
 
 public class Engine {
@@ -28,9 +30,12 @@ public class Engine {
 	public static String TRANX_LOG_TYPE_DEPOSIT = "deposit";
 	
 	public static String FIELD_NAME_PENDING_TRANX = "pending_tranx";
+	public static String FIELD_NAME_RENTING = "renting";
+	public static String FIELD_NAME_RENTER = "renter";
 	
 	
 	public static Document NON_EXISTS_FILTER = new Document( "$exists", false);
+	public static Document EXISTS_FILTER = new Document( "$exists", true);
 	
 	
 	String mongoConnStr = "mongodb://localhost:27017/";
@@ -140,7 +145,7 @@ public class Engine {
 	}
 	
 	
-	
+	// 把tranx_id表示的事务 执行到 mongodbDBCollRenting的pledge字段上。
 	void applyTranxLogToRentingColl(long uid, Document tranxlog) {
 		String tranx_id = tranxlog.getString("_id");
 		Long amount = tranxlog.getLong("amount");
@@ -178,7 +183,8 @@ public class Engine {
 		UpdateOptions opt = new UpdateOptions();
 		opt.upsert(false);
 		
-		collection.updateOne(filter, update, opt);
+		UpdateResult ur = collection.updateOne(filter, update, opt);
+		// ur.getModifiedCount()
 		return;
 		
 		
@@ -283,6 +289,117 @@ public class Engine {
 		return;
 	}
 	
+
+	// upsert : false
+	void updateMongoDocumentById(String dbname, String collname, Document data, long id) {
+		MongoClient client = this.getMongoClient();
+		MongoDatabase db = client.getDatabase(dbname);
+		MongoCollection<Document> collection = db.getCollection(collname);
+		
+		Document filter = new Document();
+		filter.append("_id", id);
+		
+		Document update = new Document();
+		update.append("$set", data);
+		UpdateOptions opt = new UpdateOptions();
+		opt.upsert(false);
+		
+		collection.updateOne(filter, update, opt);
+		
+		return;
+	}
+	
+	
+	// 计算需要的押金数额。
+	long getPledgeRequired(long user_id, String item_id, Date time) {
+		return 20000;
+	}
+	
+	// 把 this.mongodbDBCollRenting 的 renting 字段里加上  {$item_id: {"time": $time, "pledge": $pledge}}
+	public UpdateResult setRenting(long uid, Document renting) {
+		MongoClient client = this.getMongoClient();
+		MongoDatabase db = client.getDatabase(this.mongodbDBName);
+		MongoCollection<Document> collection = db.getCollection(this.mongodbDBCollRenting);
+		
+		
+		String item_id = renting.getString("item_id");
+		Document filter = new Document();
+		filter.append("_id", uid);
+		filter.append(FIELD_NAME_RENTING + "." + item_id, NON_EXISTS_FILTER );
+		
+		
+		Document update = new Document();
+		update.append("$set", new Document(FIELD_NAME_RENTING + "." + item_id, renting));
+		UpdateOptions opt = new UpdateOptions();
+		opt.upsert(false);
+		
+		UpdateResult ur = collection.updateOne(filter, update, opt);
+		return ur;
+	}
+	
+	
+	// 把 this.mongodbDBCollRenting 的 renting 字段里的$item_id删掉
+	public UpdateResult unsetRenting(long uid, String item_id) {
+		MongoClient client = this.getMongoClient();
+		MongoDatabase db = client.getDatabase(this.mongodbDBName);
+		MongoCollection<Document> collection = db.getCollection(this.mongodbDBCollRenting);
+		
+		
+		Document filter = new Document();
+		filter.append("_id", uid);
+		// filter.append(FIELD_NAME_RENTING + "." + item_id, NON_EXISTS_FILTER );
+		
+		
+		Document update = new Document();
+		update.append("$unset", new Document(FIELD_NAME_RENTING + "." + item_id, ""));
+		UpdateOptions opt = new UpdateOptions();
+		opt.upsert(false);
+		
+		UpdateResult ur = collection.updateOne(filter, update, opt);
+		return ur;
+	}
+	
+
+	public UpdateResult unsetRenter(long uid, String item_id) {
+		MongoClient client = this.getMongoClient();
+		MongoDatabase db = client.getDatabase(this.mongodbDBName);
+		MongoCollection<Document> collection = db.getCollection(this.mongodbDBCollItems);
+		
+		
+		Document filter = new Document();
+		filter.append("_id", item_id);
+		
+		
+		Document update = new Document();
+		update.append("$unset", new Document(FIELD_NAME_RENTER + "." + Long.toString(uid), ""));
+		UpdateOptions opt = new UpdateOptions();
+		opt.upsert(false);
+		
+		UpdateResult ur = collection.updateOne(filter, update, opt);
+		return ur;
+	}
+	// 尝试进行租用， 要在同一个事务里检查 是否已经租用。 也就是this.mongodbDBCollItems 的renter字段。
+	public UpdateResult trySetRenter(long uid, Document renting) {
+		MongoClient client = this.getMongoClient();
+		MongoDatabase db = client.getDatabase(this.mongodbDBName);
+		MongoCollection<Document> collection = db.getCollection(this.mongodbDBCollItems);
+		
+		
+		String item_id = renting.getString("item_id");
+		Document filter = new Document();
+		filter.append("_id", item_id);
+		filter.append(FIELD_NAME_RENTER, new Document("$eq", new Document()) );
+		
+		
+		Document update = new Document();
+		
+		update.append("$set", new Document(FIELD_NAME_RENTER + "." + Long.toString(uid), renting));
+		UpdateOptions opt = new UpdateOptions();
+		opt.upsert(false);
+		
+		UpdateResult ur = collection.updateOne(filter, update, opt);
+		return ur;
+	}
 	public Result startRenting(long user_id, String item_id) {
 		// user_id 要开始租用 item_id。
 		// 检查押金，记录 "开始租借"。交付使用权。
@@ -290,12 +407,83 @@ public class Engine {
 		Date now =  new Date();
 		
 		
+		long pledgeRequired = this.getPledgeRequired(user_id, item_id, now);
+		// 检查押金。
+		Document doc = this.getMongoDocumentById(this.mongodbDBName, this.mongodbDBCollRenting, user_id);
+		
+		// 把 this.mongodbDBCollRenting 的 renting 字段里加上  {$item_id: {"time": $time, "pledge": $pledge}}
+		Document renting = new Document();
+		renting.append("item_id", item_id);
+		renting.append("time", now);
+		renting.append("pledge", pledgeRequired);
 		
 		
+		UpdateResult ur = this.setRenting(user_id, renting);
+		if (ur.getModifiedCount() == 0) {
+			
+			// 
+			ret.code = 409;
+			ret.msg = "The item is under your rent.";
+			return ret;
+		}
 		
+
+		UpdateResult setRenterUR = trySetRenter(user_id, renting);
+		if (setRenterUR.getModifiedCount() == 0) {
+			// 这有两种可能，一是item_id被别人租用了，而是根本不存在item_id。
+			Document itemdoc = this.getMongoDocumentById(this.mongodbDBName, this.mongodbDBCollItems, item_id);
+			if (itemdoc == null) {
+				// item_id不存在。
+				ret.code = 404;
+				ret.msg = "The item_id does not exist.";
+			} else {
+				// 如果租用失败，要从  this.mongodbDBCollRenting 的 renting字段里删掉  $item_id。
+				ret.code = 409;
+				ret.msg = "The item is under rent.";
+			}
+			
+			
+			this.unsetRenting(user_id, item_id);
+		}
+		
+		
+		// 租用的语义是:
+		// this.mongodbDBCollRenting 的 renting字段里有 {$item_id: $time}
+		// 并且 
+		// this.mongodbDBCollItems 的 renter字段里有 {$uid: $time}
+		// 要保证这两个地方都设置好之后才  交付使用权。
 		
 		return ret;
 	} 
+	
+	// 计算租用的费用
+	public long getFee(long user_id, String item_id, Date start, Date end) {
+		return 100;
+	}
+	
+	// 从 this.mongodbDBCollRenting 的 pledge 字段收取 $fee 费用，并从renting里删掉item_id。
+	public UpdateResult chargeFromPledge(long uid, String item_id, long fee) {
+		MongoClient client = this.getMongoClient();
+		MongoDatabase db = client.getDatabase(this.mongodbDBName);
+		MongoCollection<Document> collection = db.getCollection(this.mongodbDBCollRenting);
+		
+		Document filter = new Document();
+		filter.append("_id", uid);
+		filter.append(FIELD_NAME_RENTING + "." + item_id, EXISTS_FILTER );
+		
+		
+		
+		Document update = new Document();
+		update.append("$unset", new Document(FIELD_NAME_RENTING + "." + item_id, ""));
+		update.append("$inc", new Document("pledge", -fee));
+		UpdateOptions opt = new UpdateOptions();
+		opt.upsert(false);
+		
+		UpdateResult ur = collection.updateOne(filter, update, opt);
+		// ur.getModifiedCount()
+		return ur;
+		
+	}
 	
 	public Result finishRenting(long user_id, String item_id) {
 		// user_id 要结束租用 item_id
@@ -303,11 +491,61 @@ public class Engine {
 		Result ret = new Result();
 		Date now =  new Date();
 		
+
+		
+		// 租用的语义是:
+		// this.mongodbDBCollRenting 的 renting字段里有 $item_id
+		// 并且 
+		// this.mongodbDBCollItems 的 renter字段里有 {$uid: $time}
+		// 如果缺了任何一个，都表示startRenting的事务被打断了，这里应该不收钱，直接结束租用。
+		
+		
+		
+		// 如果 this.mongodbDBCollItems 的 renter字段里有 没有 $uid 或者 this.mongodbDBCollItems里没有item_id
+		// 那么 删掉 this.mongodbDBCollRenting 的 renting字段里有 $item_id，就完事了。
+		
+		Document itemdoc = this.getMongoDocumentById(this.mongodbDBName, this.mongodbDBCollItems, item_id);
+		if (itemdoc == null || itemdoc.get(FIELD_NAME_RENTER) == null) {
+			this.unsetRenting(user_id,  item_id);
+			return ret;
+		}
+		Document renters = (Document)itemdoc.get(FIELD_NAME_RENTER);
+		Document renter = (Document)renters.get(Long.toString(user_id));
+		
+		if (renter == null) {
+			this.unsetRenting(user_id,  item_id);
+			return ret;
+		}
+		
+		Document rentingdoc = this.getMongoDocumentById(this.mongodbDBName, this.mongodbDBCollRenting, user_id);
+		if (rentingdoc == null || rentingdoc.get(FIELD_NAME_RENTING) == null) {
+			this.unsetRenter(user_id,  item_id);
+			return ret;
+		}
+		
+		Document rentings = (Document)rentingdoc.get(FIELD_NAME_RENTING);
+		Document renting = (Document)rentings.get(item_id);
+		if (renting == null) {
+			this.unsetRenter(user_id,  item_id);
+			return ret;
+		}
+		
+		Date start = renting.getDate("time");
+		Date end = new Date();
+		long fee = this.getFee(user_id, item_id, start, end);
+		// 否则
+		// 在同一个事务里  减少 this.mongodbDBCollRenting 的押金 (减少的量是fee) 并删掉  renting 里的 $item_id。
+		this.chargeFromPledge(user_id, item_id, fee);
+		// 还要 把this.mongodbDBCollItems的renter里的$uid删掉
+		this.unsetRenter(user_id, item_id);
+		
+		
+		
 		return ret;
 	} 
 	
 	
-	// 执行tranx_id表示的事务。 也用与完成之前被打断的事务。
+	// 执行tranx_id表示的事务。 也用于完成之前被打断的事务。
 	public void applyTranxLog(long uid, String tranx_id) {
 		
 		Document tranxlog = this.getMongoDocumentByIdAndUid(this.mongodbDBCollTranxlogs, tranx_id, uid);
@@ -378,7 +616,7 @@ public class Engine {
 	
 	
 	public Result getRentingStatus(long uid) {
-		ListResult ret = new ListResult();
+		RentingStatusResult ret = new RentingStatusResult();
 		Date now =  new Date();
 		
 		Document doc = this.getMongoDocumentById(this.mongodbDBName, this.mongodbDBCollRenting, uid);
@@ -388,8 +626,18 @@ public class Engine {
 			if (doc.containsKey("pledge")) {
 				pledge = doc.getLong("pledge");
 			} 
-			ui.put("pledge", pledge);
-			ret.add(ui);
+			ret.data.pledge = pledge;
+			
+			LinkedList<String> items = new LinkedList<String>();
+			if (doc.containsKey("renting")) {
+				Document rentingDoc = (Document)doc.get("renting");
+				rentingDoc.keySet();
+				for (String item : rentingDoc.keySet()) {
+					items.add(item);
+				}
+			}
+			ui.put("items", items);
+			ret.data.items = items.toArray(new String[0]);
 		}
 		return ret;
 		
@@ -442,7 +690,19 @@ public class Engine {
 	}
 	
 	
-	
-	
+	public void insertTestItem(String itemId) {
+		try {
+		Document doc = new Document();
+		doc.append("_id", itemId);
+		doc.append("renter", new Document());
+		this.insertMongoDocument(this.mongodbDBName, this.mongodbDBCollItems, doc);
+		} catch (MongoWriteException ex	) {
+			if (ex.getCode() == 11000) {
+				return;
+			} else {
+				throw ex;
+			}
+		}
+	}
 	
 }

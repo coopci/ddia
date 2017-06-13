@@ -4,19 +4,23 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import coopci.ddia.Result;
 import coopci.ddia.b2c.renting.Engine;
 
-public class TestAddPledge {
+public class TestFinishRenting {
 	
 	
 	@Test
-	public void testAddOK() throws Exception {
+	public void testFinishOK() throws Exception {
 		Engine engine = new Engine();
 		engine.init();
 		long uid = 7;
-		long amount = 100;
-		String tranx_id = "tranx_id-3";
+		String item_id = "test-item-3";
 		
-		engine.addPledge(uid, amount, tranx_id);
+		Result r = engine.finishRenting(uid, item_id);
+		
+		
+		return;
+		
 	}
 }
