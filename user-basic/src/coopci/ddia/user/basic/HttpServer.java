@@ -13,6 +13,8 @@ import org.glassfish.grizzly.http.server.Request;
 import org.glassfish.grizzly.http.server.Response;
 import org.glassfish.grizzly.threadpool.ThreadPoolConfig;
 
+import coopci.ddia.user.basic.handlers.LookupUserinfoHandler;
+import coopci.ddia.user.basic.handlers.SetUserinfoHandler;
 import coopci.ddia.user.basic.handlers.sms.GetUidBySessidHandler;
 import coopci.ddia.user.basic.handlers.sms.GetUserinfoByUidsHandler;
 import coopci.ddia.user.basic.handlers.sms.LoginSubmitPhoneHandler;
@@ -20,6 +22,7 @@ import coopci.ddia.user.basic.handlers.sms.LoginSubmitVcodeHandler;
 
 
 public class HttpServer {
+	public static int listenPort = 8888;
 	public static void main(String[] argv) throws Exception {
 		Engine engine = new Engine();
 		engine.init();
@@ -66,6 +69,22 @@ public class HttpServer {
 				getUserinfoByUidsHandler,
 				"/user-basic/get_user_info_by_uids");
 		
+		
+		
+		
+		LookupUserinfoHandler lookupUserinfoHandler = new LookupUserinfoHandler();
+		lookupUserinfoHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				lookupUserinfoHandler,
+				"/user-basic/lookup_userinfo");
+		
+		
+		SetUserinfoHandler setUserinfoHandler = new SetUserinfoHandler();
+		setUserinfoHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				setUserinfoHandler,
+				"/user-basic/set_user_info_by_uid");
+		
 		// "/user-basic/set_user_info_by_uid"
 		// "/user-basic/get_user_info_by_session_id"
 		// "/user-basic/get_user_info_by_uids"
@@ -73,7 +92,7 @@ public class HttpServer {
 		try {
 			server.removeListener("grizzly"); // É¾µôÄ¬ÈÏµÄListener¡£
 			
-			NetworkListener nl = new NetworkListener("17wan8gateway", "0.0.0.0", 8888);
+			NetworkListener nl = new NetworkListener("ddia-user-basic", "0.0.0.0", listenPort);
 			ThreadPoolConfig threadPoolConfig = ThreadPoolConfig
 			        .defaultConfig();
 			        //.setCorePoolSize(16)

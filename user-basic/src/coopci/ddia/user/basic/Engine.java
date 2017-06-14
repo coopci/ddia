@@ -17,6 +17,10 @@ import java.util.Base64;
 
 
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -29,6 +33,7 @@ import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.FindOneAndUpdateOptions;
 import com.mongodb.client.model.ReturnDocument;
@@ -222,6 +227,7 @@ public class Engine {
 		initSessidPacker();
 		connectMongo();
 		initUseridSeq();
+		initUniqueFields();
 		
 		//saveSmsVcode("34", "234");
 		//long uid1 = genNewUserid();
@@ -229,7 +235,12 @@ public class Engine {
 		
 		return;
 	}
-	
+	public void initUniqueFields() {
+		this.uniqueFields = new HashSet<String>();
+		uniqueFields.add("phone");
+		uniqueFields.add("nickname");
+		
+	}
 	public void saveSmsVcode(String vcode, String phone) {
 		MongoClient client = this.getMongoClient();
 		
@@ -407,4 +418,84 @@ public class Engine {
 		
 		return ret;
 	}
+	
+	
+	Set<String> uniqueFields;
+	// 根据 fieldname指定的字段名和 fieldvalue 指定的字段值  找到对应的用户信息。
+	// fields是要获取的字段。
+	public Result lookupUserinfoByUniqueField(String fieldname, String fieldvalue, Set<String> fields) {
+		UserInfosResult result = new UserInfosResult();
+		
+		if (!uniqueFields.contains(fieldname)) {
+			result.code = 400;
+			result.msg = "Specified field is not uniqu.";
+			return result;
+		}
+		
+		
+		MongoClient client = this.getMongoClient();
+		MongoDatabase db = client.getDatabase(this.mongodbDBName);
+		MongoCollection<Document> collection = db.getCollection(this.mongodbDBCollUserInfo);
+		Document filter = new Document();
+		filter.append(fieldname, fieldvalue);
+		FindIterable<Document> iter = collection.find(filter);
+		MongoCursor<Document> cur = iter.iterator();
+		if (!cur.hasNext()) {
+			result.code = 404;
+			result.msg = "Could not find such user.";
+			return result;
+		}
+		Document first = cur.next();
+		
+		if (cur.hasNext()) {
+			result.code = 400;
+			result.msg = "More than 1 result.";
+			return result;
+		}
+		
+		long uid = first.getLong("_id");
+		UserInfo ui = result.addEmpty(uid);
+		for (String f : fields) {
+			if (first.containsKey(f)) {
+				Object v = first.get(f);
+				ui.put(f,  v);
+			}
+		}
+		return result;
+	}
+	
+	
+	
+	// upsert : false
+	void updateMongoDocumentById(String dbname, String collname, Document data, long id) {
+		MongoClient client = this.getMongoClient();
+		MongoDatabase db = client.getDatabase(dbname);
+		MongoCollection<Document> collection = db.getCollection(collname);
+		
+		
+		
+		Document filter = new Document();
+		filter.append("_id", id);
+		
+		Document update = new Document();
+		update.append("$set", data);
+		UpdateOptions opt = new UpdateOptions();
+		opt.upsert(false);
+		
+		collection.updateOne(filter, update, opt);
+		
+		
+		return;
+	}
+		
+		
+		
+	public Result setUserinfo(long uid, HashMap<String, Object> info) {
+		UserInfosResult result = new UserInfosResult();
+		Document data = new Document(info);
+		this.updateMongoDocumentById(this.mongodbDBName, this.mongodbDBCollUserInfo, data, uid);
+		
+		return result;
+	}
+	
 }
