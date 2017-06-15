@@ -428,7 +428,7 @@ public class Engine {
 		
 		if (!uniqueFields.contains(fieldname)) {
 			result.code = 400;
-			result.msg = "Specified field is not uniqu.";
+			result.msg = "Specified field is not unique. fieldname: " + fieldname;
 			return result;
 		}
 		

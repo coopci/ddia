@@ -1,7 +1,4 @@
-package coopci.ddia.user.basic.handlers;
-
-import java.util.HashSet;
-import java.util.Set;
+package coopci.ddia.gateway.handlers;
 
 import org.glassfish.grizzly.http.Method;
 import org.glassfish.grizzly.http.server.HttpHandler;
@@ -9,11 +6,11 @@ import org.glassfish.grizzly.http.server.Request;
 import org.glassfish.grizzly.http.server.Response;
 import org.glassfish.grizzly.http.util.HttpStatus;
 
-import coopci.ddia.GrizzlyUtils;
 import coopci.ddia.Result;
-import coopci.ddia.user.basic.Engine;
+import coopci.ddia.gateway.Engine;
+import coopci.ddia.GrizzlyUtils;
 
-public class LookupUserinfoHandler extends HttpHandler {
+public class FollowHandler extends HttpHandler {
 	public Engine getEngine() {
 		return engine;
 	}
@@ -23,24 +20,16 @@ public class LookupUserinfoHandler extends HttpHandler {
 	Engine engine;
 	public void service(Request request, Response response) throws Exception {
 		Method method = request.getMethod();
-		if (!method.getMethodString().equals("GET")) {
+		if (!method.getMethodString().equals("POST")) {
 			response.setStatus(HttpStatus.METHOD_NOT_ALLOWED_405);
 			response.getWriter().write(HttpStatus.METHOD_NOT_ALLOWED_405.getReasonPhrase());
 			return;
 		}
-		String fieldname = request.getParameter("fieldname");
-		String fieldvalue = request.getParameter("fieldvalue");
-		Set<String> fields = new HashSet<String>();
-		if (request.getParameter("fields") != null) {
-			for (String f : request.getParameter("fields").split(",")) {
-				fields.add(f);
-			}
-		}
-      
-        Result res = this.engine.lookupUserinfoByUniqueField(fieldname, fieldvalue, fields);
+        String sessid = request.getParameter("sessid");
+        String followee = request.getParameter("followee"); // 昵称或者
+        Result res = this.engine.follow(sessid, followee);
         GrizzlyUtils.writeJson(response, res);
-		
 		return;
-        
     }
 }
+
