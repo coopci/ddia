@@ -95,6 +95,11 @@ public class Engine {
 	
 	Long[] longArray = new Long[0];
 	
+	
+	public ObjectMapper getObjectMapper() {
+		ObjectMapper objectMapper = new ObjectMapper();
+		return objectMapper;
+	}
 	// followee 是昵称或者 其他 用户可以从界面上看到的 能标出 跟随目标的 字符串
 	public Result follow(String sessid, String followee) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException, InterruptedException, ExecutionException {
 		Result result = new Result();
@@ -103,21 +108,17 @@ public class Engine {
 		
 		HashMap<String, String> args = new HashMap<String, String> (); 
 		args.put("fieldname", "nickname");
-		args.put("fieldvalue", "gubo");
+		args.put("fieldvalue", followee);
 		
 		byte[] response = HttpClientUtil.get(USER_BASIC_HTTP_PREFIX + "user-basic/lookup_userinfo", args);
-		ObjectMapper objectMapper = new ObjectMapper();
-		UserInfosResult userinfoResult = objectMapper.readValue(response, UserInfosResult.class);
+		UserInfosResult userinfoResult = getObjectMapper().readValue(response, UserInfosResult.class);
 		if (userinfoResult.code == 200) {
 			followeeid = userinfoResult.data.keySet().toArray(longArray)[0];
-			// followeeid = Long.parseLong(uidlist[0]);
-			
 			args = new HashMap<String, String> (); 
 			args.put("uid", Long.toString(uid));
 			args.put("followee", Long.toString(followeeid));
-			byte[] followResponse = HttpClientUtil.post(USER_RELATION_HTTP_PREFIX + "user-relation/follow", args);
-			String s = new String(followResponse);
-			result = objectMapper.readValue(followResponse, Result.class);
+			byte[] followResponse = HttpClientUtil.post(USER_RELATION_HTTP_PREFIX + "user-relation/follow", args);			
+			result = getObjectMapper().readValue(followResponse, Result.class);
 			
 		}
 		else {
