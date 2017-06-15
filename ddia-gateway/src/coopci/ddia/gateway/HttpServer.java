@@ -9,6 +9,7 @@ import org.glassfish.grizzly.threadpool.ThreadPoolConfig;
 
 import coopci.ddia.gateway.handlers.FollowHandler;
 import coopci.ddia.gateway.handlers.GetPublicUsrinfoHandler;
+import coopci.ddia.gateway.handlers.UnfollowHandler;
 
 
 
@@ -53,6 +54,11 @@ public class HttpServer {
 				followHandler,
 				"/follow");
 		
+		UnfollowHandler unfollowHandler = new UnfollowHandler();
+		unfollowHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				unfollowHandler,
+				"/unfollow");
 		
 		try {
 			server.removeListener("grizzly");

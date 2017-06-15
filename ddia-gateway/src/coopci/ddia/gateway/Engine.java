@@ -100,37 +100,67 @@ public class Engine {
 		ObjectMapper objectMapper = new ObjectMapper();
 		return objectMapper;
 	}
+	
+	
+	public long lookupUidByUniqueField(String fieldname, String fieldvalue) throws ClientProtocolException, IOException {
+		long ret = -1;
+
+		HashMap<String, String> args = new HashMap<String, String> (); 
+		args.put("fieldname", fieldname);
+		args.put("fieldvalue", fieldvalue);
+		
+		byte[] response = HttpClientUtil.get(USER_BASIC_HTTP_PREFIX + "user-basic/lookup_userinfo", args);
+		UserInfosResult userinfoResult = getObjectMapper().readValue(response, UserInfosResult.class);
+		if (userinfoResult.code == 200) {
+			ret = userinfoResult.data.keySet().toArray(longArray)[0];
+		}
+		else {
+			ret = -1;
+		}
+		return ret;
+	}
+	
+	
 	// followee 是昵称或者 其他 用户可以从界面上看到的 能标出 跟随目标的 字符串
 	public Result follow(String sessid, String followee) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException, InterruptedException, ExecutionException {
 		Result result = new Result();
 		long uid = getUidFromSessid(sessid);
 		long followeeid = -1;
 		
-		HashMap<String, String> args = new HashMap<String, String> (); 
-		args.put("fieldname", "nickname");
-		args.put("fieldvalue", followee);
+		followeeid = this.lookupUidByUniqueField("nickname", followee);
 		
-		byte[] response = HttpClientUtil.get(USER_BASIC_HTTP_PREFIX + "user-basic/lookup_userinfo", args);
-		UserInfosResult userinfoResult = getObjectMapper().readValue(response, UserInfosResult.class);
-		if (userinfoResult.code == 200) {
-			followeeid = userinfoResult.data.keySet().toArray(longArray)[0];
-			args = new HashMap<String, String> (); 
+		if (followeeid > 0 ) {
+			HashMap<String, String> args = new HashMap<String, String> (); 
 			args.put("uid", Long.toString(uid));
 			args.put("followee", Long.toString(followeeid));
 			byte[] followResponse = HttpClientUtil.post(USER_RELATION_HTTP_PREFIX + "user-relation/follow", args);			
 			result = getObjectMapper().readValue(followResponse, Result.class);
-			
+		} else {
+			result.code = 404;
+			result.msg = "Couldn't find user: " + followee;
 		}
-		else {
-			
-			return userinfoResult;
-		}
-		
-		
-		
-		
 		return result;
+	}
+	
+	// followee 是昵称或者 其他 用户可以从界面上看到的 能标出 跟随目标的 字符串
+	public Result unfollow(String sessid, String followee) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException, InterruptedException, ExecutionException {
+		Result result = new Result();
+		long uid = getUidFromSessid(sessid);
+		long followeeid = -1;
 		
+		followeeid = this.lookupUidByUniqueField("nickname", followee);
+		
+		if (followeeid > 0 ) {
+			HashMap<String, String> args = new HashMap<String, String> (); 
+			args.put("uid", Long.toString(uid));
+			args.put("followee", Long.toString(followeeid));
+			byte[] followResponse = HttpClientUtil.post(USER_RELATION_HTTP_PREFIX + "user-relation/unfollow", args);			
+			result = getObjectMapper().readValue(followResponse, Result.class);
+		} else {
+			result.code = 404;
+			result.msg = "Couldn't find user: " + followee;
+		}
+		return result;
 	}
 	
 	// 获取nickname指明的用户的公开信息。

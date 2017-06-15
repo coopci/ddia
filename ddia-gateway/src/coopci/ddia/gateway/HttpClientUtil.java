@@ -90,7 +90,7 @@ public class HttpClientUtil {
             };
             byte[] responseBody = httpclient.execute(httppost, responseHandler);
             System.out.println("----------------------------------------");
-            System.out.println(responseBody);
+            // System.out.println(responseBody);
             return responseBody;
         } finally {
             httpclient.close();
