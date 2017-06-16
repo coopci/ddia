@@ -18,5 +18,10 @@
 	<classpathentry kind="lib" path="../lib/junit.jar"/>
 	<classpathentry kind="lib" path="../lib/mongo-java-driver-3.0.2.jar"/>
 	<classpathentry kind="lib" path="../lib/taobao-sdk-java-auto_1455552377940-20160607.jar"/>
+	<classpathentry kind="lib" path="../lib/amqp-client-4.1.1.jar"/>
+		
+	<classpathentry kind="lib" path="../lib/slf4j-api-1.7.25.jar"/>
+	<classpathentry kind="lib" path="../lib/slf4j-simple-1.7.25.jar"/>
+	<classpathentry kind="lib" path="../lib/reactive-streams-1.0.0.final.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
