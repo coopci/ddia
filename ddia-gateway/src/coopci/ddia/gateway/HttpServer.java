@@ -13,6 +13,8 @@ import org.glassfish.grizzly.websockets.WebSocketEngine;
 import coopci.ddia.gateway.handlers.FollowHandler;
 import coopci.ddia.gateway.handlers.GetPublicUsrinfoHandler;
 import coopci.ddia.gateway.handlers.UnfollowHandler;
+import coopci.ddia.gateway.websocket.BroadcastApplication;
+import coopci.ddia.gateway.websocket.GatewayApplication;
 
 
 
@@ -90,7 +92,7 @@ public class HttpServer {
 			GatewayApplication gatewayApplication = new GatewayApplication();
 			gatewayApplication.engine = engine;
 			WebSocketEngine.getEngine().register("", "/gateway", gatewayApplication);
-			
+			engine.getSubscriber().setDownPublisher(gatewayApplication);
 			
 		    server.start();
 		    System.out.println("Press any key to stop the server...");

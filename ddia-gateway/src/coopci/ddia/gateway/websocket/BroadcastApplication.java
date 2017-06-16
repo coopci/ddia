@@ -1,4 +1,4 @@
-package coopci.ddia.gateway;
+package coopci.ddia.gateway.websocket;
 
 import java.io.IOException;
 import java.util.List;

@@ -10,4 +10,6 @@ public interface ISubscriber {
 	void subscribe(long uid)  throws Exception;
 	void onMessageReceived(long uid, byte[] msg);
 	void onBroadcastReceived(byte[] msg);
+	void setDownPublisher(IDownPublisher dp);
+	IDownPublisher getDownPublisher();
 }

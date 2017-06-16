@@ -1,4 +1,4 @@
-package coopci.ddia.gateway;
+package coopci.ddia.gateway.websocket;
 
 import org.glassfish.grizzly.http.HttpRequestPacket;
 import org.glassfish.grizzly.websockets.DefaultWebSocket;

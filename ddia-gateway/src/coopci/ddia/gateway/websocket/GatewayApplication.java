@@ -1,4 +1,4 @@
-package coopci.ddia.gateway;
+package coopci.ddia.gateway.websocket;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
@@ -22,10 +22,12 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import coopci.ddia.gateway.Engine;
 import coopci.ddia.requests.Request;
 import coopci.ddia.results.UserInfosResult;
+import coopci.ddia.notify.IDownPublisher;
 
-public class GatewayApplication extends WebSocketApplication {
+public class GatewayApplication extends WebSocketApplication implements IDownPublisher {
 
 
     public GatewayApplication() {
@@ -46,23 +48,9 @@ public class GatewayApplication extends WebSocketApplication {
                                   WebSocketListener... listeners) {
         final DDIAWebSocket ws = new DDIAWebSocket(handler,
                 requestPacket, listeners);
-
         return ws;
     }
-    
-//    
-//    @Override
-//    public WebSocket createSocket(ProtocolHandler handler,
-//                                  HttpRequestPacket requestPacket,
-//                                  WebSocketListener... listeners) {
-//        final DefaultWebSocket ws =
-//                (DefaultWebSocket) super.createSocket(handler,
-//                requestPacket, listeners);
-//
-//        // ws.setBroadcaster(broadcaster);
-//        return ws;
-//    }
-    
+
     
     @Override
     public List<String> getSupportedProtocols(List<String> subProtocol) {
@@ -76,7 +64,7 @@ public class GatewayApplication extends WebSocketApplication {
 		return objectMapper;
 	}
 	
-	Engine engine = null;
+	public Engine engine = null;
 	public void onRequest(DDIAWebSocket socket, Request request) {
 		if (request.cmd.equals(Request.REQUEST_CMD_LOGIN)) {
 			String sessid = request.args.get(Request.REQUEST_ARGNAME_SESSID);
@@ -113,6 +101,9 @@ public class GatewayApplication extends WebSocketApplication {
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 		}
@@ -127,10 +118,41 @@ public class GatewayApplication extends WebSocketApplication {
 	public void notifyLogin(long uid) {
 		// TODO 向系统的消息总线通知用户登录事件，以便各个微服务能够监听到。
 	}
-	public void subscribe(long uid, WebSocket socket) {
-		// TODO 调用 this.engine.getSubscriber.subscribe(uid);
+	public void subscribe(long uid, WebSocket socket) throws Exception {
+		// TODO 调用 this.engine.getSubscriber().subscribe(uid);
+		if (this.engine == null)
+			return;
 		
+		
+		
+		if (this.engine.getSubscriber() == null)
+			return;
+		
+		this.engine.getSubscriber().subscribe(uid);
 	}
+	
+	
+	@Override
+	public void sendToUid(long uid, String msg) {
+		for (WebSocket ws: this.getWebSockets()) {
+			DDIAWebSocket ddiaws = (DDIAWebSocket)ws;
+			if (ddiaws.getUid() == uid) {
+				ddiaws.send(msg);
+			}
+		}
+	}
+	
+	@Override
+	public void broadcast(String msg) {
+		if (this.getWebSockets().isEmpty())
+			return;
+		WebSocket ws = this.getWebSockets().iterator().next();
+		DDIAWebSocket ddiaws = (DDIAWebSocket)ws;
+		ddiaws.broadcast(this.getWebSockets(), msg);
+	}
+	
+	
+	// 这个是来自客户端的消息。
     @Override
     public void onMessage(WebSocket socket, String data) {
         

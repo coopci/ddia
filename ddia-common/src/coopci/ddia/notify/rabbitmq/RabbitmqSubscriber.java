@@ -6,6 +6,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.TimeoutException;
 
+import coopci.ddia.notify.IDownPublisher;
 import coopci.ddia.notify.ISubscriber;
 import coopci.ddia.notify.ISubscriberConf;
 
@@ -85,6 +86,10 @@ public class RabbitmqSubscriber implements ISubscriber {
 		sb.append(new String(msg));
 		sb.append("\")");
 		System.out.println(sb.toString());
+		
+		if (this.getDownPublisher()!=null) {
+			this.getDownPublisher().sendToUid(uid, new String(msg));
+		}
 	}
 
 	@Override
@@ -94,14 +99,29 @@ public class RabbitmqSubscriber implements ISubscriber {
 		sb.append(new String(msg));
 		sb.append("\")");
 		System.out.println(sb.toString());
+		
+		if (this.getDownPublisher()!=null) {
+			this.getDownPublisher().broadcast(new String(msg));
+		}
 	}
 
 	
+
+	IDownPublisher downpublisher = null;
+	@Override
+	public void setDownPublisher(IDownPublisher dp) {
+		downpublisher = dp;
+	}
+
+	@Override
+	public IDownPublisher getDownPublisher() {
+		return downpublisher;
+	}
+	
+
 	public static void main(String[] args) throws KeyManagementException, NoSuchAlgorithmException, URISyntaxException, IOException, TimeoutException {
 		RabbitmqSubscriber sub = new RabbitmqSubscriber();
 		sub.start();
-		
-		
 		return;
 	}
 }

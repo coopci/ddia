@@ -43,6 +43,8 @@ import com.mongodb.client.result.UpdateResult;
 
 import coopci.ddia.Result;
 import coopci.ddia.SessionId;
+import coopci.ddia.notify.ISubscriber;
+import coopci.ddia.notify.rabbitmq.RabbitmqSubscriber;
 import coopci.ddia.results.ListResult;
 import coopci.ddia.results.RentingStatusResult;
 import coopci.ddia.results.UserInfo;
@@ -63,9 +65,24 @@ public class Engine {
 		httpclientconfigbuilder.setRequestTimeout(30000);
 		
 	}
+	
+	ISubscriber subscriber = null;
+
+	public ISubscriber getSubscriber(){
+		return this.subscriber;
+	}
+	
+	public void initSubscriber() throws Exception {
+		
+		subscriber = new RabbitmqSubscriber();
+		subscriber.start();
+		
+		
+	}
 	public void init() throws Exception {
 		initSessidPacker();
 		initHttpClientConfigBuilder();
+		initSubscriber();
 		return;
 	}
 	String deskeyPath = "../triple-des.key";
@@ -74,7 +91,7 @@ public class Engine {
 		sessidPacker.initDes(deskeyPath);
 	}
 	
-	long getUidFromSessid(String sessid) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException {
+	public long getUidFromSessid(String sessid) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException {
 		// 也可能改成去user-basic问，并cache住。
 		
 		if (sessid.startsWith("test-sess-")) {
@@ -86,6 +103,7 @@ public class Engine {
 		return sessionid.uid;
 		
 	}
+	
 	
 	
 	
