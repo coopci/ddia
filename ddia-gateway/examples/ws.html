@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en-US" dir="ltr" class="no-js" data-ffo-opensans="false" data-ffo-zillaslab="false" data-ffo-zillahighlight="false">
+<head>
+	<script type="application/javascript" charset="utf-8">
+		console.log("hello");
+		var exampleSocket = new WebSocket("ws://localhost:8887/gateway", "protocolOne");
+		exampleSocket.onopen = function (event) {
+			var args = {sessid:"test-sess-6"};
+			var loginReq = {cmd:"login", 
+				args:args};
+			var msg = JSON.stringify(loginReq);
+			exampleSocket.send(msg); 
+		};
+		exampleSocket.onmessage = function (event) {
+			console.log(event.data);
+		}
+	</script>
+
+</head>
+
+</html>

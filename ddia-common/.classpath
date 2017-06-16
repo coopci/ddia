@@ -8,7 +8,11 @@
 	<classpathentry kind="lib" path="../lib/commons-net-3.3.jar"/>
 	<classpathentry kind="lib" path="../lib/commons-pool-1.6.jar"/>
 	<classpathentry kind="lib" path="../lib/commons-pool2-2.4.2.jar"/>
-	<classpathentry kind="lib" path="../lib/grizzly-http-all-2.3.26.jar"/>
+	<classpathentry kind="lib" path="../lib/grizzly-http-all-2.3.26.jar" sourcepath="D:/src/ddia/lib/grizzly-http-all-2.3.26-sources.jar">
+		<attributes>
+			<attribute name="source_encoding" value="UTF-8"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="../lib/jackson.jar"/>
 	<classpathentry kind="lib" path="../lib/jettison-1.2.jar"/>
 	<classpathentry kind="lib" path="../lib/junit.jar"/>

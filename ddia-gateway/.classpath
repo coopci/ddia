@@ -23,7 +23,7 @@
 	<classpathentry kind="lib" path="../lib/slf4j-api-1.7.25.jar"/>
 	<classpathentry kind="lib" path="../lib/slf4j-simple-1.7.25.jar"/>
 	<classpathentry kind="lib" path="../lib/reactive-streams-1.0.0.final.jar"/>
-	
+	<classpathentry kind="lib" path="../lib/amqp-client-4.1.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ddia-common"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

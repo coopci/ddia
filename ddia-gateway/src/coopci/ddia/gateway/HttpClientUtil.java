@@ -54,7 +54,7 @@ public class HttpClientUtil {
             };
             byte[] responseBody = httpclient.execute(httpget, responseHandler);
             System.out.println("----------------------------------------");
-            System.out.println(responseBody);
+            // System.out.println(responseBody);
             return responseBody;
         } finally {
             httpclient.close();

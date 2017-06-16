@@ -6,6 +6,9 @@ import org.glassfish.grizzly.http.server.NetworkListener;
 import org.glassfish.grizzly.http.server.Request;
 import org.glassfish.grizzly.http.server.Response;
 import org.glassfish.grizzly.threadpool.ThreadPoolConfig;
+import org.glassfish.grizzly.websockets.OptimizedBroadcaster;
+import org.glassfish.grizzly.websockets.WebSocketAddOn;
+import org.glassfish.grizzly.websockets.WebSocketEngine;
 
 import coopci.ddia.gateway.handlers.FollowHandler;
 import coopci.ddia.gateway.handlers.GetPublicUsrinfoHandler;
@@ -31,6 +34,8 @@ public class HttpServer {
 			new HttpHandler() {
 	    	// http://127.0.0.1:8080/time
 	        public void service(Request request, Response response) throws Exception {
+	        	String contextpath = request.getContextPath();
+	        	String pathinfo = request.getPathInfo();
 	            String content = "ddia/gateway";
 	            response.setContentType("text/html;charset=utf-8");
 	            response.getWriter().write(content);
@@ -60,9 +65,13 @@ public class HttpServer {
 				unfollowHandler,
 				"/unfollow");
 		
+		
+		
 		try {
 			server.removeListener("grizzly");
 			NetworkListener nl = new NetworkListener("ddia-gateway", "0.0.0.0", listenPort);
+			
+			
 			ThreadPoolConfig threadPoolConfig = ThreadPoolConfig
 			        .defaultConfig();
 			        //.setCorePoolSize(16)
@@ -70,6 +79,19 @@ public class HttpServer {
 			nl.getTransport().setWorkerThreadPoolConfig(threadPoolConfig);
 			
 			server.addListener(nl);
+			
+
+			final WebSocketAddOn addon = new WebSocketAddOn();
+			for (NetworkListener listener : server.getListeners()) {
+			    listener.registerAddOn(addon);
+			}
+			WebSocketEngine.getEngine().register("", "/broadcast", new BroadcastApplication(new OptimizedBroadcaster()));
+			
+			GatewayApplication gatewayApplication = new GatewayApplication();
+			gatewayApplication.engine = engine;
+			WebSocketEngine.getEngine().register("", "/gateway", gatewayApplication);
+			
+			
 		    server.start();
 		    System.out.println("Press any key to stop the server...");
 		    System.in.read();
