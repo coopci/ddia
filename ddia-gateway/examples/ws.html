@@ -5,7 +5,7 @@
 		console.log("hello");
 		var exampleSocket = new WebSocket("ws://localhost:8887/gateway", "protocolOne");
 		exampleSocket.onopen = function (event) {
-			var args = {sessid:"test-sess-6"};
+			var args = {sessid:"test-sess-7"};
 			var loginReq = {cmd:"login", 
 				args:args};
 			var msg = JSON.stringify(loginReq);
@@ -13,6 +13,10 @@
 		};
 		exampleSocket.onmessage = function (event) {
 			console.log(event.data);
+		}
+		
+		exampleSocket.onclose = function (event) {
+			console.log("onclose");
 		}
 	</script>
 

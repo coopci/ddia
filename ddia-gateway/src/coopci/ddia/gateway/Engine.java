@@ -43,7 +43,9 @@ import com.mongodb.client.result.UpdateResult;
 
 import coopci.ddia.Result;
 import coopci.ddia.SessionId;
+import coopci.ddia.notify.IPublisher;
 import coopci.ddia.notify.ISubscriber;
+import coopci.ddia.notify.rabbitmq.RabbitmqPublisher;
 import coopci.ddia.notify.rabbitmq.RabbitmqSubscriber;
 import coopci.ddia.results.ListResult;
 import coopci.ddia.results.RentingStatusResult;
@@ -79,10 +81,22 @@ public class Engine {
 		
 		
 	}
+	IPublisher publisher = null;
+
+	public IPublisher getPublisher(){
+		return this.publisher;
+	}
+	
+	
+	public void initPublisher() throws Exception {
+		publisher = new RabbitmqPublisher();
+		publisher.start();
+	}
 	public void init() throws Exception {
 		initSessidPacker();
 		initHttpClientConfigBuilder();
 		initSubscriber();
+		initPublisher();
 		return;
 	}
 	String deskeyPath = "../triple-des.key";
@@ -177,6 +191,28 @@ public class Engine {
 		} else {
 			result.code = 404;
 			result.msg = "Couldn't find user: " + followee;
+		}
+		return result;
+	}
+	
+	
+	public Result sendmsg(String sessid, String sendto, String msg) throws Exception {
+		Result result = new Result();
+		long uid = getUidFromSessid(sessid);
+		long sentouid = -1;
+		
+		sentouid = this.lookupUidByUniqueField("nickname", sendto);
+		
+		if (sentouid > 0 ) {
+			if (this.getPublisher() != null && this.getPublisher().isOpen()) {
+				this.getPublisher().publish(sentouid, msg);	
+			} else {
+				result.code = 503;
+				result.msg = "Messges are temporarily not available.";
+			}
+		} else {
+			result.code = 404;
+			result.msg = "Couldn't find user: " + sendto;
 		}
 		return result;
 	}

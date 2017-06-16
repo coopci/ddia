@@ -12,6 +12,7 @@ import org.glassfish.grizzly.websockets.WebSocketEngine;
 
 import coopci.ddia.gateway.handlers.FollowHandler;
 import coopci.ddia.gateway.handlers.GetPublicUsrinfoHandler;
+import coopci.ddia.gateway.handlers.SendMsgHandler;
 import coopci.ddia.gateway.handlers.UnfollowHandler;
 import coopci.ddia.gateway.websocket.BroadcastApplication;
 import coopci.ddia.gateway.websocket.GatewayApplication;
@@ -68,6 +69,11 @@ public class HttpServer {
 				"/unfollow");
 		
 		
+		SendMsgHandler sendMsgHandler = new SendMsgHandler();
+		sendMsgHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				sendMsgHandler,
+				"/sendmsg");
 		
 		try {
 			server.removeListener("grizzly");
