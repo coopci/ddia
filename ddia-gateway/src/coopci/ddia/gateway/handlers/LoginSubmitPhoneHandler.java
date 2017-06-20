@@ -7,17 +7,17 @@ import org.glassfish.grizzly.http.server.Response;
 import org.glassfish.grizzly.http.util.HttpStatus;
 
 import coopci.ddia.Result;
-import coopci.ddia.gateway.DemoEngine;
+import coopci.ddia.gateway.Engine;
 import coopci.ddia.GrizzlyUtils;
 
-public class UnfollowHandler extends HttpHandler {
-	public DemoEngine getEngine() {
+public class LoginSubmitPhoneHandler extends HttpHandler {
+	public Engine getEngine() {
 		return engine;
 	}
-	public void setEngine(DemoEngine engine) {
+	public void setEngine(Engine engine) {
 		this.engine = engine;
 	}
-	DemoEngine engine;
+	Engine engine;
 	public void service(Request request, Response response) throws Exception {
 		Method method = request.getMethod();
 		if (!method.getMethodString().equals("POST")) {
@@ -25,11 +25,12 @@ public class UnfollowHandler extends HttpHandler {
 			response.getWriter().write(HttpStatus.METHOD_NOT_ALLOWED_405.getReasonPhrase());
 			return;
 		}
-        String sessid = request.getParameter("sessid");
-        String followee = request.getParameter("followee"); // 昵称或者
-        Result res = this.engine.unfollow(sessid, followee);
+        String phone = request.getParameter("phone");
+        String sessid = request.getParameter("session_id");
+        Result res = this.engine.loginSubmitPhone(sessid, phone);
         GrizzlyUtils.writeJson(response, res);
+		
 		return;
+        
     }
 }
-

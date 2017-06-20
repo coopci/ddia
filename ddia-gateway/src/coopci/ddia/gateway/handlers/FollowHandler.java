@@ -7,17 +7,17 @@ import org.glassfish.grizzly.http.server.Response;
 import org.glassfish.grizzly.http.util.HttpStatus;
 
 import coopci.ddia.Result;
-import coopci.ddia.gateway.Engine;
+import coopci.ddia.gateway.DemoEngine;
 import coopci.ddia.GrizzlyUtils;
 
 public class FollowHandler extends HttpHandler {
-	public Engine getEngine() {
+	public DemoEngine getEngine() {
 		return engine;
 	}
-	public void setEngine(Engine engine) {
+	public void setEngine(DemoEngine engine) {
 		this.engine = engine;
 	}
-	Engine engine;
+	DemoEngine engine;
 	public void service(Request request, Response response) throws Exception {
 		Method method = request.getMethod();
 		if (!method.getMethodString().equals("POST")) {

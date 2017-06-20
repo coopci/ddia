@@ -384,6 +384,7 @@ public class Engine {
 		String sessidstr = sessidPacker.pack(sessid);
 		res.sessid = sessidstr;
 		this.removeVcode(phone);
+		res.uid = uid;
 		return res;
 	}
 	

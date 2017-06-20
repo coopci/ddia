@@ -1,0 +1,221 @@
+{
+	"variables": [],
+	"info": {
+		"name": "ddia-gateway",
+		"_postman_id": "3bad9d6c-d85d-f248-84ca-e6eaae92a476",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "login-with-phone",
+			"description": "",
+			"item": [
+				{
+					"name": "创建一个新会话(获取session_id)。",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code == 200;\r",
+									"var jsonData = JSON.parse(responseBody);\r",
+									"var session_id = jsonData.data.session_id;\r",
+									"tests[\"session_id is not empty\"] = session_id.length > 0;\r",
+									"postman.setEnvironmentVariable(\"session_id\", jsonData.data.session_id);\r",
+									"console.log(jsonData.data.session_id);\r",
+									"tests[responseBody] = true;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "http://localhost:8887/start_new_session",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "提交手机号(获取短信验证码)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code == 200;\r",
+									"var jsonData = JSON.parse(responseBody);\r",
+									"tests[\"msg is OK\"] = jsonData.msg == \"OK\";\r",
+									"console.log(\"ggg\");\r",
+									"tests[responseBody] = true;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "http://localhost:8887/login/submit_phone",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "phone",
+									"value": "13333333333",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "session_id",
+									"value": "fgugyu",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "按昵称跟随",
+			"request": {
+				"url": "http://localhost:8887/follow",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "sessid",
+							"value": "test-sess-6",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "followee",
+							"value": "gubo",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "按昵称取消跟随",
+			"request": {
+				"url": "http://localhost:8887/unfollow",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "sessid",
+							"value": "test-sess-6",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "followee",
+							"value": "gubo",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "发消息给指定用户",
+			"request": {
+				"url": "http://localhost:8887/sendmsg",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "sessid",
+							"value": "test-sess-6",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "sendto",
+							"value": "gubo",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "msg",
+							"value": "from-postman",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "创建一个新会话(获取session_id)。",
+			"request": {
+				"url": "http://localhost:8887/start_new_session",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

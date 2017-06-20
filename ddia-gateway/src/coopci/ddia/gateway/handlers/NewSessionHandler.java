@@ -8,9 +8,10 @@ import org.glassfish.grizzly.http.util.HttpStatus;
 
 import coopci.ddia.Result;
 import coopci.ddia.gateway.DemoEngine;
+import coopci.ddia.results.DictResult;
 import coopci.ddia.GrizzlyUtils;
 
-public class UnfollowHandler extends HttpHandler {
+public class NewSessionHandler extends HttpHandler {
 	public DemoEngine getEngine() {
 		return engine;
 	}
@@ -25,9 +26,7 @@ public class UnfollowHandler extends HttpHandler {
 			response.getWriter().write(HttpStatus.METHOD_NOT_ALLOWED_405.getReasonPhrase());
 			return;
 		}
-        String sessid = request.getParameter("sessid");
-        String followee = request.getParameter("followee"); // 昵称或者
-        Result res = this.engine.unfollow(sessid, followee);
+		DictResult res = this.engine.startNewSession();
         GrizzlyUtils.writeJson(response, res);
 		return;
     }

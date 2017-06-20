@@ -4,11 +4,9 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -22,40 +20,24 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.asynchttpclient.AsyncHttpClient;
-import org.asynchttpclient.AsyncHttpClientConfig;
-import org.asynchttpclient.DefaultAsyncHttpClient;
 import org.asynchttpclient.DefaultAsyncHttpClientConfig;
-import org.asynchttpclient.Response;
-import org.bson.Document;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
-import com.mongodb.MongoClientURI;
-import com.mongodb.MongoWriteException;
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.UpdateOptions;
-import com.mongodb.client.result.UpdateResult;
 
+import coopci.ddia.LoginResult;
 import coopci.ddia.Result;
 import coopci.ddia.SessionId;
 import coopci.ddia.notify.IPublisher;
 import coopci.ddia.notify.ISubscriber;
 import coopci.ddia.notify.rabbitmq.RabbitmqPublisher;
 import coopci.ddia.notify.rabbitmq.RabbitmqSubscriber;
-import coopci.ddia.results.ListResult;
-import coopci.ddia.results.RentingStatusResult;
-import coopci.ddia.results.UserInfo;
+import coopci.ddia.results.DictResult;
 import coopci.ddia.results.UserInfosResult;
 import coopci.ddia.util.SessidPacker;
+import coopci.ddia.util.Vcode;
 
 public class Engine {
-	
-	
+
 	DefaultAsyncHttpClientConfig.Builder httpclientconfigbuilder = new DefaultAsyncHttpClientConfig.Builder();
     
 	public void initHttpClientConfigBuilder() {
@@ -106,16 +88,16 @@ public class Engine {
 	}
 	
 	public long getUidFromSessid(String sessid) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException {
-		// 也可能改成去user-basic问，并cache住。
 		
 		if (sessid.startsWith("test-sess-")) {
 			return Long.parseLong(sessid.replace("test-sess-", ""));
 		}
 		
-		
+		if (this.cachedSessionUid.containsKey(sessid)) {
+			return this.cachedSessionUid.get(sessid);
+		}
 		SessionId sessionid = sessidPacker.unpack(sessid);
 		return sessionid.uid;
-		
 	}
 	
 	
@@ -124,6 +106,21 @@ public class Engine {
 	
 	public static String USER_BASIC_HTTP_PREFIX = "http://localhost:8888/";
 	public static String USER_RELATION_HTTP_PREFIX = "http://localhost:8889/";
+	
+	
+	public static String MICROSERVICE_NAME_USER_BASIC = "user-basic";
+	public static String MICROSERVICE_NAME_USER_RELATION = "user-relation";
+	
+	String getMicroserviceHttpPrefix(String serviceName, String partKey) {
+		String ret = "";
+		if (MICROSERVICE_NAME_USER_BASIC.equals(serviceName)) {
+			return USER_BASIC_HTTP_PREFIX;
+		} else if (MICROSERVICE_NAME_USER_BASIC.equals(serviceName)) {
+			return USER_RELATION_HTTP_PREFIX;
+		}
+		
+		return ret;
+	}
 	
 	Long[] longArray = new Long[0];
 	
@@ -153,68 +150,58 @@ public class Engine {
 	}
 	
 	
-	// followee 是昵称或者 其他 用户可以从界面上看到的 能标出 跟随目标的 字符串
-	public Result follow(String sessid, String followee) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException, InterruptedException, ExecutionException {
-		Result result = new Result();
-		long uid = getUidFromSessid(sessid);
-		long followeeid = -1;
-		
-		followeeid = this.lookupUidByUniqueField("nickname", followee);
-		
-		if (followeeid > 0 ) {
-			HashMap<String, String> args = new HashMap<String, String> (); 
-			args.put("uid", Long.toString(uid));
-			args.put("followee", Long.toString(followeeid));
-			byte[] followResponse = HttpClientUtil.post(USER_RELATION_HTTP_PREFIX + "user-relation/follow", args);			
-			result = getObjectMapper().readValue(followResponse, Result.class);
-		} else {
-			result.code = 404;
-			result.msg = "Couldn't find user: " + followee;
-		}
-		return result;
-	}
-	
-	// followee 是昵称或者 其他 用户可以从界面上看到的 能标出 跟随目标的 字符串
-	public Result unfollow(String sessid, String followee) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException, InterruptedException, ExecutionException {
-		Result result = new Result();
-		long uid = getUidFromSessid(sessid);
-		long followeeid = -1;
-		
-		followeeid = this.lookupUidByUniqueField("nickname", followee);
-		
-		if (followeeid > 0 ) {
-			HashMap<String, String> args = new HashMap<String, String> (); 
-			args.put("uid", Long.toString(uid));
-			args.put("followee", Long.toString(followeeid));
-			byte[] followResponse = HttpClientUtil.post(USER_RELATION_HTTP_PREFIX + "user-relation/unfollow", args);			
-			result = getObjectMapper().readValue(followResponse, Result.class);
-		} else {
-			result.code = 404;
-			result.msg = "Couldn't find user: " + followee;
-		}
+	/**
+	 *  创建一个新的sessid并返回给客户端。 
+	 * */
+	public DictResult startNewSession() {
+		DictResult result = new DictResult();
+		String newSessid=  UUID.randomUUID().toString();
+		result.put("session_id", newSessid);
 		return result;
 	}
 	
 	
-	public Result sendmsg(String sessid, String sendto, String msg) throws Exception {
-		Result result = new Result();
-		long uid = getUidFromSessid(sessid);
-		long sentouid = -1;
+
+	/**
+	 *  把请求转发给user-basic 去获取手机验证码。
+	 *  如果需要captcha之类的方式防御攻击，就可以做在这个方法调用captcha微服务里。 
+	 * @throws IOException 
+	 * @throws ClientProtocolException 
+	 * */
+	public Result loginSubmitPhone(String sessid, String phone) throws ClientProtocolException, IOException {
 		
-		sentouid = this.lookupUidByUniqueField("nickname", sendto);
-		
-		if (sentouid > 0 ) {
-			if (this.getPublisher() != null && this.getPublisher().isOpen()) {
-				this.getPublisher().publish(sentouid, msg);	
-			} else {
-				result.code = 503;
-				result.msg = "Messges are temporarily not available.";
-			}
-		} else {
-			result.code = 404;
-			result.msg = "Couldn't find user: " + sendto;
+		HashMap<String, String> args = new HashMap<String, String> (); 
+		args.put("phone", phone);
+		String httpPrefix = this.getMicroserviceHttpPrefix(MICROSERVICE_NAME_USER_BASIC, phone);		
+		byte[] response = HttpClientUtil.post(httpPrefix + "login/submit_phone", args);
+		Result res = getObjectMapper().readValue(response, Result.class);
+		return res;
+	}
+	
+	
+	HashMap<String, Long> cachedSessionUid = new HashMap<String, Long>(); 
+	public void saveSessionUid(String sessid, long uid) {
+		cachedSessionUid.put(sessid, uid);
+		return;
+	}
+	/**
+	 *  把请求转发给user-basic 去验证。
+	 *  @param sessid 由 startNewSession 生成的sessid。
+	 *  
+	 * */
+	public LoginResult loginSubmitVcode(String sessid, String phone, String vcode) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException {
+		LoginResult res = new LoginResult();
+		// TODO 去user-basic 验证，如果验证成功， 则把sessid和uid对应起来。
+		HashMap<String, String> args = new HashMap<String, String> (); 
+		args.put("phone", phone);
+		args.put("vcode", vcode);
+		String httpPrefix = this.getMicroserviceHttpPrefix(MICROSERVICE_NAME_USER_BASIC, phone);		
+		byte[] response = HttpClientUtil.post(httpPrefix + "login/submit_vcode", args);
+		res = getObjectMapper().readValue(response, LoginResult.class);
+		if (res.code == Result.CODE_OK && res.uid > 0) {
+			this.saveSessionUid(sessid, res.uid);
 		}
-		return result;
+		return res;
 	}
 	
 	// 获取nickname指明的用户的公开信息。
@@ -227,7 +214,9 @@ public class Engine {
 		args.put("fieldname", "nickname");
 		args.put("fieldvalue", "gubo");
 		
-		byte[] response = HttpClientUtil.get(USER_BASIC_HTTP_PREFIX + "user-basic/lookup_userinfo", args);
+		String httpPrefix = this.getMicroserviceHttpPrefix(MICROSERVICE_NAME_USER_BASIC, nickname);		
+		byte[] response = HttpClientUtil.get(httpPrefix + "user-basic/lookup_userinfo", args);
+		
 		// UserInfosResult.
 		ObjectMapper objectMapper = new ObjectMapper();
 		UserInfosResult result = objectMapper.readValue(response, UserInfosResult.class);
@@ -273,7 +262,6 @@ public class Engine {
 		Engine engine = new Engine();
 		engine.init();
 		// engine.f();
-		engine.follow("", "");
+		// engine.follow("", "");
 	}
-	
 }

@@ -12,6 +12,9 @@ import org.glassfish.grizzly.websockets.WebSocketEngine;
 
 import coopci.ddia.gateway.handlers.FollowHandler;
 import coopci.ddia.gateway.handlers.GetPublicUsrinfoHandler;
+import coopci.ddia.gateway.handlers.LoginSubmitPhoneHandler;
+import coopci.ddia.gateway.handlers.LoginSubmitVcodeHandler;
+import coopci.ddia.gateway.handlers.NewSessionHandler;
 import coopci.ddia.gateway.handlers.SendMsgHandler;
 import coopci.ddia.gateway.handlers.UnfollowHandler;
 import coopci.ddia.gateway.websocket.BroadcastApplication;
@@ -23,7 +26,7 @@ public class HttpServer {
 	
 	public static int listenPort = 8887;
 	public static void main(String[] argv) throws Exception {
-		Engine engine = new Engine();
+		DemoEngine engine = new DemoEngine();
 		engine.init();
 		
 		final org.glassfish.grizzly.http.server.HttpServer server = new org.glassfish.grizzly.http.server.HttpServer();
@@ -74,6 +77,25 @@ public class HttpServer {
 		server.getServerConfiguration().addHttpHandler(
 				sendMsgHandler,
 				"/sendmsg");
+		
+		NewSessionHandler newSessionHandler = new NewSessionHandler();
+		newSessionHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				newSessionHandler,
+				"/start_new_session");
+		
+		
+		LoginSubmitPhoneHandler loginSubmitPhoneHandler = new LoginSubmitPhoneHandler();
+		loginSubmitPhoneHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				loginSubmitPhoneHandler,
+				"/login/submit_phone");
+		
+		LoginSubmitVcodeHandler loginSubmitVcodeHandler = new LoginSubmitVcodeHandler();
+		loginSubmitVcodeHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				loginSubmitVcodeHandler,
+				"/login/submit_vcode");
 		
 		try {
 			server.removeListener("grizzly");
