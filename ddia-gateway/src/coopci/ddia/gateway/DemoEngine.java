@@ -67,7 +67,7 @@ public class DemoEngine extends Engine {
 			HashMap<String, String> args = new HashMap<String, String> (); 
 			args.put("uid", Long.toString(uid));
 			args.put("followee", Long.toString(followeeid));
-			String httpPrefix = this.getMicroserviceHttpPrefix(MICROSERVICE_NAME_USER_RELATION, sessid);
+			String httpPrefix = this.getMicroserviceHttpPrefix(MICROSERVICE_NAME_USER_RELATION, uid);
 			byte[] followResponse = HttpClientUtil.post(httpPrefix + "user-relation/follow", args);			
 			result = getObjectMapper().readValue(followResponse, Result.class);
 		} else {
@@ -89,7 +89,7 @@ public class DemoEngine extends Engine {
 			HashMap<String, String> args = new HashMap<String, String> (); 
 			args.put("uid", Long.toString(uid));
 			args.put("followee", Long.toString(followeeid));
-			String httpPrefix = this.getMicroserviceHttpPrefix(MICROSERVICE_NAME_USER_RELATION, sessid);
+			String httpPrefix = this.getMicroserviceHttpPrefix(MICROSERVICE_NAME_USER_RELATION, uid);
 			byte[] followResponse = HttpClientUtil.post(httpPrefix + "user-relation/unfollow", args);			
 			result = getObjectMapper().readValue(followResponse, Result.class);
 		} else {

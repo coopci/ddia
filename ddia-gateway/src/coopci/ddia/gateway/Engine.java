@@ -121,6 +121,16 @@ public class Engine {
 		
 		return ret;
 	}
+	String getMicroserviceHttpPrefix(String serviceName, long partKey) {
+		String ret = "";
+		if (MICROSERVICE_NAME_USER_BASIC.equals(serviceName)) {
+			return USER_BASIC_HTTP_PREFIX;
+		} else if (MICROSERVICE_NAME_USER_BASIC.equals(serviceName)) {
+			return USER_RELATION_HTTP_PREFIX;
+		}
+		
+		return ret;
+	}
 	
 	Long[] longArray = new Long[0];
 	
