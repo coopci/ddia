@@ -182,6 +182,7 @@ public class Engine {
 	HashMap<String, Long> cachedSessionUid = new HashMap<String, Long>(); 
 	public void saveSessionUid(String sessid, long uid) {
 		cachedSessionUid.put(sessid, uid);
+		// TODO 把这个对应关系存到共享数据里。
 		return;
 	}
 	/**
@@ -191,7 +192,6 @@ public class Engine {
 	 * */
 	public LoginResult loginSubmitVcode(String sessid, String phone, String vcode) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException {
 		LoginResult res = new LoginResult();
-		// TODO 去user-basic 验证，如果验证成功， 则把sessid和uid对应起来。
 		HashMap<String, String> args = new HashMap<String, String> (); 
 		args.put("phone", phone);
 		args.put("vcode", vcode);
@@ -201,6 +201,8 @@ public class Engine {
 		if (res.code == Result.CODE_OK && res.uid > 0) {
 			this.saveSessionUid(sessid, res.uid);
 		}
+		res.sessid = sessid;
+		
 		return res;
 	}
 	

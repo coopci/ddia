@@ -83,7 +83,60 @@
 								},
 								{
 									"key": "session_id",
-									"value": "fgugyu",
+									"value": "{{session_id}}",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "提交短信验证码",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code == 200;\r",
+									"var jsonData = JSON.parse(responseBody);\r",
+									"tests[\"msg is OK\"] = jsonData.msg == \"OK\";\r",
+									"tests[responseBody] = true;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "http://localhost:8887/login/submit_vcode",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "session_id",
+									"value": "{{session_id}}",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "phone",
+									"value": "13333333333",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "vcode",
+									"value": "111111",
 									"type": "text",
 									"enabled": true
 								}
