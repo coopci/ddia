@@ -106,7 +106,7 @@ public class Engine {
 	
 	public static String USER_BASIC_HTTP_PREFIX = "http://localhost:8888/";
 	public static String USER_RELATION_HTTP_PREFIX = "http://localhost:8889/";
-	
+	public static String VIRTUAL_ASSETS_HTTP_PREFIX = "http://localhost:8893/";
 	
 	public static String MICROSERVICE_NAME_USER_BASIC = "user-basic";
 	public static String MICROSERVICE_NAME_USER_RELATION = "user-relation";
