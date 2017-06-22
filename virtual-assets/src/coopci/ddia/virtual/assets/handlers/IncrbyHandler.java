@@ -44,7 +44,9 @@ public class IncrbyHandler extends HttpHandler {
         	}
         	
         }
-        Result res = this.engine.incrby(uid, args);
+        String appid = "";
+        String apptranxid = "";
+        Result res = this.engine.incrby(appid, apptranxid, uid, args);
         GrizzlyUtils.writeJson(response, res);
 		return;
     }
