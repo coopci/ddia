@@ -7,8 +7,8 @@ import org.glassfish.grizzly.http.server.Request;
 import org.glassfish.grizzly.http.server.Response;
 import org.glassfish.grizzly.threadpool.ThreadPoolConfig;
 
-import coopci.ddia.third.party.pay.backdoor.handlers.BackdoorCheckOrderHandler;
-import coopci.ddia.third.party.pay.backdoor.handlers.BackdoorCreateOrderHandler;
+import coopci.ddia.third.party.pay.handlers.CheckOrderHandler;
+import coopci.ddia.third.party.pay.handlers.CreateOrderHandler;
 
 
 public class HttpServer {
@@ -38,19 +38,19 @@ public class HttpServer {
 		
 		
 		
-		BackdoorCheckOrderHandler backdoorCheckOrderHandler = new BackdoorCheckOrderHandler();
-		backdoorCheckOrderHandler.setEngine(engine);
+		CheckOrderHandler checkOrderHandler = new CheckOrderHandler();
+		checkOrderHandler.setEngine(engine);
 		server.getServerConfiguration().addHttpHandler(
-				backdoorCheckOrderHandler,
-				"/pay/backdoor/check_order");
+				checkOrderHandler,
+				"/pay/check_order");
 		
 
 
-		BackdoorCreateOrderHandler backdoorCreateOrderHandler = new BackdoorCreateOrderHandler();
-		backdoorCreateOrderHandler.setEngine(engine);
+		CreateOrderHandler createOrderHandler = new CreateOrderHandler();
+		createOrderHandler.setEngine(engine);
 		server.getServerConfiguration().addHttpHandler(
-				backdoorCreateOrderHandler,
-				"/pay/backdoor/create_order");
+				createOrderHandler,
+				"/pay/create_order");
 		
 		try {
 			server.removeListener("grizzly");

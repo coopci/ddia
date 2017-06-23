@@ -93,6 +93,16 @@ public class Engine implements IMongodbAspect {
 	
 
 	
+	public Result checkOrder(){
+		Result res = new Result();
+		return res;
+	}
+	public Result createOrder(){
+		Result res = new Result();
+		return res;
+	}
+	
+	
 	public Result weixinCheckOrder(){
 		Result res = new Result();
 		return res;

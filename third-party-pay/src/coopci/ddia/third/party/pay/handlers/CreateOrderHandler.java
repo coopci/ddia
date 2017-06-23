@@ -1,4 +1,4 @@
-package coopci.ddia.third.party.pay.weixin.handlers;
+package coopci.ddia.third.party.pay.handlers;
 
 import java.util.HashMap;
 
@@ -34,7 +34,7 @@ public class CreateOrderHandler extends HttpHandler {
 		}
 		
         
-        Result res = this.engine.weixinCreateOrder();
+        Result res = this.engine.createOrder();
         GrizzlyUtils.writeJson(response, res);
 		return;
     }
