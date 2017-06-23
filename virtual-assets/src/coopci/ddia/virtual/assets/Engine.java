@@ -46,6 +46,7 @@ import com.mongodb.client.model.ReturnDocument;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.UpdateResult;
 
+import coopci.ddia.IMongodbAspect;
 import coopci.ddia.LoginResult;
 import coopci.ddia.Result;
 import coopci.ddia.SessionId;
@@ -55,7 +56,7 @@ import coopci.ddia.results.UserInfo;
 import coopci.ddia.util.SessidPacker;
 import coopci.ddia.util.Vcode;
 
-public class Engine {
+public class Engine implements IMongodbAspect {
 	
 	String mongoConnStr = "mongodb://localhost:27017/";
 	String mongodbDBName = "virtual_assets";     // mongodb的库名字
@@ -71,128 +72,21 @@ public class Engine {
 	// The MongoClient class is designed to be thread safe and shared among threads. Typically you create only 1 instance for a given database cluster and use it across your application.
 	MongoClient mongoClient = null;
 	// mongodb://host:27017/?replicaSet=rs0&maxPoolSize=200
-	public void connectMongo() {
-		try{
-			
-			if (mongoConnStr == null) {
-				//logger.error("mongoConnStr == null in connectMongo.");
-				this.mongoClient = null;
-				return;
-			}
-			if (mongoConnStr.length() == 0) {
-				//logger.error("mongoConnStr.length() == 0 in connectMongo.");
-				this.mongoClient = null;
-				return;
-			}
-			MongoClientURI uri = new MongoClientURI(mongoConnStr,
-					MongoClientOptions.builder().cursorFinalizerEnabled(false));
-			mongoClient = new MongoClient(uri);
-		} catch(Exception ex) {
-			// logger.error("Exception in connectMongo, mongoConnStr = {} ", mongoConnStr, ex);
-		}
+	
+	@Override
+	public void setMongoClient(MongoClient mc) {
+		this.mongoClient = mc;
 	}
+	@Override
 	public MongoClient getMongoClient() {
-		
 		return mongoClient;
 	}
 
-	public void close() {
-		if (this.mongoClient == null)
-			return;
-		this.mongoClient.close();
-	}
-	
 	
 	public void init() throws Exception {
 		connectMongo();
-		
 		return;
 	}
-	
-	LinkedList<Document> getMongoDocuments(String dbname, String collname, Document query, int skip, int limit) {
-		MongoClient client = this.getMongoClient();
-		MongoDatabase db = client.getDatabase(dbname);
-		MongoCollection<Document> collection = db.getCollection(collname);
-		FindIterable<Document> iterable = collection.find(query).skip(skip).limit(limit);
-		LinkedList<Document> ret = new LinkedList<Document>();
-		MongoCursor<Document> cur = iterable.iterator();
-		
-		while(cur.hasNext()){
-			ret.add(cur.next());
-		}
-		return ret;
-	}
-	
-	Document getMongoDocumentById(String dbname, String collname, String id) {
-		MongoClient client = this.getMongoClient();
-		MongoDatabase db = client.getDatabase(dbname);
-		MongoCollection<Document> collection = db.getCollection(collname);
-		Document filter = new Document();
-		filter.append("_id", id);
-		FindIterable<Document> iter = collection.find(filter);
-		Document doc = iter.first();
-		return doc;
-	}
-	Document getMongoDocumentById(String dbname, String collname, long id) {
-		MongoClient client = this.getMongoClient();
-		MongoDatabase db = client.getDatabase(dbname);
-		MongoCollection<Document> collection = db.getCollection(collname);
-		Document filter = new Document();
-		filter.append("_id", id);
-		FindIterable<Document> iter = collection.find(filter);
-		Document doc = iter.first();
-		return doc;
-	}
-
-	void removeMongoDocumentById(String dbname, String collname, String id) {
-		MongoClient client = this.getMongoClient();
-		MongoDatabase db = client.getDatabase(dbname);
-		MongoCollection<Document> collection = db.getCollection(collname);
-		Document filter = new Document();
-		filter.append("_id", id);
-		collection.deleteOne(filter);
-		return;
-	}
-	
-	// upsert : true
-	UpdateResult saveMongoDocumentById(String dbname, String collname, Document data, String id) {
-		MongoClient client = this.getMongoClient();
-		MongoDatabase db = client.getDatabase(dbname);
-		MongoCollection<Document> collection = db.getCollection(collname);
-		
-		Document filter = new Document();
-		filter.append("_id", id);
-		
-		Document update = new Document();
-		update.append("$set", data);
-		UpdateOptions opt = new UpdateOptions();
-		opt.upsert(true);
-		
-		UpdateResult r = collection.updateOne(filter, update, opt);
-		
-		return r;
-	}
-	
-	// upsert : false
-	void updateMongoDocumentById(String dbname, String collname, Document data, String id) {
-		MongoClient client = this.getMongoClient();
-		MongoDatabase db = client.getDatabase(dbname);
-		MongoCollection<Document> collection = db.getCollection(collname);
-		
-		Document filter = new Document();
-		filter.append("_id", id);
-		
-		Document update = new Document();
-		update.append("$set", data);
-		UpdateOptions opt = new UpdateOptions();
-		opt.upsert(false);
-		
-		collection.updateOne(filter, update, opt);
-		
-		return;
-	}
-	
-	
 	
 	/**
 	 * 把args指出的资产变动 应用到对uid名下。
@@ -321,29 +215,6 @@ public class Engine {
 	}
 	
 
-	ObjectId insertMongoDocument(String dbname, String collname, Document doc) {
-		MongoClient client = this.getMongoClient();
-		MongoDatabase db = client.getDatabase(dbname);
-		MongoCollection<Document> collection = db.getCollection(collname);
-		collection.insertOne(doc);
-		ObjectId id = (ObjectId)doc.get( "_id" );
-		return id;
-	}
-	
-
-	Document getMongoDocumentById(String dbname, String collname, ObjectId id) {
-		MongoClient client = this.getMongoClient();
-		MongoDatabase db = client.getDatabase(dbname);
-		MongoCollection<Document> collection = db.getCollection(collname);
-		Document filter = new Document();
-		filter.append("_id", id);
-		FindIterable<Document> iter = collection.find(filter);
-		Document doc = iter.first();
-		return doc;
-	}
-	
-	
-
 	void unsetTransferTranx(String tranx_id, long uid) {
 		MongoClient client = this.getMongoClient();
 		MongoDatabase db = client.getDatabase(this.mongodbDBName);
@@ -361,24 +232,6 @@ public class Engine {
 		return;
 	}
 
-	// upsert : false
-	void updateMongoDocumentById(String dbname, String collname, Document data, ObjectId id) {
-		MongoClient client = this.getMongoClient();
-		MongoDatabase db = client.getDatabase(dbname);
-		MongoCollection<Document> collection = db.getCollection(collname);
-		
-		Document filter = new Document();
-		filter.append("_id", id);
-		
-		Document update = new Document();
-		update.append("$set", data);
-		UpdateOptions opt = new UpdateOptions();
-		opt.upsert(false);
-		
-		collection.updateOne(filter, update, opt);
-		
-		return;
-	}
 	// upsert : false
 	void setTransferTranxStatus(ObjectId id, String newStatus) {
 		MongoClient client = this.getMongoClient();
@@ -402,14 +255,9 @@ public class Engine {
 	public static Document NON_EXISTS_FILTER = new Document( "$exists", false);
 	public static Document EXISTS_FILTER = new Document( "$exists", true);
 	
-	
-	
-	
 	protected Document getUserAssetById(long id) {
 		return this.getMongoDocumentById(this.mongodbDBName, this.mongodbDBCollAssets, id);
 	}
-	
-	
 	
 	public boolean hasPendingTranx(Document doc, String hextranxid) {
 		if (doc == null)
@@ -669,5 +517,9 @@ public class Engine {
 		
 		
 		return ret;
+	}
+	@Override
+	public String getMongoConnStr() {
+		return mongoConnStr;
 	}
 }
