@@ -15,7 +15,7 @@ import coopci.ddia.virtual.assets.Engine;
 public class TestTransfer extends Engine {
 
 	@Test
-	public void testAddOK() throws Exception {
+	public void testTransferOK() throws Exception {
 		TestTransfer engine = new TestTransfer();
 		
 		engine.init();
@@ -31,13 +31,24 @@ public class TestTransfer extends Engine {
 		HashMap<String, Long> toassets = new HashMap<String, Long>();
 		
 		
-		fromassets.put("diamond", 10L);
-		toassets.put("hi_coin", 10L);
+		fromassets.put("va_diamond", 10L);
+		toassets.put("va_hi_coin", 10L);
 		
 		try {
 			engine.insertAssetsDocForUid(fromuid);
 			
 		} catch(Exception ex){}
+		
+		
+		
+		HashMap<String, Long> testArgs = new HashMap<String, Long>();
+		testArgs.put("va_diamond", 100L);
+		// Result incrRes = engine.incrby(appid, "test-apptranxid-" + UUID.randomUUID().toString(), fromuid, testArgs);
+		// System.out.println("incrRes: " + incrRes.code + "  " + incrRes.msg);
+		
+		
+		
+		
 		
 		
 		Document fromUserAssetBeforeTransfer = engine.getUserAssetById(fromuid);
@@ -57,10 +68,10 @@ public class TestTransfer extends Engine {
 		Document doc = engine.getTransferTranxDoc(appid, apptranxid);
 		assertNotNull(doc);
 		assertEquals("done", doc.getString("status"));
-		assertEquals(fromUserAssetBeforeTransfer.getLong("diamond").longValue(), 
-						fromUserAssetAfterTransfer.getLong("diamond").longValue() + 10L);
-		assertEquals(toUserAssetBeforeTransfer.getLong("hi_coin").longValue(), 
-				toUserAssetAfterTransfer.getLong("hi_coin").longValue() - 10L);
+		assertEquals(fromUserAssetBeforeTransfer.getLong("va_diamond").longValue(), 
+						fromUserAssetAfterTransfer.getLong("va_diamond").longValue() + 10L);
+		assertEquals(toUserAssetBeforeTransfer.getLong("va_hi_coin").longValue(), 
+				toUserAssetAfterTransfer.getLong("va_hi_coin").longValue() - 10L);
 		return;
 		
 	}

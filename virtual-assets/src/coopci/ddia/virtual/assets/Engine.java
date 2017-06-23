@@ -241,6 +241,19 @@ public class Engine {
 		return res;
 	}
 	
+	
+	Result checkAllValuesPositive(HashMap<String, Long> args) {
+		Result res = new Result();
+		for (Entry<String, Long> entry : args.entrySet()) {
+			if (entry.getValue() < 0 ) {
+				res.setError(400, "Every value must be greater than 0, but " + entry.getKey() + " is not.");
+				return res;
+			}
+		}
+		
+		
+		return res;
+	}
 	/**
 	 *	从fromuid名下减少 fromassets指出的资产，给touid名下增加toassets指出的资产。
 	 *  保证原子性。
@@ -255,9 +268,36 @@ public class Engine {
 	 *  
 	 * */
 	public Result transfer(String appid, String apptranxid, long fromuid, HashMap<String, Long> fromassets, long touid, HashMap<String, Long> toassets) {
+		Result res = new Result();
+		res.code = 200;
+		if (fromuid < 0) {
+			res.setError(400, "from_uid must be greater than 0.");
+		}
+		
+		if (touid < 0) {
+			res.setError(400, "to_uid must be greater than 0.");
+		}
+		
+		if (fromassets.size() == 0) {
+			res.setError(400, "At least 1 from_assets must be specified.");
+		}
+		
+		if (toassets.size() == 0) {
+			res.setError(400, "At least 1 to_assets must be specified.");
+		}
+		if (res.code != 200)
+			return res;
+		res = checkAllValuesPositive(fromassets);
+		if (res.code != 200)
+			return res;
+		res = checkAllValuesPositive(toassets);
+		if (res.code != 200)
+			return res;
+		
+		
 		String tranxid = generateTransferTranx(appid, apptranxid, fromuid, fromassets, touid, toassets);
 		
-		Result res = execTransferTranx(tranxid);
+		res = execTransferTranx(tranxid);
 		return res;
 	}
 	

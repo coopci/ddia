@@ -7,7 +7,9 @@ import org.glassfish.grizzly.http.server.NetworkListener;
 import org.glassfish.grizzly.http.server.Request;
 import org.glassfish.grizzly.http.server.Response;
 import org.glassfish.grizzly.threadpool.ThreadPoolConfig;
+
 import coopci.ddia.virtual.assets.handlers.IncrbyHandler;
+import coopci.ddia.virtual.assets.handlers.TransferHandler;
 
 
 
@@ -45,6 +47,12 @@ public class HttpServer {
 				"/virtual-assets/incrby");
 		
 
+
+		TransferHandler transferHandler = new TransferHandler();
+		transferHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				transferHandler,
+				"/virtual-assets/transfer");
 		
 		try {
 			server.removeListener("grizzly");
