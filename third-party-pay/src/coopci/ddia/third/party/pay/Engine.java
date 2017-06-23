@@ -51,6 +51,8 @@ import coopci.ddia.LoginResult;
 import coopci.ddia.Result;
 import coopci.ddia.SessionId;
 import coopci.ddia.UidResult;
+import coopci.ddia.requests.CheckOrderRequest;
+import coopci.ddia.requests.CreateOrderRequest;
 import coopci.ddia.results.ListResult;
 import coopci.ddia.results.UserInfo;
 import coopci.ddia.util.SessidPacker;
@@ -93,21 +95,21 @@ public class Engine implements IMongodbAspect {
 	
 
 	
-	public Result checkOrder(){
+	public Result checkOrder(CheckOrderRequest req){
 		Result res = new Result();
 		return res;
 	}
-	public Result createOrder(){
+	public Result createOrder(CreateOrderRequest req){
 		Result res = new Result();
 		return res;
 	}
 	
 	
-	public Result weixinCheckOrder(){
+	public Result weixinCheckOrder(CheckOrderRequest req){
 		Result res = new Result();
 		return res;
 	}
-	public Result weixinCreateOrder(){
+	public Result weixinCreateOrder(CreateOrderRequest req){
 		Result res = new Result();
 		return res;
 	}
@@ -117,11 +119,11 @@ public class Engine implements IMongodbAspect {
 	
 
 	
-	public Result backdoorCheckOrder(){
+	public Result backdoorCheckOrder(CheckOrderRequest req){
 		Result res = new Result();
 		return res;
 	}
-	public Result backdoorCreateOrder(){
+	public Result backdoorCreateOrder(CreateOrderRequest req){
 		Result res = new Result();
 		return res;
 	}

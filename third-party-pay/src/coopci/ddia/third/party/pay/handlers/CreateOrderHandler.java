@@ -9,6 +9,8 @@ import org.glassfish.grizzly.http.server.Response;
 import org.glassfish.grizzly.http.util.HttpStatus;
 
 import coopci.ddia.Result;
+import coopci.ddia.requests.CheckOrderRequest;
+import coopci.ddia.requests.CreateOrderRequest;
 import coopci.ddia.third.party.pay.Engine;
 import coopci.ddia.GrizzlyUtils;
 
@@ -33,8 +35,8 @@ public class CreateOrderHandler extends HttpHandler {
 			return;
 		}
 		
-        
-        Result res = this.engine.createOrder();
+		CreateOrderRequest req = new CreateOrderRequest();
+        Result res = this.engine.createOrder(req);
         GrizzlyUtils.writeJson(response, res);
 		return;
     }

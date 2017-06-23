@@ -9,6 +9,7 @@ import org.glassfish.grizzly.http.server.Response;
 import org.glassfish.grizzly.http.util.HttpStatus;
 
 import coopci.ddia.Result;
+import coopci.ddia.requests.CheckOrderRequest;
 import coopci.ddia.third.party.pay.Engine;
 import coopci.ddia.GrizzlyUtils;
 
@@ -33,8 +34,8 @@ public class CheckOrderHandler extends HttpHandler {
 			response.getWriter().write(HttpStatus.METHOD_NOT_ALLOWED_405.getReasonPhrase());
 			return;
 		}
-        
-        Result res = this.engine.checkOrder();
+		CheckOrderRequest req = new CheckOrderRequest();
+        Result res = this.engine.checkOrder(req);
         GrizzlyUtils.writeJson(response, res);
 		return;
     }
