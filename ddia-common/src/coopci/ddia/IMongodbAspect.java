@@ -16,6 +16,10 @@ import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.UpdateResult;
 
 public interface IMongodbAspect {
+
+	public static Document NON_EXISTS_FILTER = new Document( "$exists", false);
+	public static Document EXISTS_FILTER = new Document( "$exists", true);
+	
 	String getMongoConnStr();
 	
 	void setMongoClient(MongoClient mc);

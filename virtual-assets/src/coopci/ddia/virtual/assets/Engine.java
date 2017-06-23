@@ -514,8 +514,6 @@ public class Engine implements IMongodbAspect {
 		Document query = new Document();
 		query.append("status", TRANSFER_TRANX_STATUS_NEW);
 		ret = getMongoDocuments(this.mongodbDBName, this.mongodbDBCollTransferTranx, query, 0, limit);
-		
-		
 		return ret;
 	}
 	@Override
