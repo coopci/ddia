@@ -35,6 +35,10 @@ public class CheckOrderHandler extends HttpHandler {
 			return;
 		}
 		CheckOrderRequest req = new CheckOrderRequest();
+		req.uid = Long.parseLong(request.getParameter("uid"));
+		req.appid = request.getParameter("appid");
+		req.apptranxid = request.getParameter("apptranxid");
+		
         Result res = this.engine.checkOrder(req);
         GrizzlyUtils.writeJson(response, res);
 		return;

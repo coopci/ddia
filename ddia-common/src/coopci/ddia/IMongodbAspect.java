@@ -3,6 +3,7 @@ package coopci.ddia;
 import java.util.LinkedList;
 
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 import com.mongodb.MongoClient;
@@ -12,6 +13,7 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.UpdateResult;
 
@@ -69,6 +71,29 @@ public interface IMongodbAspect {
 		}
 		return ret;
 	}
+
+
+	default Document getMongoDocumentById(String dbname, String collname, Object id) {
+		MongoClient client = this.getMongoClient();
+		MongoDatabase db = client.getDatabase(dbname);
+		MongoCollection<Document> collection = db.getCollection(collname);
+		Document filter = new Document();
+		filter.append("_id", id);
+		FindIterable<Document> iter = collection.find(filter);
+		Document doc = iter.first();
+		return doc;
+	}
+	/*
+	default Document getMongoDocumentById(String dbname, String collname, ObjectId id) {
+		MongoClient client = this.getMongoClient();
+		MongoDatabase db = client.getDatabase(dbname);
+		MongoCollection<Document> collection = db.getCollection(collname);
+		Document filter = new Document();
+		filter.append("_id", id);
+		FindIterable<Document> iter = collection.find(filter);
+		Document doc = iter.first();
+		return doc;
+	}
 	
 	default Document getMongoDocumentById(String dbname, String collname, String id) {
 		MongoClient client = this.getMongoClient();
@@ -91,7 +116,7 @@ public interface IMongodbAspect {
 		Document doc = iter.first();
 		return doc;
 	}
-	
+	*/
 	// upsert : true
 	default UpdateResult saveMongoDocumentById(String dbname, String collname, Document data, String id) {
 			MongoClient client = this.getMongoClient();
@@ -140,16 +165,6 @@ public interface IMongodbAspect {
 		return id;
 	}
 
-	default Document getMongoDocumentById(String dbname, String collname, ObjectId id) {
-		MongoClient client = this.getMongoClient();
-		MongoDatabase db = client.getDatabase(dbname);
-		MongoCollection<Document> collection = db.getCollection(collname);
-		Document filter = new Document();
-		filter.append("_id", id);
-		FindIterable<Document> iter = collection.find(filter);
-		Document doc = iter.first();
-		return doc;
-	}
 	
 
 	// upsert : false
@@ -182,6 +197,16 @@ public interface IMongodbAspect {
 		return;
 	}
 	
-	
+	default boolean ensureIndex(String dbname, String collname, Bson fields, IndexOptions opt) {
+		try {
+			MongoClient mc = this.getMongoClient();
+			MongoDatabase db = mc.getDatabase(dbname);
+			MongoCollection<Document> collection = db.getCollection(collname);
+			String s = collection.createIndex(fields, opt);
+			return true;
+		} catch (Exception ex) {
+			return false;
+		}
+	}
 
 }

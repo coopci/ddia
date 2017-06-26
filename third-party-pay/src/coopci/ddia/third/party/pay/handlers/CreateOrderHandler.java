@@ -36,6 +36,13 @@ public class CreateOrderHandler extends HttpHandler {
 		}
 		
 		CreateOrderRequest req = new CreateOrderRequest();
+		req.uid = Long.parseLong(request.getParameter("uid"));
+		req.payChannel = request.getParameter("pay_channel");
+		req.appid = request.getParameter("appid");
+		req.apptranxid = request.getParameter("apptranxid");
+		req.desc = request.getParameter("desc");
+		req.totalAmount = Double.parseDouble(request.getParameter("total_amount")); // 单位是 分。
+		
         Result res = this.engine.createOrder(req);
         GrizzlyUtils.writeJson(response, res);
 		return;
