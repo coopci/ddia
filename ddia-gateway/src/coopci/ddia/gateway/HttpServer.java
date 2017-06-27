@@ -25,7 +25,10 @@ import coopci.ddia.gateway.websocket.GatewayApplication;
 public class HttpServer {
 	
 	public static int listenPort = 8887;
-	public static void main(String[] argv) throws Exception {
+	
+	
+	
+	public void start () throws Exception {
 		DemoEngine engine = new DemoEngine();
 		engine.init();
 		
@@ -123,11 +126,19 @@ public class HttpServer {
 			engine.getSubscriber().setDownPublisher(gatewayApplication);
 			
 		    server.start();
-		    System.out.println("Press any key to stop the server...");
-		    System.in.read();
+		    
 		} catch (Exception e) {
 		    System.err.println(e);
 		}
+		return;
+		
+		
+	}
+	public static void main(String[] argv) throws Exception {
+		HttpServer server = new HttpServer();
+		server.start();
+		System.out.println("Press any key to stop the server...");
+	    System.in.read();
 		return;
 	}
 }

@@ -125,7 +125,7 @@ public class Engine {
 		String ret = "";
 		if (MICROSERVICE_NAME_USER_BASIC.equals(serviceName)) {
 			return USER_BASIC_HTTP_PREFIX;
-		} else if (MICROSERVICE_NAME_USER_BASIC.equals(serviceName)) {
+		} else if (MICROSERVICE_NAME_USER_RELATION.equals(serviceName)) {
 			return USER_RELATION_HTTP_PREFIX;
 		}
 		
