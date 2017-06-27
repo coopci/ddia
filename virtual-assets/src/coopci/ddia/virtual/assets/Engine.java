@@ -20,6 +20,7 @@ import java.util.Base64;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -51,6 +52,7 @@ import coopci.ddia.LoginResult;
 import coopci.ddia.Result;
 import coopci.ddia.SessionId;
 import coopci.ddia.UidResult;
+import coopci.ddia.results.DictResult;
 import coopci.ddia.results.ListResult;
 import coopci.ddia.results.UserInfo;
 import coopci.ddia.util.SessidPacker;
@@ -516,6 +518,45 @@ public class Engine implements IMongodbAspect {
 		ret = getMongoDocuments(this.mongodbDBName, this.mongodbDBCollTransferTranx, query, 0, limit);
 		return ret;
 	}
+	
+	
+	
+	
+	
+	/**
+	 * 返回uid名下的资产。
+	 * fields 指明需要返回的资产项目  ， 以0为默认值填充的不存在的资产数。
+	 *
+	 * */
+	public Result getAssets(long uid, HashSet<String> fields) {
+		DictResult res = new DictResult();
+		
+		if (fields!=null) {
+			for (String f : fields) {
+				res.put(f, 0L);
+			}
+		}
+		
+		Document doc = this.getMongoDocumentById(this.mongodbDBName, this.mongodbDBCollAssets, uid);
+		if (doc == null)
+			return res;
+		for(Entry<String, Object> entry : doc.entrySet()) {
+			String k = entry.getKey();
+			if (!k.startsWith("va_"))
+				continue;
+			if (!fields.contains(k))
+				continue;
+			if (! (entry.getValue() instanceof Long))
+				continue;
+			Long v = (Long)entry.getValue();
+			res.put(k, v);
+		}
+		
+		return res;
+	}
+	
+	
+	
 	@Override
 	public String getMongoConnStr() {
 		return mongoConnStr;

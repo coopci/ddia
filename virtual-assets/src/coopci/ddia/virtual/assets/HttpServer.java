@@ -10,6 +10,7 @@ import org.glassfish.grizzly.threadpool.ThreadPoolConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import coopci.ddia.virtual.assets.handlers.GetAssetsHandler;
 import coopci.ddia.virtual.assets.handlers.IncrbyHandler;
 import coopci.ddia.virtual.assets.handlers.TransferHandler;
 
@@ -58,6 +59,12 @@ public class HttpServer {
 		server.getServerConfiguration().addHttpHandler(
 				transferHandler,
 				"/virtual-assets/transfer");
+		
+		GetAssetsHandler getAssetsHandler = new GetAssetsHandler();
+		getAssetsHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				getAssetsHandler,
+				"/virtual-assets/get");
 		
 		try {
 			server.removeListener("grizzly");
