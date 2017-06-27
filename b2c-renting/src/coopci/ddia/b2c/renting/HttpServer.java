@@ -18,10 +18,14 @@ import coopci.ddia.b2c.renting.handlers.GetRentingStatusHandler;
 
 
 
+
 public class HttpServer {
 	
+    
+
 	public static int listenPort = 8890;
-	public static void main(String[] argv) throws Exception {
+	
+	public void start() throws Exception {
 		Engine engine = new Engine();
 		engine.init();
 		
@@ -69,11 +73,24 @@ public class HttpServer {
 			
 			server.addListener(nl);
 		    server.start();
-		    System.out.println("Press any key to stop the server...");
-		    System.in.read();
+		    
 		} catch (Exception e) {
 		    System.err.println(e);
 		}
+		return;
+	}
+	public static void main(String[] argv) throws Exception {
+		HttpServer server = new HttpServer();
+		
+		try {
+			server.start();
+			
+		} catch (Exception e) {
+		    System.err.println(e);
+		}
+
+	    System.out.println("Press any key to stop the server...");
+	    System.in.read();
 		return;
 	}
 }

@@ -6,15 +6,20 @@ import org.glassfish.grizzly.http.server.NetworkListener;
 import org.glassfish.grizzly.http.server.Request;
 import org.glassfish.grizzly.http.server.Response;
 import org.glassfish.grizzly.threadpool.ThreadPoolConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import coopci.ddia.third.party.pay.handlers.CheckOrderHandler;
 import coopci.ddia.third.party.pay.handlers.CreateOrderHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 
 public class HttpServer {
 	
-	public static int listenPort = 8893;
-	
+	public static int listenPort = 8892;
+	Logger logger = LoggerFactory.getLogger(HttpServer.class);
 	public void start() throws Exception {
 		Engine engine = new Engine();
 		engine.init();
@@ -65,6 +70,7 @@ public class HttpServer {
 		    System.in.read();
 		} catch (Exception e) {
 		    System.err.println(e);
+		    // logger.error(arg0);
 		}
 		return;
 		

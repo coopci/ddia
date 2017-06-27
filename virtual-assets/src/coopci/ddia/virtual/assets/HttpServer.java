@@ -7,6 +7,8 @@ import org.glassfish.grizzly.http.server.NetworkListener;
 import org.glassfish.grizzly.http.server.Request;
 import org.glassfish.grizzly.http.server.Response;
 import org.glassfish.grizzly.threadpool.ThreadPoolConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import coopci.ddia.virtual.assets.handlers.IncrbyHandler;
 import coopci.ddia.virtual.assets.handlers.TransferHandler;
@@ -16,7 +18,10 @@ import coopci.ddia.virtual.assets.handlers.TransferHandler;
 public class HttpServer {
 	
 	public static int listenPort = 8893;
-	public static void main(String[] argv) throws Exception {
+	
+	Logger logger = LoggerFactory.getLogger(HttpServer.class);
+	
+	public void start() throws Exception {
 		Engine engine = new Engine();
 		engine.init();
 		
@@ -56,8 +61,8 @@ public class HttpServer {
 		
 		try {
 			server.removeListener("grizzly");
-			
-			NetworkListener nl = new NetworkListener("17wan8gateway", "0.0.0.0", listenPort);
+			logger.info("ddia-virtual-assets start listening:" + listenPort );
+			NetworkListener nl = new NetworkListener("ddia-virtual-assets", "0.0.0.0", listenPort);
 			ThreadPoolConfig threadPoolConfig = ThreadPoolConfig
 			        .defaultConfig();
 			        //.setCorePoolSize(16)
@@ -66,11 +71,24 @@ public class HttpServer {
 			
 			server.addListener(nl);
 		    server.start();
-		    System.out.println("Press any key to stop the server...");
-		    System.in.read();
+		    
 		} catch (Exception e) {
 		    System.err.println(e);
 		}
+		return;
+	}
+	public static void main(String[] argv) throws Exception {
+		HttpServer server = new HttpServer();
+		
+		
+		try {
+		    server.start();
+		} catch (Exception e) {
+		    System.err.println(e);
+		}
+
+	    System.out.println("Press any key to stop the server...");
+	    System.in.read();
 		return;
 	}
 }

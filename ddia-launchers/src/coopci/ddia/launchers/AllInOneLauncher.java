@@ -16,8 +16,8 @@ public class AllInOneLauncher {
 		httpGateway.start();
 		httpUserbasic.start();
 		httpUserelation.start();
-		//httpB2cRenting.start();
-		//httpVirualAssets.start();
+		httpB2cRenting.start();
+		httpVirualAssets.start();
 		httpThirdPartyPay.start();
 	}
 	
