@@ -14,7 +14,8 @@ import coopci.ddia.third.party.pay.handlers.CreateOrderHandler;
 public class HttpServer {
 	
 	public static int listenPort = 8893;
-	public static void main(String[] argv) throws Exception {
+	
+	public void start() throws Exception {
 		Engine engine = new Engine();
 		engine.init();
 		
@@ -36,15 +37,11 @@ public class HttpServer {
 	    },
 	    "/");
 		
-		
-		
 		CheckOrderHandler checkOrderHandler = new CheckOrderHandler();
 		checkOrderHandler.setEngine(engine);
 		server.getServerConfiguration().addHttpHandler(
 				checkOrderHandler,
 				"/pay/check_order");
-		
-
 
 		CreateOrderHandler createOrderHandler = new CreateOrderHandler();
 		createOrderHandler.setEngine(engine);
@@ -55,7 +52,7 @@ public class HttpServer {
 		try {
 			server.removeListener("grizzly");
 			
-			NetworkListener nl = new NetworkListener("17wan8gateway", "0.0.0.0", listenPort);
+			NetworkListener nl = new NetworkListener("ddia-third-party-pay", "0.0.0.0", listenPort);
 			ThreadPoolConfig threadPoolConfig = ThreadPoolConfig
 			        .defaultConfig();
 			        //.setCorePoolSize(16)
@@ -69,6 +66,19 @@ public class HttpServer {
 		} catch (Exception e) {
 		    System.err.println(e);
 		}
+		return;
+		
+	}
+	
+	public static void main(String[] argv) throws Exception {
+		HttpServer server = new HttpServer();
+		try {
+		    server.start();
+		} catch (Exception e) {
+		    System.err.println(e);
+		}
+		System.out.println("Press any key to stop the server...");
+	    System.in.read();
 		return;
 	}
 }
