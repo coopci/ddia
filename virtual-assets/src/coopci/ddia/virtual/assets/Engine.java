@@ -47,6 +47,7 @@ import com.mongodb.client.model.ReturnDocument;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.UpdateResult;
 
+import coopci.ddia.Consts;
 import coopci.ddia.IMongodbAspect;
 import coopci.ddia.LoginResult;
 import coopci.ddia.Result;
@@ -64,6 +65,14 @@ public class Engine implements IMongodbAspect {
 	String mongodbDBName = "virtual_assets";     // mongodb的库名字
 	String mongodbDBCollAssets = "assets";    // 记录资产的collection， _id是uid。 以"va_"开头的字段表示一中虚拟资产。
 	String mongodbDBCollTransferTranx = "transfer_tranx";    // 记录转帐事务的。
+	
+	
+	String mongodbDBCollPurchaseOrders = "purchase_orders";    // 记录购买虚拟资产的订单。 pay_result记录支付结果，status记录的是这个订单的状态。
+	
+	
+	public static String PURCHASE_ORDER_STATUS_NEW = "new";  // 表示是新订单。
+	public static String PURCHASE_ORDER_STATUS_DONE = "done";  // 表示已经处理完毕。
+															   // pay_result 字段的结果是paid， 那么表示要买的东西已经给到uid的assets里了。
 	
 	public static String FIELD_NAME_PENDING_TRANSFER_TRANX = "pending_transfer_tranx";
 	public static String TRANSFER_TRANX_STATUS_NEW = "new";
@@ -555,7 +564,67 @@ public class Engine implements IMongodbAspect {
 		return res;
 	}
 	
+	public Result postprocessPurchaseOrderHandler(Long uid, String appid, String apptranxid, String payResult) {
+		Result res = new Result();
+		if (Consts.PAY_RESULT_PAID.equals(payResult)) {
+			
+			
+		} else if(Consts.PAY_RESULT_PAID.equals(payResult)) {
+			
+			
+		}  
+		
+		
+		return res;
+	}
 	
+	
+	
+	public double calculateTotalAmount(Long uid, String appid, HashMap<String, Long> items) {
+		double ret = 0.0;
+		for (Entry<String, Long> entry: items.entrySet()) {
+			ret += entry.getValue() * 1.0;
+		}
+		
+		return ret;
+	} 
+	// 生产一个新的 待支付的订单。
+	// items 的key表示要买的虚拟字长，value是要买的个数。
+	// 这个函数里面要计算整个订单的总价，处理 折扣等需求。
+	public Result createPurchaseOrderHandler(Long uid, String appid, HashMap<String, Long> items) {
+		DictResult res = new DictResult();
+		double totalAmount = this.calculateTotalAmount(uid, appid, items); // 总价，单位是 分。
+        
+        String desc = "购买虚拟产: ";
+        for (Entry<String, Long> entry: items.entrySet()) {
+			desc += entry.getKey() + ", ";
+		}
+        
+        Document purchaseOrder = new Document();
+        purchaseOrder.append("uid", uid);
+        purchaseOrder.append("appid", appid);
+        purchaseOrder.append("desc", desc);
+        purchaseOrder.append("total_amount", totalAmount);
+        purchaseOrder.append("status", PURCHASE_ORDER_STATUS_NEW);
+        
+        
+        
+        
+        ObjectId docid = this.insertMongoDocument(this.mongodbDBName, 
+        										this.mongodbDBCollPurchaseOrders, 
+        										purchaseOrder);
+        
+        String apptranxid = docid.toHexString();
+        
+        res.put("uid", uid);
+        res.put("appid", appid);
+        res.put("apptranxid", apptranxid);
+        res.put("desc", desc);
+        res.put("totalAmount", totalAmount);
+        res.put("status", PURCHASE_ORDER_STATUS_NEW);
+        
+		return res;
+	}
 	
 	@Override
 	public String getMongoConnStr() {

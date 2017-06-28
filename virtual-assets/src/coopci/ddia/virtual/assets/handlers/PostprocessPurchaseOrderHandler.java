@@ -13,9 +13,10 @@ import coopci.ddia.virtual.assets.Engine;
 import coopci.ddia.GrizzlyUtils;
 
 /**
- * 同一个uid的多个资产的incrby操作。 例如用于 用某种资产买另一种资产的 场景。
+ * 用来接受 CreatePurchaseOrderHandler产生的订单 的 完成,失败等结果 的通知。
+ * 这个流程 还会根据订单结果执行 相应的效果。
  * */
-public class IncrbyHandler extends HttpHandler {
+public class PostprocessPurchaseOrderHandler extends HttpHandler {
 	public Engine getEngine() {
 		return engine;
 	}
@@ -31,21 +32,11 @@ public class IncrbyHandler extends HttpHandler {
 			return;
 		}
         long uid = Long.parseLong(request.getParameter("uid"));
-        HashMap<String, Long> args = new HashMap<String, Long>(); 
-        for (String pname : request.getParameterNames()) {
-        	if (!pname.startsWith("va_")) {
-        		continue;
-        	}
-        	String v = request.getParameter(pname);
-        	try{
-        		args.put(pname, Long.parseLong(v));
-        	} catch (Exception ex) {
-        		
-        	}
-        }
-        String appid = "";
-        String apptranxid = "";
-        Result res = this.engine.incrby(appid, apptranxid, uid, args);
+        String appid = request.getParameter("appid");
+        String apptranxid = request.getParameter("apptranxid");
+        String payResult = request.getParameter("pay_result");
+        
+        Result res = this.engine.postprocessPurchaseOrderHandler(uid, appid, apptranxid, payResult);
         GrizzlyUtils.writeJson(response, res);
 		return;
     }
