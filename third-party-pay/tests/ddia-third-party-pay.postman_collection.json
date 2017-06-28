@@ -1,0 +1,107 @@
+{
+	"variables": [],
+	"info": {
+		"name": "ddia-third-party-pay",
+		"_postman_id": "846a46c1-00a4-f0c1-b093-a833218875c3",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "创建后门订单。",
+			"request": {
+				"url": "http://localhost:8892/pay/create_order",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "uid",
+							"value": "300",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "pay_channel",
+							"value": "backdoor",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "apptranxid",
+							"value": "test-apptranxid-{{$guid}}",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "appid",
+							"value": "test-appid",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "total_amount",
+							"value": "100",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "desc",
+							"value": "desc1",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "检查订单状态。",
+			"request": {
+				"url": "http://localhost:8892/pay/check_order",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "uid",
+							"value": "300",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "appid",
+							"value": "test-appid",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "apptranxid",
+							"value": "test-apptranxid-d41840ca-f100-4a5c-88e7-d8936c5157f1",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

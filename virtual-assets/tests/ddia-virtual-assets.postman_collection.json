@@ -84,6 +84,102 @@
 							"value": "test-apptranxid-{{$guid}}",
 							"type": "text",
 							"enabled": true
+						},
+						{
+							"key": "from.va_diamond",
+							"value": "10",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "to.va_hi_coin",
+							"value": "10",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "创建购买订单。",
+			"request": {
+				"url": "localhost:8893/virtual-assets/create_purchase_order",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "uid",
+							"value": "89",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "appid",
+							"value": "test-appid",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "va_diamonds",
+							"value": "10",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "通知购买订单的支付结果。",
+			"request": {
+				"url": "localhost:8893/virtual-assets/postprocess_purchase_order",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "uid",
+							"value": "89",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "appid",
+							"value": "test-appid",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "apptranxid",
+							"value": "59534dbd4c9d3e2face3b912",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "pay_result",
+							"value": "paid",
+							"type": "text",
+							"enabled": true
 						}
 					]
 				},
