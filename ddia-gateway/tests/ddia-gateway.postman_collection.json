@@ -269,6 +269,78 @@
 				"description": ""
 			},
 			"response": []
+		},
+		{
+			"name": "买钻石步骤1--生成订单。",
+			"request": {
+				"url": "localhost:8887/buy_diamonds/create_order",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "sessid",
+							"value": "test-sess-6",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "number",
+							"value": "7",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "pay_channel",
+							"value": "backdoor",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "买钻石步骤2--检查支付状态并交付订单。",
+			"request": {
+				"url": "localhost:8887/buy_diamonds/check_order",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "sessid",
+							"value": "test-sess-6",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "apptranxid",
+							"value": "59538ce84c9d3e2b1c5333fe",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
 		}
 	]
 }

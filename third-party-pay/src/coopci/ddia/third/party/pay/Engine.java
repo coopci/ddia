@@ -71,9 +71,9 @@ public class Engine implements IMongodbAspect {
 	public static String PAY_CHANNEL_WEIXIN = "weixin";
 	
 	
-	public static String ORDER_STATUS_NEW = "new";
-	public static String ORDER_STATUS_PAID = "paid";
-	public static String ORDER_STATUS_FAILED = "failed";
+	//public static String ORDER_STATUS_NEW = "new";
+	//public static String ORDER_STATUS_PAID = "paid";
+	//public static String ORDER_STATUS_FAILED = "failed";
 	
 	
 	// 据http://mongodb.github.io/mongo-java-driver/2.13/getting-started/quick-tour/ :
@@ -204,7 +204,7 @@ public class Engine implements IMongodbAspect {
 		doc.append("total_amount", req.totalAmount);
 		doc.append("desc", req.desc);
 		doc.append("created_time", now);
-		doc.append("status", ORDER_STATUS_PAID);
+		doc.append("status", coopci.ddia.Consts.PAY_RESULT_PAID);
 		this.insertMongoDocument(this.mongodbDBName, this.mongodbDBCollOrders, doc);
 		
 		docToDictResult(res, doc);

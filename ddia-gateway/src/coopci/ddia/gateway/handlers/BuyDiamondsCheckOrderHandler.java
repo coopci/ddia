@@ -25,10 +25,10 @@ public class BuyDiamondsCheckOrderHandler extends HttpHandler {
 			response.getWriter().write(HttpStatus.METHOD_NOT_ALLOWED_405.getReasonPhrase());
 			return;
 		}
+		request.setCharacterEncoding("utf-8");
         String sessid = request.getParameter("sessid");    
-        String sendto = request.getParameter("sendto");
-        String msg = request.getParameter("msg");
-        Result res = this.engine.sendmsg(sessid, sendto, msg);
+        String apptranxid = request.getParameter("apptranxid");
+        Result res = this.engine.buyDiamondsCheckOrder(sessid, apptranxid);
         GrizzlyUtils.writeJson(response, res);
 		return;
     }

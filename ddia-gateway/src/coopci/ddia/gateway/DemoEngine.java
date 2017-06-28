@@ -3,56 +3,13 @@ package coopci.ddia.gateway;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
-import org.asynchttpclient.AsyncHttpClient;
-import org.asynchttpclient.AsyncHttpClientConfig;
-import org.asynchttpclient.DefaultAsyncHttpClient;
-import org.asynchttpclient.DefaultAsyncHttpClientConfig;
-import org.asynchttpclient.Response;
-import org.bson.Document;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
-import com.mongodb.MongoClientURI;
-import com.mongodb.MongoWriteException;
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.UpdateOptions;
-import com.mongodb.client.result.UpdateResult;
-
 import coopci.ddia.Result;
-import coopci.ddia.SessionId;
-import coopci.ddia.notify.IPublisher;
-import coopci.ddia.notify.ISubscriber;
-import coopci.ddia.notify.rabbitmq.RabbitmqPublisher;
-import coopci.ddia.notify.rabbitmq.RabbitmqSubscriber;
 import coopci.ddia.results.DictResult;
-import coopci.ddia.results.ListResult;
-import coopci.ddia.results.RentingStatusResult;
-import coopci.ddia.results.UserInfo;
-import coopci.ddia.results.UserInfosResult;
-import coopci.ddia.util.SessidPacker;
 
 public class DemoEngine extends Engine {
 	
@@ -124,7 +81,7 @@ public class DemoEngine extends Engine {
 	
 	
 	public Result buyDiamondsCreateOrder(String sessid, Long number, String payChannel) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException {
-		Result res = new Result();
+		// Result res = new Result();
 		Long uid = this.getUidFromSessid(sessid);
 		String appid = "buy_diamonds";
 		String virutalAssetsHttpPrefix = this.getMicroserviceHttpPrefix(MICROSERVICE_NAME_VIRTUAL_ASSETS, uid);
@@ -155,12 +112,41 @@ public class DemoEngine extends Engine {
 		return payResult;
 	}
 	
-	public Result buyDiamondsCheckOrder() {
-		Result res = new Result();
+	public Result buyDiamondsCheckOrder(String sessid, String apptranxid) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException {
+		// Result res = new Result();
+		Long uid = this.getUidFromSessid(sessid);
+		String appid = "buy_diamonds";
+		
 		// 调用 MICROSERVICE_NAME_THIRD_PARTY_PAY 的检查订单
+		String thirdPartyPayHttpPrefix = this.getMicroserviceHttpPrefix(MICROSERVICE_NAME_THIRD_PARTY_PAY, uid);
+		HashMap<String, String> payArgs = new HashMap<String, String>();
+		payArgs.put("uid", Long.toString(uid));
+		payArgs.put("appid", appid);
+		payArgs.put("apptranxid", apptranxid);
+		
+		byte[] followResponse = HttpClientUtil.post(thirdPartyPayHttpPrefix + "pay/check_order", payArgs);			
+		DictResult chkResult = getObjectMapper().readValue(followResponse, DictResult.class);
+		
+		
+		// 第三方支付 的 status表示的是支付结果。
+		String payResult = chkResult.data.get("status").toString();
+		
+		if (coopci.ddia.Consts.PAY_RESULT_NEW.equals(payResult)) {
+			return chkResult;
+		}
+		
 		// 调用 MICROSERVICE_NAME_VIRTUAL_ASSETS 的处理订单
-				
-		return res;
+		String virtualAssetsHttpPrefix = this.getMicroserviceHttpPrefix(MICROSERVICE_NAME_VIRTUAL_ASSETS, uid);
+		HashMap<String, String> postprocArgs = new HashMap<String, String>();
+		postprocArgs.put("uid", Long.toString(uid));
+		postprocArgs.put("appid", appid);
+		postprocArgs.put("apptranxid", apptranxid);
+		postprocArgs.put("pay_result", payResult);
+		
+		followResponse = HttpClientUtil.post(virtualAssetsHttpPrefix + "virtual-assets/postprocess_purchase_order", postprocArgs);			
+		DictResult postprocResult = getObjectMapper().readValue(followResponse, DictResult.class);
+		
+		return postprocResult;
 	}
 	
 	public static void main(String[] args) throws Exception {
