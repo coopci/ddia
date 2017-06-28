@@ -122,6 +122,20 @@ public class DemoEngine extends Engine {
 	}
 	
 	
+	public Result buyDiamondsCreateOrder() {
+		Result res = new Result();
+		// 调用 MICROSERVICE_NAME_VIRTUAL_ASSETS 的创建订单
+		// 调用 MICROSERVICE_NAME_THIRD_PARTY_PAY 的创建订单
+		return res;
+	}
+	
+	public Result buyDiamondsCheckOrder() {
+		Result res = new Result();
+		// 调用 MICROSERVICE_NAME_THIRD_PARTY_PAY 的检查订单
+		// 调用 MICROSERVICE_NAME_VIRTUAL_ASSETS 的处理订单
+				
+		return res;
+	}
 	
 	public static void main(String[] args) throws Exception {
 		DemoEngine engine = new DemoEngine();

@@ -10,8 +10,10 @@ import org.glassfish.grizzly.threadpool.ThreadPoolConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import coopci.ddia.virtual.assets.handlers.CreatePurchaseOrderHandler;
 import coopci.ddia.virtual.assets.handlers.GetAssetsHandler;
 import coopci.ddia.virtual.assets.handlers.IncrbyHandler;
+import coopci.ddia.virtual.assets.handlers.PostprocessPurchaseOrderHandler;
 import coopci.ddia.virtual.assets.handlers.TransferHandler;
 
 
@@ -65,6 +67,18 @@ public class HttpServer {
 		server.getServerConfiguration().addHttpHandler(
 				getAssetsHandler,
 				"/virtual-assets/get");
+		
+		CreatePurchaseOrderHandler createPurchaseOrderHandler = new CreatePurchaseOrderHandler();
+		createPurchaseOrderHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				createPurchaseOrderHandler,
+				"/virtual-assets/create_purchase_order");
+		
+		PostprocessPurchaseOrderHandler postprocessPurchaseOrderHandler = new PostprocessPurchaseOrderHandler();
+		postprocessPurchaseOrderHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				postprocessPurchaseOrderHandler,
+				"/virtual-assets/postprocess_purchase_order");
 		
 		try {
 			server.removeListener("grizzly");

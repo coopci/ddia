@@ -565,16 +565,83 @@ public class Engine implements IMongodbAspect {
 	}
 	
 	public Result postprocessPurchaseOrderHandler(Long uid, String appid, String apptranxid, String payResult) {
-		Result res = new Result();
+		DictResult res = new DictResult();
+		ObjectId oid = null;
+		
+		try {
+			oid = new ObjectId(apptranxid);
+		} catch (Exception ex) {
+			res.code = 400;
+			res.msg = "Invalid apptranxid: " + apptranxid;
+			return res;
+		}
+		Document filter = new Document();
+		filter.append("uid", uid);
+		filter.append("appid", appid);
+		filter.append("_id", oid);
+		
+		LinkedList<Document> orders = this.getMongoDocuments(this.mongodbDBName, this.mongodbDBCollPurchaseOrders, filter, 0, 2);
+		if (orders == null || orders.size()==0) {
+			res.code = 404;
+			res.msg = "No such order.";
+			return res;
+		}
+		Document doc = orders.get(0);
+		
+		
 		if (Consts.PAY_RESULT_PAID.equals(payResult)) {
+			Document updatefilter = new Document();
+			updatefilter.append("uid", uid);
+			updatefilter.append("appid", appid);
+			updatefilter.append("_id", oid);
+			updatefilter.append("status", PURCHASE_ORDER_STATUS_NEW);
 			
+			Document data = new Document();
+			data.append("pay_result", Consts.PAY_RESULT_PAID);
+			UpdateResult ur = this.updateMongoDocumentByFilter(this.mongodbDBName, this.mongodbDBCollPurchaseOrders, data, updatefilter);
+			if (ur.getModifiedCount() == 1) {
+				HashMap<String, Long> incrbyArgs = new HashMap<String, Long>(); 
+				// 这里是把要买的资产加到 _id=uid 的 assets document 上。
+				for ( Entry<String, Object> entry : doc.entrySet()) {
+					String avName = entry.getKey();
+					if (avName.startsWith("va_")) {
+						Long value = (Long)entry.getValue();
+						incrbyArgs.put(avName, value);
+					}
+				}
+				this.incrby(appid, apptranxid, uid, incrbyArgs);	
+			}
 			
-		} else if(Consts.PAY_RESULT_PAID.equals(payResult)) {
+			data = new Document();
+			data.append("pay_result", Consts.PAY_RESULT_PAID);
+			data.append("status", PURCHASE_ORDER_STATUS_DONE);
+			ur = this.updateMongoDocumentByFilter(this.mongodbDBName, this.mongodbDBCollPurchaseOrders, data, updatefilter);
 			
+		} else if(Consts.PAY_RESULT_FAILED.equals(payResult)) {
+			Document updatefilter = new Document();
+			updatefilter.append("uid", uid);
+			updatefilter.append("appid", appid);
+			updatefilter.append("_id", oid);
+			updatefilter.append("status", PURCHASE_ORDER_STATUS_NEW);
 			
-		}  
+			Document data = new Document();
+			data.append("status", PURCHASE_ORDER_STATUS_DONE);
+			data.append("pay_result", Consts.PAY_RESULT_FAILED);
+			this.updateMongoDocumentByFilter(this.mongodbDBName, this.mongodbDBCollPurchaseOrders, data, updatefilter);
+		} 
 		
 		
+		
+		orders = this.getMongoDocuments(this.mongodbDBName, this.mongodbDBCollPurchaseOrders, filter, 0, 2);
+		doc = orders.get(0);
+		
+		for (Entry<String, Object> entry : doc.entrySet()) {
+			if (entry.getKey().equals("_id")) {
+				res.put("apptranxid", ((ObjectId)entry.getValue()).toHexString());
+			} else {
+				res.put(entry.getKey(), entry.getValue());
+			}
+		}
 		return res;
 	}
 	
@@ -595,7 +662,7 @@ public class Engine implements IMongodbAspect {
 		DictResult res = new DictResult();
 		double totalAmount = this.calculateTotalAmount(uid, appid, items); // 总价，单位是 分。
         
-        String desc = "购买虚拟产: ";
+        String desc = "购买虚拟资产: ";
         for (Entry<String, Long> entry: items.entrySet()) {
 			desc += entry.getKey() + ", ";
 		}
@@ -606,8 +673,11 @@ public class Engine implements IMongodbAspect {
         purchaseOrder.append("desc", desc);
         purchaseOrder.append("total_amount", totalAmount);
         purchaseOrder.append("status", PURCHASE_ORDER_STATUS_NEW);
+        purchaseOrder.append("pay_result", coopci.ddia.Consts.PAY_RESULT_NEW);
         
-        
+        for (Entry<String, Long> entry : items.entrySet()) {
+        	purchaseOrder.append(entry.getKey(), entry.getValue());
+        }
         
         
         ObjectId docid = this.insertMongoDocument(this.mongodbDBName, 
@@ -622,7 +692,10 @@ public class Engine implements IMongodbAspect {
         res.put("desc", desc);
         res.put("totalAmount", totalAmount);
         res.put("status", PURCHASE_ORDER_STATUS_NEW);
-        
+        res.put("pay_result", coopci.ddia.Consts.PAY_RESULT_NEW);
+        for (Entry<String, Long> entry : items.entrySet()) {
+        	res.put(entry.getKey(), entry.getValue());
+        }
 		return res;
 	}
 	

@@ -155,7 +155,21 @@ public interface IMongodbAspect {
 		return;
 	}
 
-
+	// upsert : false
+	default UpdateResult updateMongoDocumentByFilter(String dbname, String collname, Document data, Document filter) {
+		MongoClient client = this.getMongoClient();
+		MongoDatabase db = client.getDatabase(dbname);
+		MongoCollection<Document> collection = db.getCollection(collname);
+		
+		Document update = new Document();
+		update.append("$set", data);
+		UpdateOptions opt = new UpdateOptions();
+		opt.upsert(false);
+		
+		UpdateResult ur = collection.updateOne(filter, update, opt);
+		
+		return ur;
+	}
 	default ObjectId insertMongoDocument(String dbname, String collname, Document doc) {
 		MongoClient client = this.getMongoClient();
 		MongoDatabase db = client.getDatabase(dbname);
