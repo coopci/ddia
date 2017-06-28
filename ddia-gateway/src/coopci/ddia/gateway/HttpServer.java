@@ -10,6 +10,8 @@ import org.glassfish.grizzly.websockets.OptimizedBroadcaster;
 import org.glassfish.grizzly.websockets.WebSocketAddOn;
 import org.glassfish.grizzly.websockets.WebSocketEngine;
 
+import coopci.ddia.gateway.handlers.BuyDiamondsCheckOrderHandler;
+import coopci.ddia.gateway.handlers.BuyDiamondsCreateOrderHandler;
 import coopci.ddia.gateway.handlers.FollowHandler;
 import coopci.ddia.gateway.handlers.GetPublicUsrinfoHandler;
 import coopci.ddia.gateway.handlers.LoginSubmitPhoneHandler;
@@ -99,6 +101,18 @@ public class HttpServer {
 		server.getServerConfiguration().addHttpHandler(
 				loginSubmitVcodeHandler,
 				"/login/submit_vcode");
+		
+		BuyDiamondsCreateOrderHandler buyDiamondsCreateOrderHandler = new BuyDiamondsCreateOrderHandler();
+		buyDiamondsCreateOrderHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				buyDiamondsCreateOrderHandler,
+				"/buy_diamonds/create_order");
+		
+		BuyDiamondsCheckOrderHandler buyDiamondsCheckOrderHandler = new BuyDiamondsCheckOrderHandler();
+		buyDiamondsCheckOrderHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				buyDiamondsCheckOrderHandler,
+				"/buy_diamonds/check_order");
 		
 		try {
 			server.removeListener("grizzly");

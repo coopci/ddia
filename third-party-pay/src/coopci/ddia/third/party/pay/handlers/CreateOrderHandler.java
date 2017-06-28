@@ -34,7 +34,7 @@ public class CreateOrderHandler extends HttpHandler {
 			response.getWriter().write(HttpStatus.METHOD_NOT_ALLOWED_405.getReasonPhrase());
 			return;
 		}
-		
+		request.setCharacterEncoding("utf-8");
 		CreateOrderRequest req = new CreateOrderRequest();
 		req.uid = Long.parseLong(request.getParameter("uid"));
 		req.payChannel = request.getParameter("pay_channel");

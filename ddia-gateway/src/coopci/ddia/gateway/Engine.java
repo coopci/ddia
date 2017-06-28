@@ -132,9 +132,14 @@ public class Engine {
 		String ret = "";
 		if (MICROSERVICE_NAME_USER_BASIC.equals(serviceName)) {
 			return USER_BASIC_HTTP_PREFIX;
-		} else if (MICROSERVICE_NAME_USER_RELATION.equals(serviceName)) {
+		} else if (MICROSERVICE_NAME_USER_BASIC.equals(serviceName)) {
 			return USER_RELATION_HTTP_PREFIX;
+		} else if (MICROSERVICE_NAME_VIRTUAL_ASSETS.equals(serviceName)) {
+			return VIRTUAL_ASSETS_HTTP_PREFIX;
+		} else if (MICROSERVICE_NAME_THIRD_PARTY_PAY.equals(serviceName)) {
+			return THIRD_PARTY_PAY_HTTP_PREFIX;
 		}
+		
 		
 		return ret;
 	}

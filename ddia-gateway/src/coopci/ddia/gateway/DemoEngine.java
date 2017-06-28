@@ -47,6 +47,7 @@ import coopci.ddia.notify.IPublisher;
 import coopci.ddia.notify.ISubscriber;
 import coopci.ddia.notify.rabbitmq.RabbitmqPublisher;
 import coopci.ddia.notify.rabbitmq.RabbitmqSubscriber;
+import coopci.ddia.results.DictResult;
 import coopci.ddia.results.ListResult;
 import coopci.ddia.results.RentingStatusResult;
 import coopci.ddia.results.UserInfo;
@@ -122,11 +123,36 @@ public class DemoEngine extends Engine {
 	}
 	
 	
-	public Result buyDiamondsCreateOrder() {
+	public Result buyDiamondsCreateOrder(String sessid, Long number, String payChannel) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException {
 		Result res = new Result();
-		// 调用 MICROSERVICE_NAME_VIRTUAL_ASSETS 的创建订单
-		// 调用 MICROSERVICE_NAME_THIRD_PARTY_PAY 的创建订单
-		return res;
+		Long uid = this.getUidFromSessid(sessid);
+		String appid = "buy_diamonds";
+		String virutalAssetsHttpPrefix = this.getMicroserviceHttpPrefix(MICROSERVICE_NAME_VIRTUAL_ASSETS, uid);
+		HashMap<String, String> avArgs = new HashMap<String, String>();
+		avArgs.put("uid", Long.toString(uid));
+		avArgs.put("appid", appid);
+		avArgs.put("va_diamonds", Long.toString(number));
+		
+		byte[] followResponse = HttpClientUtil.post(virutalAssetsHttpPrefix + "virtual-assets/create_purchase_order", avArgs);			
+		DictResult avResult = getObjectMapper().readValue(followResponse, DictResult.class);
+		
+		
+		
+		
+		String thirdPartyPayHttpPrefix = this.getMicroserviceHttpPrefix(MICROSERVICE_NAME_THIRD_PARTY_PAY, uid);
+		HashMap<String, String> payArgs = new HashMap<String, String>();
+		payArgs.put("uid", Long.toString(uid));
+		payArgs.put("appid", appid);
+		payArgs.put("desc", avResult.data.get("desc").toString());
+		payArgs.put("apptranxid", avResult.data.get("apptranxid").toString());
+		payArgs.put("total_amount", Double.toString(  (Double)avResult.data.get("totalAmount"))   );
+		payArgs.put("pay_channel", payChannel );
+		
+		
+		followResponse = HttpClientUtil.post(thirdPartyPayHttpPrefix + "pay/create_order", payArgs);			
+		DictResult payResult = getObjectMapper().readValue(followResponse, DictResult.class);
+		
+		return payResult;
 	}
 	
 	public Result buyDiamondsCheckOrder() {

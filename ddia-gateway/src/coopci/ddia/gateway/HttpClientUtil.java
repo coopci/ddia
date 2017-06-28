@@ -71,14 +71,15 @@ public class HttpClientUtil {
 			String value = entry.getValue();
 			sb.append( URLEncoder.encode(key, "UTF-8") );	
 			sb.append( "=" );
-			sb.append( URLEncoder.encode(value, "UTF-8") );
+			String s = URLEncoder.encode(value, "UTF-8");
+			sb.append( s );
 			sb.append( "&" );
 		}
         try {
         	HttpPost httppost = new HttpPost(url);
             System.out.println("Executing request " + httppost.getRequestLine());
             httppost.setEntity(new StringEntity(sb.toString()));
-            httppost.setHeader("Content-Type", "application/x-www-form-urlencoded");
+            httppost.setHeader("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
             ResponseHandler<byte[]> responseHandler = new ResponseHandler<byte[]>() {
                 @Override
                 public byte[] handleResponse(
