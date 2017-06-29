@@ -137,7 +137,7 @@ public interface IMongodbAspect {
 		}
 		
 	// upsert : false
-	default void updateMongoDocumentById(String dbname, String collname, Document data, String id) {
+	default void updateMongoDocumentById(String dbname, String collname, Document data, Object id) {
 		MongoClient client = this.getMongoClient();
 		MongoDatabase db = client.getDatabase(dbname);
 		MongoCollection<Document> collection = db.getCollection(collname);

@@ -1,4 +1,4 @@
-package coopci.ddia.user.basic;
+ï»¿package coopci.ddia.user.basic;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -19,6 +19,7 @@ import java.util.Base64;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.crypto.BadPaddingException;
@@ -27,6 +28,11 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import org.bson.Document;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+import org.glassfish.grizzly.http.util.HttpStatus;
+
+import coopci.ddia.user.basic.weixin.WeixinAPIClient;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
@@ -44,6 +50,7 @@ import com.taobao.api.TaobaoClient;
 import com.taobao.api.request.AlibabaAliqinFcSmsNumSendRequest;
 import com.taobao.api.response.AlibabaAliqinFcSmsNumSendResponse;
 
+import coopci.ddia.IMongodbAspect;
 import coopci.ddia.LoginResult;
 import coopci.ddia.Result;
 import coopci.ddia.SessionId;
@@ -53,47 +60,24 @@ import coopci.ddia.results.UserInfosResult;
 import coopci.ddia.util.SessidPacker;
 import coopci.ddia.util.Vcode;
 
-public class Engine {
+public class Engine implements IMongodbAspect {
 	
 	String RSAPrivateKeyFile = "private_key.pem";
 	String RSAPublicKeyFile = "public_key.pem";
 	
 	String mongoConnStr = "mongodb://localhost:27017/";
-	String mongodbDBName = "user_basic";     // mongodbµÄ¿âÃû×Ö
-	String mongodbDBCollVcode = "sms_vcode";    // ´æ¶ÌĞÅÑéÖ¤ÂëµÄcollection, _idÊÇÊÖ»úºÅ¡£
-	String mongodbDBCollUserInfo = "user_info"; // ´æÓÃ»§ĞÅÏ¢µÄcollection, _idÊÇÓÃ»§id¡£
+	String mongodbDBName = "user_basic";     // mongodbçš„åº“åå­—
+	String mongodbDBCollVcode = "sms_vcode";    // å­˜çŸ­ä¿¡éªŒè¯ç çš„collection, _idæ˜¯æ‰‹æœºå·ã€‚
+	String mongodbDBCollUserInfo = "user_info"; // å­˜ç”¨æˆ·ä¿¡æ¯çš„collection, _idæ˜¯ç”¨æˆ·idã€‚
 	
-	String mongodbDBCollPhoneUser = "phone_user"; // ÓÃÀ´Î¬»¤ ÊÖ»úºÅµÄÎ¨Ò»ĞÔÒÔ¼°  ÊÖ»úºÅºÍuser_idµÄ¶ÔÓ¦¹ØÏµ¡£ _idÊÇphone£¬  uid ×Ö¶Î´æÓÃ»§id¡£
-	String mongodbDBCollCounters = "counters"; // ÓÃÀ´Î¬»¤ ×ÔÔöµÄ ÓÃ»§id¡£
+	String mongodbDBCollPhoneUser = "phone_user"; // ç”¨æ¥ç»´æŠ¤ æ‰‹æœºå·çš„å”¯ä¸€æ€§ä»¥åŠ  æ‰‹æœºå·å’Œuser_idçš„å¯¹åº”å…³ç³»ã€‚ _idæ˜¯phoneï¼Œ  uid å­—æ®µå­˜ç”¨æˆ·idã€‚
+	String mongodbDBCollCounters = "counters"; // ç”¨æ¥ç»´æŠ¤ è‡ªå¢çš„ ç”¨æˆ·idã€‚
 	
-	// ¾İhttp://mongodb.github.io/mongo-java-driver/2.13/getting-started/quick-tour/ Ëµ:
+	// æ®http://mongodb.github.io/mongo-java-driver/2.13/getting-started/quick-tour/ è¯´:
 	// The MongoClient class is designed to be thread safe and shared among threads. Typically you create only 1 instance for a given database cluster and use it across your application.
 	MongoClient mongoClient = null;
 	// mongodb://host:27017/?replicaSet=rs0&maxPoolSize=200
-	public void connectMongo() {
-		try{
-			
-			if (mongoConnStr == null) {
-				//logger.error("mongoConnStr == null in connectMongo.");
-				this.mongoClient = null;
-				return;
-			}
-			if (mongoConnStr.length() == 0) {
-				//logger.error("mongoConnStr.length() == 0 in connectMongo.");
-				this.mongoClient = null;
-				return;
-			}
-			MongoClientURI uri = new MongoClientURI(mongoConnStr,
-					MongoClientOptions.builder().cursorFinalizerEnabled(false));
-			mongoClient = new MongoClient(uri);
-		} catch(Exception ex) {
-			// logger.error("Exception in connectMongo, mongoConnStr = {} ", mongoConnStr, ex);
-		}
-	}
-	public MongoClient getMongoClient() {
-		
-		return mongoClient;
-	}
+	
 
 	public void close() {
 		if (this.mongoClient == null)
@@ -117,7 +101,7 @@ public class Engine {
 		} catch (com.mongodb.MongoWriteException ex) {
 			// https://github.com/mongodb/mongo/blob/master/src/mongo/base/error_codes.err
 			if (ex.getCode() == 11000 ) {
-				// 11000 ±íÊ¾ DuplicateKey
+				// 11000 è¡¨ç¤º DuplicateKey
 			} else {
 				throw ex;
 			}
@@ -265,26 +249,6 @@ public class Engine {
 		return;
 	}
 	
-	Document getMongoDocumentById(String dbname, String collname, String id) {
-		MongoClient client = this.getMongoClient();
-		MongoDatabase db = client.getDatabase(dbname);
-		MongoCollection<Document> collection = db.getCollection(collname);
-		Document filter = new Document();
-		filter.append("_id", id);
-		FindIterable<Document> iter = collection.find(filter);
-		Document doc = iter.first();
-		return doc;
-	}
-	Document getMongoDocumentById(String dbname, String collname, long id) {
-		MongoClient client = this.getMongoClient();
-		MongoDatabase db = client.getDatabase(dbname);
-		MongoCollection<Document> collection = db.getCollection(collname);
-		Document filter = new Document();
-		filter.append("_id", id);
-		FindIterable<Document> iter = collection.find(filter);
-		Document doc = iter.first();
-		return doc;
-	}
 	void addPhoneUseridToMongo(String dbname, String collname, String phone, long uid) {
 		MongoClient client = this.getMongoClient();
 		MongoDatabase db = client.getDatabase(dbname);
@@ -303,23 +267,6 @@ public class Engine {
 		collection.insertOne(userdata);
 		return;
 	}
-	void removeMongoDocumentById(String dbname, String collname, String id) {
-		MongoClient client = this.getMongoClient();
-		MongoDatabase db = client.getDatabase(dbname);
-		MongoCollection<Document> collection = db.getCollection(collname);
-		Document filter = new Document();
-		filter.append("_id", id);
-		collection.deleteOne(filter);
-		return;
-	}
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 
@@ -329,12 +276,12 @@ public class Engine {
 		phone = phone.trim();
 		String vcode = Vcode.genNumVcode(6);
 
-		// TODO °ÑÏÂÃæÕâĞĞ×¢ÊÍµô¡£
+		// TODO æŠŠä¸‹é¢è¿™è¡Œæ³¨é‡Šæ‰ã€‚
 		vcode = "111111";
 
 
 		this.saveSmsVcode(vcode, phone);
-		// °ÑvcodeÓÃ¶ÌĞÅ·¢µ½ÓÃ»§ÊÖ»úÉÏ¡£
+		// æŠŠvcodeç”¨çŸ­ä¿¡å‘åˆ°ç”¨æˆ·æ‰‹æœºä¸Šã€‚
 		AlibabaAliqinFcSmsNumSendResponse resp = Utils.sendVcodeViaAlidayuy(phone, vcode);
 		
 		return res;
@@ -359,8 +306,8 @@ public class Engine {
 	
 	
 	public long getOrCreateUidByPhone(String phone) {
-		// ´ÓphoneÕÒuid
-		// Èç¹ûÕÒ²»µ½£¬ÔòÉú³ÉĞÂµÄuid£¬²¢°ÑphoneºÍÉú³ÉµÄuid ¹ØÁªÆğÀ´¡£
+		// ä»phoneæ‰¾uid
+		// å¦‚æœæ‰¾ä¸åˆ°ï¼Œåˆ™ç”Ÿæˆæ–°çš„uidï¼Œå¹¶æŠŠphoneå’Œç”Ÿæˆçš„uid å…³è”èµ·æ¥ã€‚
 		Document doc = this.getMongoDocumentById(this.mongodbDBName, this.mongodbDBCollPhoneUser, phone);
 		if (doc != null) {
 			long uid = doc.getLong("uid");
@@ -379,7 +326,7 @@ public class Engine {
 		boolean checkResult = this.checkVcode(phone, vcode);
 		if (!checkResult) {
 			res.code = 401;
-			res.msg = "Ìá½»µÄ¶ÌĞÅÑéÖ¤ÂëÓĞÎó¡£";
+			res.msg = "æäº¤çš„çŸ­ä¿¡éªŒè¯ç æœ‰è¯¯ã€‚";
 			return res;
 		}
 		
@@ -428,8 +375,8 @@ public class Engine {
 	
 	
 	Set<String> uniqueFields;
-	// ¸ù¾İ fieldnameÖ¸¶¨µÄ×Ö¶ÎÃûºÍ fieldvalue Ö¸¶¨µÄ×Ö¶ÎÖµ  ÕÒµ½¶ÔÓ¦µÄÓÃ»§ĞÅÏ¢¡£
-	// fieldsÊÇÒª»ñÈ¡µÄ×Ö¶Î¡£
+	// æ ¹æ® fieldnameæŒ‡å®šçš„å­—æ®µåå’Œ fieldvalue æŒ‡å®šçš„å­—æ®µå€¼  æ‰¾åˆ°å¯¹åº”çš„ç”¨æˆ·ä¿¡æ¯ã€‚
+	// fieldsæ˜¯è¦è·å–çš„å­—æ®µã€‚
 	public Result lookupUserinfoByUniqueField(String fieldname, String fieldvalue, Set<String> fields) {
 		UserInfosResult result = new UserInfosResult();
 		
@@ -471,30 +418,66 @@ public class Engine {
 		return result;
 	}
 	
-	
-	
-	// upsert : false
-	void updateMongoDocumentById(String dbname, String collname, Document data, long id) {
-		MongoClient client = this.getMongoClient();
-		MongoDatabase db = client.getDatabase(dbname);
-		MongoCollection<Document> collection = db.getCollection(collname);
+		
+	public Result loginWithWeixinSubmitCode(String code) throws JSONException {
+		Result res = new Result();
+		
+		String aceessTokenResp = WeixinAPIClient.syncGetAccessToken(code, WeixinAPIClient.WX_APP_ID, WeixinAPIClient.WX_APP_SECRET);
+		System.out.println(aceessTokenResp);
+		
+		JSONObject jsonObject = new JSONObject(aceessTokenResp);
+		
+		if (jsonObject.has("errcode")) {
+			res.code = 400;
+			res.msg = aceessTokenResp;
+			return res;
+		}
+		
+		String accessToken = jsonObject.getString("access_token");
+		String openid = jsonObject.getString("openid");
 		
 		
+		String userinfoResp = WeixinAPIClient.syncGetUserInfo(accessToken, openid);
+		System.out.println("userinfoResp:");
+		System.out.println(userinfoResp);
+		JSONObject joUserInfo = new JSONObject(userinfoResp);
+		if (joUserInfo.has("errcode")) {
+			res.code = 400;
+			res.msg = aceessTokenResp;
+			return res;
+		} else {
+			
+			// userinfoRespåƒä¸‹é¢è¿™æ ·:
+			// {"openid":"oYPUVwO_O0lYh9dSXWYuw0CL9z_I","nickname":"æ— æœ‰æ— æ— ","sex":1,"language":"en","city":"Haidian","province":"Beijing","country":"CN","headimgurl":"http:\/\/wx.qlogo.cn\/mmopen\/gfMNVzbTqyEib9s8REzAJgSvKwwqfSiaCTpw3r5wF2NRDZ6VPmepMlOoLMbqLG38jovpGhpV8ibj8AWXDZa5WK8qx5yfyCMODcU\/0","privilege":[],"unionid":"oU0F9v4oIZkMCDDrZC76MOOodyPY"}
+			
+		}
 		
-		Document filter = new Document();
-		filter.append("_id", id);
+		Iterator iter = joUserInfo.keys();
+		while(iter.hasNext()) {
+			String key = (String)iter.next();
+			Object value = joUserInfo.get(key);
+			if (value instanceof String) {
+				System.out.println(key +":" + value);
+			} else {
+				System.out.println(key +":" + value);
+			}
+		}
+			
+		String nickname = joUserInfo.getString("nickname");
 		
-		Document update = new Document();
-		update.append("$set", data);
-		UpdateOptions opt = new UpdateOptions();
-		opt.upsert(false);
 		
-		collection.updateOne(filter, update, opt);
+		// TODO æŒ‰openidæ‰¾ç”¨æˆ·ï¼Œå¦‚æœæ‰¾ä¸åˆ°å°±åˆ›å»ºä¸€ä¸ªæ–°çš„ å¹¶æŠŠopenid, nickname, accessToken è®¾ç½®ä¸Šã€‚
+		//                   å¦‚æœæ‰¾åˆ°ï¼Œå°±åªæŠŠ accessToken è®¾ç½®ä¸Šã€‚
+		
+		// ä»phoneæ‰¾uid
+		// å¦‚æœæ‰¾ä¸åˆ°ï¼Œåˆ™ç”Ÿæˆæ–°çš„uidï¼Œå¹¶æŠŠphoneå’Œç”Ÿæˆçš„uid å…³è”èµ·æ¥ã€‚
+		
+				
+				
 		
 		
-		return;
+		return res;
 	}
-		
 		
 		
 	public Result setUserinfo(long uid, HashMap<String, Object> info) {
@@ -504,5 +487,17 @@ public class Engine {
 		
 		return result;
 	}
+	@Override
+	public void setMongoClient(MongoClient mc) {
+		this.mongoClient = mc;
+	}
+	@Override
+	public MongoClient getMongoClient() {
+		return mongoClient;
+	}
 	
+	@Override
+	public String getMongoConnStr() {
+		return mongoConnStr;
+	}
 }
