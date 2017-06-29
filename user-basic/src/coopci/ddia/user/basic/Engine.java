@@ -38,6 +38,11 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.FindOneAndUpdateOptions;
 import com.mongodb.client.model.ReturnDocument;
 import com.mongodb.client.model.UpdateOptions;
+import com.taobao.api.ApiException;
+import com.taobao.api.DefaultTaobaoClient;
+import com.taobao.api.TaobaoClient;
+import com.taobao.api.request.AlibabaAliqinFcSmsNumSendRequest;
+import com.taobao.api.response.AlibabaAliqinFcSmsNumSendResponse;
 
 import coopci.ddia.LoginResult;
 import coopci.ddia.Result;
@@ -317,8 +322,9 @@ public class Engine {
 	
 	
 	
-	
-	public Result loginSubmitPhone(String phone) {
+
+
+	public Result loginSubmitPhone(String phone) throws ApiException {
 		Result res = new Result();
 		phone = phone.trim();
 		String vcode = Vcode.genNumVcode(6);
@@ -328,8 +334,8 @@ public class Engine {
 
 
 		this.saveSmsVcode(vcode, phone);
-		// TODO 把vcode用短信发到用户手机上。
-		// 
+		// 把vcode用短信发到用户手机上。
+		AlibabaAliqinFcSmsNumSendResponse resp = Utils.sendVcodeViaAlidayuy(phone, vcode);
 		
 		return res;
 	}

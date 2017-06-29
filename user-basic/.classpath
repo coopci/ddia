@@ -14,6 +14,9 @@
 	<classpathentry kind="lib" path="../lib/junit.jar"/>
 	<classpathentry kind="lib" path="../lib/mongo-java-driver-3.0.2.jar"/>
 	<classpathentry kind="lib" path="../lib/taobao-sdk-java-auto_1455552377940-20160607.jar"/>
+	<classpathentry kind="lib" path="../lib/activation-1.1.jar"/>
+	<classpathentry kind="lib" path="../lib/mail-1.4.7.jar"/>
+	
 	<classpathentry combineaccessrules="false" kind="src" path="/ddia-common"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
