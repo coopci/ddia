@@ -20,6 +20,7 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Set;
 
 import javax.crypto.BadPaddingException;
@@ -42,6 +43,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.FindOneAndUpdateOptions;
+import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.ReturnDocument;
 import com.mongodb.client.model.UpdateOptions;
 import com.taobao.api.ApiException;
@@ -55,6 +57,7 @@ import coopci.ddia.LoginResult;
 import coopci.ddia.Result;
 import coopci.ddia.SessionId;
 import coopci.ddia.UidResult;
+import coopci.ddia.results.DictResult;
 import coopci.ddia.results.UserInfo;
 import coopci.ddia.results.UserInfosResult;
 import coopci.ddia.util.SessidPacker;
@@ -217,6 +220,34 @@ public class Engine implements IMongodbAspect {
 		connectMongo();
 		initUseridSeq();
 		initUniqueFields();
+		
+		
+		
+		
+
+		Document fields = new Document();
+		fields.append("weixin.openid", 1);
+		IndexOptions opt = new IndexOptions();
+		opt.unique(true);
+		opt.sparse(true);
+		this.ensureIndex(this.mongodbDBName, this.mongodbDBCollUserInfo, fields, opt);
+		
+		fields = new Document();
+		fields.append("phone", 1);
+		opt = new IndexOptions();
+		opt.unique(true);
+		opt.sparse(true);
+		this.ensureIndex(this.mongodbDBName, this.mongodbDBCollUserInfo, fields, opt);
+		
+		
+		fields = new Document();
+		fields.append("nickname", 1);
+		opt = new IndexOptions();
+		opt.unique(true);
+		opt.sparse(true);
+		this.ensureIndex(this.mongodbDBName, this.mongodbDBCollUserInfo, fields, opt);
+		
+		
 		
 		//saveSmsVcode("34", "234");
 		//long uid1 = genNewUserid();
@@ -420,7 +451,7 @@ public class Engine implements IMongodbAspect {
 	
 		
 	public Result loginWithWeixinSubmitCode(String code) throws JSONException {
-		Result res = new Result();
+		DictResult res = new DictResult();
 		
 		String aceessTokenResp = WeixinAPIClient.syncGetAccessToken(code, WeixinAPIClient.WX_APP_ID, WeixinAPIClient.WX_APP_SECRET);
 		System.out.println(aceessTokenResp);
@@ -465,20 +496,46 @@ public class Engine implements IMongodbAspect {
 			
 		String nickname = joUserInfo.getString("nickname");
 		
+		Document ret = this.getOrCreateUserByWeixin(openid, nickname, accessToken);
 		
-		// TODO 按openid找用户，如果找不到就创建一个新的 并把openid, nickname, accessToken 设置上。
-		//                   如果找到，就只把 accessToken 设置上。
-		
-		// 从phone找uid
-		// 如果找不到，则生成新的uid，并把phone和生成的uid 关联起来。
-		
-				
-				
-		
+		res.put("uid", ret.getLong("_id"));
+		res.put("nickname", ret.getString("nickname"));
 		
 		return res;
 	}
+	
+	
+	
+	// TODO 按openid找用户，如果找不到就创建一个新的 并把openid, nickname, accessToken 设置上。
+	//                   如果找到，就只把 accessToken 设置上。	
+	// 从phone找uid
+	// 如果找不到，则生成新的uid，并把phone和生成的uid 关联起来。
+	public Document getOrCreateUserByWeixin(String openid, String nickname, String accessToken) {
 		
+		
+		Document filter = new Document();
+		
+		filter.append("weixin.openid", openid);
+		
+		Document doc= this.getOneMongoDocument(this.mongodbDBName, this.mongodbDBCollUserInfo, filter, 0, 1);
+		if(doc != null) {
+			Document update = new Document();
+			update.append("weixin.accessToken", accessToken);
+			this.updateMongoDocumentById(this.mongodbDBName, this.mongodbDBCollUserInfo, update, doc.getLong("_id"));
+			return doc;
+		} else {
+			Long uid = this.genNewUserid();
+			Document dataToInsert = new Document();
+			dataToInsert.append("_id", uid);
+			dataToInsert.append("nickname", nickname);
+			Document weixinData = new Document();
+			weixinData.append("openid", openid);
+			weixinData.append("accessToken", accessToken);
+			dataToInsert.append("weixin", weixinData);	
+			this.insertMongoDocumentWithId(this.mongodbDBName, this.mongodbDBCollUserInfo, dataToInsert);
+			return dataToInsert;
+		}
+	}	
 		
 	public Result setUserinfo(long uid, HashMap<String, Object> info) {
 		UserInfosResult result = new UserInfosResult();

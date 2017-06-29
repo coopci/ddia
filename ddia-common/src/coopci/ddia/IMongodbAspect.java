@@ -69,10 +69,28 @@ public interface IMongodbAspect {
 		while(cur.hasNext()){
 			ret.add(cur.next());
 		}
+		cur.close();
 		return ret;
 	}
 
 
+	default Document getOneMongoDocument(String dbname, String collname, Document query, int skip, int limit) {
+		MongoClient client = this.getMongoClient();
+		MongoDatabase db = client.getDatabase(dbname);
+		MongoCollection<Document> collection = db.getCollection(collname);
+		FindIterable<Document> iterable = collection.find(query).skip(skip).limit(limit);
+		
+		MongoCursor<Document> cur = iterable.iterator();
+		
+		Document ret = null;
+		while(cur.hasNext()){
+			ret = cur.next();
+		}
+		cur.close();
+		return ret;
+	}
+
+	
 	default Document getMongoDocumentById(String dbname, String collname, Object id) {
 		MongoClient client = this.getMongoClient();
 		MongoDatabase db = client.getDatabase(dbname);
@@ -170,6 +188,17 @@ public interface IMongodbAspect {
 		
 		return ur;
 	}
+	
+
+	default void insertMongoDocumentWithId(String dbname, String collname, Document doc) {
+		MongoClient client = this.getMongoClient();
+		MongoDatabase db = client.getDatabase(dbname);
+		MongoCollection<Document> collection = db.getCollection(collname);
+		collection.insertOne(doc);
+		return;
+	}
+	
+	
 	default ObjectId insertMongoDocument(String dbname, String collname, Document doc) {
 		MongoClient client = this.getMongoClient();
 		MongoDatabase db = client.getDatabase(dbname);
