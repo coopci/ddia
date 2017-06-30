@@ -19,6 +19,7 @@ import coopci.ddia.user.basic.handlers.sms.GetUidBySessidHandler;
 import coopci.ddia.user.basic.handlers.sms.GetUserinfoByUidsHandler;
 import coopci.ddia.user.basic.handlers.sms.LoginSubmitPhoneHandler;
 import coopci.ddia.user.basic.handlers.sms.LoginSubmitVcodeHandler;
+import coopci.ddia.user.basic.handlers.weixin.LoginWithWeixinHandler;
 
 
 public class HttpServer {
@@ -87,12 +88,19 @@ public class HttpServer {
 				setUserinfoHandler,
 				"/user-basic/set_user_info_by_uid");
 		
+		
+		LoginWithWeixinHandler loginWithWeixinHandler = new LoginWithWeixinHandler();
+		loginWithWeixinHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				loginWithWeixinHandler,
+				"/user-basic/login/weixin");
+		
 		// "/user-basic/set_user_info_by_uid"
 		// "/user-basic/get_user_info_by_session_id"
 		// "/user-basic/get_user_info_by_uids"
 		
 		try {
-			server.removeListener("grizzly"); // É¾µôÄ¬ÈÏµÄListener¡£
+			server.removeListener("grizzly"); // É¾ï¿½ï¿½Ä¬ï¿½Ïµï¿½Listenerï¿½ï¿½
 			
 			NetworkListener nl = new NetworkListener("ddia-user-basic", "0.0.0.0", listenPort);
 			ThreadPoolConfig threadPoolConfig = ThreadPoolConfig
