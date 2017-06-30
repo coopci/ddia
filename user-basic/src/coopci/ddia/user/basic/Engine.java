@@ -226,6 +226,7 @@ public class Engine implements IMongodbAspect {
 		
 
 		Document fields = new Document();
+		fields.append("weixin.appid", 1); // 考虑到换appid的情况，用这两个字段表示联合唯一。
 		fields.append("weixin.openid", 1);
 		IndexOptions opt = new IndexOptions();
 		opt.unique(true);
@@ -496,7 +497,7 @@ public class Engine implements IMongodbAspect {
 			
 		String nickname = joUserInfo.getString("nickname");
 		
-		Document ret = this.getOrCreateUserByWeixin(openid, nickname, accessToken);
+		Document ret = this.getOrCreateUserByWeixin(WeixinAPIClient.WX_APP_ID, openid, nickname, accessToken);
 		
 		res.put("uid", ret.getLong("_id"));
 		res.put("nickname", ret.getString("nickname"));
@@ -506,16 +507,23 @@ public class Engine implements IMongodbAspect {
 	
 	
 	
-	// TODO 按openid找用户，如果找不到就创建一个新的 并把openid, nickname, accessToken 设置上。
-	//                   如果找到，就只把 accessToken 设置上。	
-	// 从phone找uid
-	// 如果找不到，则生成新的uid，并把phone和生成的uid 关联起来。
-	public Document getOrCreateUserByWeixin(String openid, String nickname, String accessToken) {
+	/** 按openid找用户，如果找不到就创建一个新的 并把openid, nickname, accessToken 设置上。
+	 *                   如果找到，就只把 accessToken 设置上。	
+	 * 从phone找uid
+	 * 如果找不到，则生成新的uid，并把phone和生成的uid 关联起来。 
+	 * @param appid  微信的appid
+	 * @param openid	微信的openid
+	 * @param nickname
+	 * @param accessToken 微信的accessToken
+	 * @return
+	 */
+	public Document getOrCreateUserByWeixin(String appid, String openid, String nickname, String accessToken) {
 		
 		
 		Document filter = new Document();
 		
 		filter.append("weixin.openid", openid);
+		filter.append("weixin.appid", appid);
 		
 		Document doc= this.getOneMongoDocument(this.mongodbDBName, this.mongodbDBCollUserInfo, filter, 0, 1);
 		if(doc != null) {
@@ -529,6 +537,7 @@ public class Engine implements IMongodbAspect {
 			dataToInsert.append("_id", uid);
 			dataToInsert.append("nickname", nickname);
 			Document weixinData = new Document();
+			weixinData.append("appid", appid);
 			weixinData.append("openid", openid);
 			weixinData.append("accessToken", accessToken);
 			dataToInsert.append("weixin", weixinData);	
