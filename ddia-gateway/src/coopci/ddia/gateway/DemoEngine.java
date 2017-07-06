@@ -3,11 +3,14 @@ package coopci.ddia.gateway;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+
 import coopci.ddia.Result;
 import coopci.ddia.results.DictResult;
 
@@ -149,6 +152,39 @@ public class DemoEngine extends Engine {
 		return postprocResult;
 	}
 	
+	
+	/**
+	 * 
+	 * @param targetNickname 这个聊天消息的接受方的nickname
+	 * */
+	public Result sendChatMessage(String sessid, String targetNickname, String message) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException, InterruptedException, ExecutionException {
+		Result result = new Result();
+		long uid = getUidFromSessid(sessid);
+		long targetuid = -1;
+		
+		targetuid = this.lookupUidByUniqueField("nickname", targetNickname);
+		
+		if (targetuid < 0 ) {
+			result.code = 404;
+			result.msg = "Couldn't find user: " + targetNickname;
+			return result;
+		}
+		Date now = new Date();
+		HashMap<String, String> args = new HashMap<String, String> (); 
+		args.put("from", Long.toString(uid));
+		args.put("to_uid", Long.toString(targetuid));
+		args.put("message", message);
+		args.put("time", now.toString());
+		args.put("appid", "chat");
+		
+		String httpPrefix = this.getMicroserviceHttpPrefix(MICROSERVICE_NAME_CHAT, uid);
+		byte[] followResponse = HttpClientUtil.post(httpPrefix + "chat/send_message", args);			
+		result = getObjectMapper().readValue(followResponse, Result.class);
+	
+		return result;
+	}
+		
+		
 	public static void main(String[] args) throws Exception {
 		DemoEngine engine = new DemoEngine();
 		engine.init();

@@ -1,6 +1,4 @@
-package coopci.ddia.chat.handlers;
-
-import java.util.HashMap;
+package coopci.ddia.gateway.handlers;
 
 import org.glassfish.grizzly.http.Method;
 import org.glassfish.grizzly.http.server.HttpHandler;
@@ -9,20 +7,17 @@ import org.glassfish.grizzly.http.server.Response;
 import org.glassfish.grizzly.http.util.HttpStatus;
 
 import coopci.ddia.Result;
-import coopci.ddia.chat.Engine;
+import coopci.ddia.gateway.DemoEngine;
 import coopci.ddia.GrizzlyUtils;
 
-/**
- * 用户之间发送即时聊天消息。
- * */
-public class SendMessageHandler extends HttpHandler {
-	public Engine getEngine() {
+public class SendChatMessageHandler extends HttpHandler {
+	public DemoEngine getEngine() {
 		return engine;
 	}
-	public void setEngine(Engine engine) {
+	public void setEngine(DemoEngine engine) {
 		this.engine = engine;
 	}
-	Engine engine;
+	DemoEngine engine;
 	public void service(Request request, Response response) throws Exception {
 		Method method = request.getMethod();
 		if (!method.getMethodString().equals("POST")) {
@@ -30,15 +25,11 @@ public class SendMessageHandler extends HttpHandler {
 			response.getWriter().write(HttpStatus.METHOD_NOT_ALLOWED_405.getReasonPhrase());
 			return;
 		}
-        long touid = Long.parseLong(request.getParameter("to_uid"));
-        
-        HashMap<String, String> args = new HashMap<String, String>(); 
-        for ( String fn : request.getParameterNames()) {
-        	if (fn.equals("to_uid"))
-        		continue;
-        	args.put(fn, request.getParameter(fn));
-        }
-        Result res = this.engine.sendMessage(touid, args);
+		
+        String sessid = request.getParameter("sessid");    
+        String targetNickname = request.getParameter("sendto");
+        String message = request.getParameter("message");
+        Result res = this.engine.sendChatMessage(sessid, targetNickname, message);
         GrizzlyUtils.writeJson(response, res);
 		return;
     }

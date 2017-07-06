@@ -142,6 +142,8 @@ public class Engine {
 			return VIRTUAL_ASSETS_HTTP_PREFIX;
 		} else if (MICROSERVICE_NAME_THIRD_PARTY_PAY.equals(serviceName)) {
 			return THIRD_PARTY_PAY_HTTP_PREFIX;
+		} else if (MICROSERVICE_NAME_CHAT.equals(serviceName)) {
+			return CHAT_HTTP_PREFIX;
 		}
 		
 		

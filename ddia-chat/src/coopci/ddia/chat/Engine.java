@@ -34,6 +34,7 @@ import javax.crypto.NoSuchPaddingException;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
@@ -120,11 +121,21 @@ public class Engine implements IMongodbAspect {
 		
 		Result res = new Result();
 		this.getPublisher().publish(touid, message);
-		
-		
-		
 		return res;
 	}
+	
+	/**
+	 * 发聊天信息给指定用户
+	 * @throws Exception 
+	 * */
+	public Result sendMessage(long touid, HashMap<String, String> args) throws Exception {
+		Result res = new Result();
+		ObjectMapper objectMapper = new ObjectMapper();
+		String message = objectMapper.writeValueAsString(args);
+		this.getPublisher().publish(touid, message);
+		return res;
+	}
+	
 	/**
 	 * 把args指出的资产变动 应用到对uid名下。
 	 * 保证原子性， 保证不因为这个事务导致任何资产的数量小于0。

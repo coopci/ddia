@@ -17,6 +17,7 @@ import coopci.ddia.gateway.handlers.GetPublicUsrinfoHandler;
 import coopci.ddia.gateway.handlers.LoginSubmitPhoneHandler;
 import coopci.ddia.gateway.handlers.LoginSubmitVcodeHandler;
 import coopci.ddia.gateway.handlers.NewSessionHandler;
+import coopci.ddia.gateway.handlers.SendChatMessageHandler;
 import coopci.ddia.gateway.handlers.SendMsgHandler;
 import coopci.ddia.gateway.handlers.UnfollowHandler;
 import coopci.ddia.gateway.websocket.BroadcastApplication;
@@ -113,6 +114,14 @@ public class HttpServer {
 		server.getServerConfiguration().addHttpHandler(
 				buyDiamondsCheckOrderHandler,
 				"/buy_diamonds/check_order");
+		
+		SendChatMessageHandler sendChatMessageHandler = new SendChatMessageHandler();
+		sendChatMessageHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				sendChatMessageHandler,
+				"/send_chat_message");
+		
+		
 		
 		try {
 			server.removeListener("grizzly");

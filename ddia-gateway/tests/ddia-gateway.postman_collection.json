@@ -341,6 +341,93 @@
 				"description": ""
 			},
 			"response": []
+		},
+		{
+			"name": "提交手机号(获取短信验证码)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code == 200;\r",
+							"var jsonData = JSON.parse(responseBody);\r",
+							"tests[\"msg is OK\"] = jsonData.msg == \"OK\";\r",
+							"console.log(\"ggg\");\r",
+							"tests[responseBody] = true;"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "http://localhost:8887/login/submit_phone",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "phone",
+							"value": "13333333333",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "session_id",
+							"value": "{{session_id}}",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "发送聊天信息。",
+			"request": {
+				"url": "http://localhost:8887/send_chat_message",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "sessid",
+							"value": "test-sess-6",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "sendto",
+							"value": "gubo",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "message",
+							"value": "hello~",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
 		}
 	]
 }
