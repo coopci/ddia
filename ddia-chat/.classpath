@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	
+	<classpathentry kind="lib" path="../lib/apache-http.jar"/>
+	<classpathentry kind="lib" path="../lib/commons-codec-1.9.jar"/>
+	<classpathentry kind="lib" path="../lib/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="../lib/commons-net-3.3.jar"/>
+	<classpathentry kind="lib" path="../lib/commons-pool-1.6.jar"/>
+	<classpathentry kind="lib" path="../lib/commons-pool2-2.4.2.jar"/>
+	<classpathentry kind="lib" path="../lib/grizzly-http-all-2.3.26.jar"/>
+	<classpathentry kind="lib" path="../lib/grizzly-http-servlet-extras-2.4.0-beta8.jar"/>
+	<classpathentry kind="lib" path="../lib/grizzly-http-server-multipart-2.4.0-beta8.jar"/>
+	<classpathentry kind="lib" path="../lib/hamcrest-all-1.3.jar"/>
+	<classpathentry kind="lib" path="../lib/jackson.jar"/>
+	<classpathentry kind="lib" path="../lib/jettison-1.2.jar"/>
+	<classpathentry kind="lib" path="../lib/junit.jar"/>
+	<classpathentry kind="lib" path="../lib/mongo-java-driver-3.0.2.jar"/>
+	<classpathentry kind="lib" path="../lib/taobao-sdk-java-auto_1455552377940-20160607.jar"/>
+	<classpathentry kind="lib" path="../lib/async-http-client-2.1.0-alpha20.jar"/>
+	<classpathentry kind="lib" path="../lib/netty-all-4.1.12.Final.jar"/>
+	
+	<classpathentry kind="lib" path="../lib/slf4j-api-1.7.25.jar"/>
+	<classpathentry kind="lib" path="../lib/slf4j-simple-1.7.25.jar"/>
+	<classpathentry kind="lib" path="../lib/reactive-streams-1.0.0.final.jar"/>
+	<classpathentry kind="lib" path="../lib/amqp-client-4.1.1.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ddia-common"/>
+	
+	<classpathentry kind="output" path="bin"/>
+</classpath>

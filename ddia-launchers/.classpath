@@ -2,8 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	
-	
 	<classpathentry combineaccessrules="false" kind="src" path="/ddia-common"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ddia-gateway"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/user-basic"/>
@@ -11,7 +9,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/b2c-renting"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/virtual-assets"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/third-party-pay"/>
-	
-	
+	<classpathentry combineaccessrules="false" kind="src" path="/ddia-chat"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

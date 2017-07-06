@@ -11,7 +11,7 @@ public class AllInOneLauncher {
 		coopci.ddia.b2c.renting.HttpServer httpB2cRenting = new coopci.ddia.b2c.renting.HttpServer();
 		coopci.ddia.virtual.assets.HttpServer httpVirualAssets = new coopci.ddia.virtual.assets.HttpServer();
 		coopci.ddia.third.party.pay.HttpServer httpThirdPartyPay = new coopci.ddia.third.party.pay.HttpServer();
-		
+		coopci.ddia.chat.HttpServer httpChat = new coopci.ddia.chat.HttpServer();
 		
 		httpGateway.start();
 		httpUserbasic.start();
@@ -19,6 +19,7 @@ public class AllInOneLauncher {
 		httpB2cRenting.start();
 		httpVirualAssets.start();
 		httpThirdPartyPay.start();
+		httpChat.start();
 	}
 	
 	

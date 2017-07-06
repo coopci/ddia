@@ -108,11 +108,13 @@ public class Engine {
 	public static String USER_RELATION_HTTP_PREFIX = "http://localhost:8889/";
 	public static String VIRTUAL_ASSETS_HTTP_PREFIX = "http://localhost:8893/";
 	public static String THIRD_PARTY_PAY_HTTP_PREFIX = "http://localhost:8892/";
+	public static String CHAT_HTTP_PREFIX = "http://localhost:8894/";
 	
 	public static String MICROSERVICE_NAME_USER_BASIC = "user-basic";
 	public static String MICROSERVICE_NAME_USER_RELATION = "user-relation";
 	public static String MICROSERVICE_NAME_VIRTUAL_ASSETS = "virtual-assets";
 	public static String MICROSERVICE_NAME_THIRD_PARTY_PAY = "third-party-pay";
+	public static String MICROSERVICE_NAME_CHAT = "chat";
 	
 	String getMicroserviceHttpPrefix(String serviceName, String partKey) {
 		String ret = "";
@@ -124,6 +126,8 @@ public class Engine {
 			return VIRTUAL_ASSETS_HTTP_PREFIX;
 		} else if (MICROSERVICE_NAME_THIRD_PARTY_PAY.equals(serviceName)) {
 			return THIRD_PARTY_PAY_HTTP_PREFIX;
+		} else if (MICROSERVICE_NAME_CHAT.equals(serviceName)) {
+			return CHAT_HTTP_PREFIX;
 		}
 		
 		return ret;

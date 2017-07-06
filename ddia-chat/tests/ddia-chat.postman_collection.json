@@ -1,0 +1,49 @@
+{
+	"variables": [],
+	"info": {
+		"name": "ddia-chat",
+		"_postman_id": "ab2ed27e-f330-8ee8-cb23-4dc80a0bd11b",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "http://localhost:8894/chat/send_message",
+			"request": {
+				"url": "http://localhost:8894/chat/send_message",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "from_uid",
+							"value": "90",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "to_uid",
+							"value": "7",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "message",
+							"value": "chat message",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
