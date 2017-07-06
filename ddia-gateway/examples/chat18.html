@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en-US" dir="ltr" class="no-js" data-ffo-opensans="false" data-ffo-zillaslab="false" data-ffo-zillahighlight="false">
+<head>
+	<script src="jquery-3.2.1.min.js"></script>
+	
+	<script type="application/javascript" charset="utf-8">
+		console.log("hello");
+		
+		function start_session(){
+			var exampleSocket = new WebSocket("ws://localhost:8887/gateway", "protocolOne");
+			exampleSocket.onopen = function (event) {
+				var args = {sessid:"test-sess-18"};
+				var loginReq = {cmd:"login", 
+					args:args};
+				var msg = JSON.stringify(loginReq);
+				exampleSocket.send(msg); 
+			};
+			exampleSocket.onmessage = function (event) {
+				console.log(event.data);
+				var old = document.getElementById("chat_area").value;
+				document.getElementById("chat_area").value = old + "\n" + event.data;
+			}
+			
+			exampleSocket.onclose = function (event) {
+				console.log("onclose");
+			}
+		}
+		
+		
+		function send_buttong_clicked() {
+			var msg = document.getElementById("input_area").value;
+			send_msg('test-sess-18', 'user19', msg);
+			document.getElementById("input_area").value = "";
+			
+			var old = document.getElementById("chat_area").value;
+			document.getElementById("chat_area").value = old + "\n" + ("我说:  " + msg);
+			
+		}
+		
+		function send_msg(sessid, sendto, message) {
+		
+			console.log("in send_msg");
+		
+			$.post( "http://localhost:8887/send_chat_message", 
+				{
+					"sessid": sessid,
+					"sendto": sendto,
+					"message": message
+				}, 
+				
+				function( data ) {
+					console.log( data ); 
+				}, 
+				"json");
+		}
+		
+		
+		var o = {"a":"df s"};
+		console.log(JSON.stringify(o));
+	</script>
+
+</head>
+
+
+<body onload="start_session();">
+
+<p>正在和user19聊天</p>
+
+<textarea id="chat_area" name="chat_area" rows="10" cols="50">
+</textarea>
+
+
+
+<textarea id="input_area" name="chat_area" rows="4" cols="50" >
+</textarea>
+
+<button onclick="send_buttong_clicked()">send</button>
+
+</body>
+
+</html>

@@ -16,6 +16,7 @@ public class GrizzlyUtils {
 		String content = objectMapper.writeValueAsString(result);
 		response.setStatus(result.code);
 		response.setContentType("application/json;charset=utf-8");
+		response.setHeader("Access-Control-Allow-Origin", "*");
 		// response.getWriter().write(content);
 		response.getNIOOutputStream().write(content.getBytes("utf-8"));;
 		return;

@@ -211,6 +211,23 @@ public class Engine implements IMongodbAspect {
 	public void initSessidPacker() throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, IOException {
 		sessidPacker.initDes(deskeyPath);
 	}
+	
+	
+	
+	/**
+	 * 向数据库里 存测试用户。
+	 * 
+	 * */
+	public long addTestUser() {
+		
+		long uid = this.genNewUserid();
+		
+		Document userdata = new Document();
+		userdata.append("nickname", "user"+uid);
+		this.addNewUserToMongo(this.mongodbDBName, this.mongodbDBCollUserInfo, uid, userdata);
+		return uid;
+		
+	}
 	public void init() throws Exception {
 		// initRSAKeys();
 		
@@ -565,5 +582,13 @@ public class Engine implements IMongodbAspect {
 	@Override
 	public String getMongoConnStr() {
 		return mongoConnStr;
+	}
+	
+	public static void main(String[] argv) throws Exception {
+		Engine engine = new Engine();
+		engine.init();
+		engine.addTestUser();
+		engine.addTestUser();
+		
 	}
 }
