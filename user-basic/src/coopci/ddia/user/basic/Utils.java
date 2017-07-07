@@ -28,10 +28,10 @@ public class Utils {
 		AlibabaAliqinFcSmsNumSendRequest req = new AlibabaAliqinFcSmsNumSendRequest();
 		req.setExtend(vcode);
 		req.setSmsType("normal");
-		req.setSmsFreeSignName("À´àË");				// ÕâÀïÒª»»¡£
+		req.setSmsFreeSignName("æ¥å—¨");				// è¿™é‡Œè¦æ¢ã€‚
 		req.setSmsParamString("{\"vcode\":\""+ vcode + "\"}");
 		req.setRecNum(phone);
-		req.setSmsTemplateCode("SMS_43180006");  // ÕâÀïÒª»»¡£
+		req.setSmsTemplateCode("SMS_43180006");  // è¿™é‡Œè¦æ¢ã€‚
 		AlibabaAliqinFcSmsNumSendResponse rsp = client.execute(req);
 		
 		System.out.println(rsp.getBody());

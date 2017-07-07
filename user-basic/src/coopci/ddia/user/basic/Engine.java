@@ -1,4 +1,4 @@
-﻿package coopci.ddia.user.basic;
+package coopci.ddia.user.basic;
 
 import java.io.DataInputStream;
 import java.io.File;
