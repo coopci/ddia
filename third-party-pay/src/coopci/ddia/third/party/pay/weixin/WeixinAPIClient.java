@@ -69,7 +69,7 @@ public class WeixinAPIClient {
 	/**
 	 * https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419317851&token=&lang=zh_CN
 	 * //访问  https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code
-		// �?
+		//
 		//		"access_token":"ACCESS_TOKEN", 
 		//		"expires_in":7200, 
 		//		"refresh_token":"REFRESH_TOKEN",
@@ -103,7 +103,7 @@ public class WeixinAPIClient {
 	 * https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419317853&token=&lang=zh_CN
 	 * 
 		// 访问  https://api.weixin.qq.com/sns/userinfo?access_token=ACCESS_TOKEN&openid=OPENID
-		// �?
+		//
 //		{ 
 //			"openid":"OPENID",
 //			"nickname":"NICKNAME",
@@ -145,7 +145,7 @@ public class WeixinAPIClient {
 	 * 
 	 * https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=4_3
 	 * https://pay.weixin.qq.com/wiki/tools/signverify/
-	 * @param key  Config.WX_APP_PAY_KEY�? key设置路径：微信商户平�?(pay.weixin.qq.com)-->账户设置-->API安全-->密钥设置�? 
+	 * @param key  key设置路径：微信商户平(pay.weixin.qq.com)-->账户设置-->API安全-->密钥设置 
 	 * @throws NoSuchAlgorithmException 
 	 * 
 	 * */

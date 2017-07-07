@@ -4,7 +4,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 
 
-//微信给的回复�?
+//微信给的回复:
 //https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_2&index=4
 @JacksonXmlRootElement(localName="xml")
 public class OrderQueryResponse extends WeixinResponse {
