@@ -1,4 +1,4 @@
-﻿package coopci.ddia.launchers;
+package coopci.ddia.launchers;
 
 import coopci.ddia.user.relation.HttpServer;
 
