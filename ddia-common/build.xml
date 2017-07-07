@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. --><project basedir="." default="build" name="ddia-common">
+    <property environment="env"/>
+    <property name="b2c-renting.location" value="../b2c-renting"/>
+    <property name="ddia-chat.location" value="../ddia-chat"/>
+    <property name="ddia-gateway.location" value="../ddia-gateway"/>
+    <property name="ddia-launchers.location" value="../ddia-launchers"/>
+    <property name="file-upload.location" value="../file-upload"/>
+    <property name="third-party-pay.location" value="../third-party-pay"/>
+    <property name="user-basic.location" value="../user-basic"/>
+    <property name="user-relation.location" value="../user-relation"/>
+    <property name="virtual-assets.location" value="../virtual-assets"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.8"/>
+    <property name="source" value="1.8"/>
+    <path id="ddia-common.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="../lib/apache-http.jar"/>
+        <pathelement location="../lib/commons-codec-1.9.jar"/>
+        <pathelement location="../lib/commons-logging-1.2.jar"/>
+        <pathelement location="../lib/commons-net-3.3.jar"/>
+        <pathelement location="../lib/commons-pool-1.6.jar"/>
+        <pathelement location="../lib/commons-pool2-2.4.2.jar"/>
+        <pathelement location="../lib/grizzly-http-all-2.3.26.jar"/>
+        <pathelement location="../lib/jackson.jar"/>
+        <pathelement location="../lib/jettison-1.2.jar"/>
+        <pathelement location="../lib/junit.jar"/>
+        <pathelement location="../lib/mongo-java-driver-3.0.2.jar"/>
+        <pathelement location="../lib/taobao-sdk-java-auto_1455552377940-20160607.jar"/>
+        <pathelement location="../lib/amqp-client-4.1.1.jar"/>
+        <pathelement location="../lib/slf4j-api-1.7.25.jar"/>
+        <pathelement location="../lib/slf4j-simple-1.7.25.jar"/>
+        <pathelement location="../lib/reactive-streams-1.0.0.final.jar"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="ddia-common.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects">
+        <ant antfile="build.xml" dir="${b2c-renting.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${b2c-renting.location}" inheritAll="false" target="build"/>
+        <ant antfile="build.xml" dir="${ddia-chat.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${ddia-chat.location}" inheritAll="false" target="build"/>
+        <ant antfile="build.xml" dir="${ddia-gateway.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${ddia-gateway.location}" inheritAll="false" target="build"/>
+        <ant antfile="build.xml" dir="${ddia-launchers.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${ddia-launchers.location}" inheritAll="false" target="build"/>
+        <ant antfile="build.xml" dir="${file-upload.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${file-upload.location}" inheritAll="false" target="build"/>
+        <ant antfile="build.xml" dir="${third-party-pay.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${third-party-pay.location}" inheritAll="false" target="build"/>
+        <ant antfile="build.xml" dir="${user-basic.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${user-basic.location}" inheritAll="false" target="build"/>
+        <ant antfile="build.xml" dir="${user-relation.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${user-relation.location}" inheritAll="false" target="build"/>
+        <ant antfile="build.xml" dir="${virtual-assets.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${virtual-assets.location}" inheritAll="false" target="build"/>
+    </target>
+    <target name="RabbitmqPublisher">
+        <java classname="coopci.ddia.notify.rabbitmq.RabbitmqPublisher" failonerror="true" fork="yes">
+            <classpath refid="ddia-common.classpath"/>
+        </java>
+    </target>
+    <target name="RabbitmqSubscriber">
+        <java classname="coopci.ddia.notify.rabbitmq.RabbitmqSubscriber" failonerror="true" fork="yes">
+            <classpath refid="ddia-common.classpath"/>
+        </java>
+    </target>
+</project>

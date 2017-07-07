@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. --><project basedir="." default="build" name="ddia-launchers">
+    <property environment="env"/>
+    <property name="ddia-common.location" value="../ddia-common"/>
+    <property name="ddia-chat.location" value="../ddia-chat"/>
+    <property name="b2c-renting.location" value="../b2c-renting"/>
+    <property name="ddia-gateway.location" value="../ddia-gateway"/>
+    <property name="third-party-pay.location" value="../third-party-pay"/>
+    <property name="user-basic.location" value="../user-basic"/>
+    <property name="user-relation.location" value="../user-relation"/>
+    <property name="virtual-assets.location" value="../virtual-assets"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.8"/>
+    <property name="source" value="1.8"/>
+    <path id="ddia-common.classpath">
+        <pathelement location="${ddia-common.location}/bin"/>
+        <pathelement location="${ddia-common.location}/../lib/apache-http.jar"/>
+        <pathelement location="${ddia-common.location}/../lib/commons-codec-1.9.jar"/>
+        <pathelement location="${ddia-common.location}/../lib/commons-logging-1.2.jar"/>
+        <pathelement location="${ddia-common.location}/../lib/commons-net-3.3.jar"/>
+        <pathelement location="${ddia-common.location}/../lib/commons-pool-1.6.jar"/>
+        <pathelement location="${ddia-common.location}/../lib/commons-pool2-2.4.2.jar"/>
+        <pathelement location="${ddia-common.location}/../lib/grizzly-http-all-2.3.26.jar"/>
+        <pathelement location="${ddia-common.location}/../lib/jackson.jar"/>
+        <pathelement location="${ddia-common.location}/../lib/jettison-1.2.jar"/>
+        <pathelement location="${ddia-common.location}/../lib/junit.jar"/>
+        <pathelement location="${ddia-common.location}/../lib/mongo-java-driver-3.0.2.jar"/>
+        <pathelement location="${ddia-common.location}/../lib/taobao-sdk-java-auto_1455552377940-20160607.jar"/>
+        <pathelement location="${ddia-common.location}/../lib/amqp-client-4.1.1.jar"/>
+        <pathelement location="${ddia-common.location}/../lib/slf4j-api-1.7.25.jar"/>
+        <pathelement location="${ddia-common.location}/../lib/slf4j-simple-1.7.25.jar"/>
+        <pathelement location="${ddia-common.location}/../lib/reactive-streams-1.0.0.final.jar"/>
+    </path>
+    <path id="ddia-gateway.classpath">
+        <pathelement location="${ddia-gateway.location}/bin"/>
+        <pathelement location="${ddia-gateway.location}/../lib/apache-http.jar"/>
+        <pathelement location="${ddia-gateway.location}/../lib/commons-codec-1.9.jar"/>
+        <pathelement location="${ddia-gateway.location}/../lib/commons-logging-1.2.jar"/>
+        <pathelement location="${ddia-gateway.location}/../lib/commons-net-3.3.jar"/>
+        <pathelement location="${ddia-gateway.location}/../lib/commons-pool-1.6.jar"/>
+        <pathelement location="${ddia-gateway.location}/../lib/commons-pool2-2.4.2.jar"/>
+        <pathelement location="${ddia-gateway.location}/../lib/grizzly-http-all-2.3.26.jar"/>
+        <pathelement location="${ddia-gateway.location}/../lib/grizzly-http-servlet-extras-2.4.0-beta8.jar"/>
+        <pathelement location="${ddia-gateway.location}/../lib/grizzly-http-server-multipart-2.4.0-beta8.jar"/>
+        <pathelement location="${ddia-gateway.location}/../lib/hamcrest-all-1.3.jar"/>
+        <pathelement location="${ddia-gateway.location}/../lib/jackson.jar"/>
+        <pathelement location="${ddia-gateway.location}/../lib/jettison-1.2.jar"/>
+        <pathelement location="${ddia-gateway.location}/../lib/junit.jar"/>
+        <pathelement location="${ddia-gateway.location}/../lib/mongo-java-driver-3.0.2.jar"/>
+        <pathelement location="${ddia-gateway.location}/../lib/taobao-sdk-java-auto_1455552377940-20160607.jar"/>
+        <pathelement location="${ddia-gateway.location}/../lib/async-http-client-2.1.0-alpha20.jar"/>
+        <pathelement location="${ddia-gateway.location}/../lib/netty-all-4.1.12.Final.jar"/>
+        <pathelement location="${ddia-gateway.location}/../lib/slf4j-api-1.7.25.jar"/>
+        <pathelement location="${ddia-gateway.location}/../lib/slf4j-simple-1.7.25.jar"/>
+        <pathelement location="${ddia-gateway.location}/../lib/reactive-streams-1.0.0.final.jar"/>
+        <pathelement location="${ddia-gateway.location}/../lib/amqp-client-4.1.1.jar"/>
+        <path refid="ddia-common.classpath"/>
+    </path>
+    <path id="user-basic.classpath">
+        <pathelement location="${user-basic.location}/bin"/>
+        <pathelement location="${user-basic.location}/../lib/apache-http.jar"/>
+        <pathelement location="${user-basic.location}/../lib/commons-codec-1.9.jar"/>
+        <pathelement location="${user-basic.location}/../lib/commons-logging-1.2.jar"/>
+        <pathelement location="${user-basic.location}/../lib/commons-net-3.3.jar"/>
+        <pathelement location="${user-basic.location}/../lib/commons-pool-1.6.jar"/>
+        <pathelement location="${user-basic.location}/../lib/commons-pool2-2.4.2.jar"/>
+        <pathelement location="${user-basic.location}/../lib/grizzly-http-all-2.3.26.jar"/>
+        <pathelement location="${user-basic.location}/../lib/hamcrest-all-1.3.jar"/>
+        <pathelement location="${user-basic.location}/../lib/jackson.jar"/>
+        <pathelement location="${user-basic.location}/../lib/jettison-1.2.jar"/>
+        <pathelement location="${user-basic.location}/../lib/junit.jar"/>
+        <pathelement location="${user-basic.location}/../lib/mongo-java-driver-3.0.2.jar"/>
+        <pathelement location="${user-basic.location}/../lib/taobao-sdk-java-auto_1455552377940-20160607.jar"/>
+        <pathelement location="${user-basic.location}/../lib/activation-1.1.jar"/>
+        <pathelement location="${user-basic.location}/../lib/mail-1.4.7.jar"/>
+        <path refid="ddia-common.classpath"/>
+    </path>
+    <path id="user-relation.classpath">
+        <pathelement location="${user-relation.location}/bin"/>
+        <pathelement location="${user-relation.location}/../lib/apache-http.jar"/>
+        <pathelement location="${user-relation.location}/../lib/commons-codec-1.9.jar"/>
+        <pathelement location="${user-relation.location}/../lib/commons-logging-1.2.jar"/>
+        <pathelement location="${user-relation.location}/../lib/commons-net-3.3.jar"/>
+        <pathelement location="${user-relation.location}/../lib/commons-pool-1.6.jar"/>
+        <pathelement location="${user-relation.location}/../lib/commons-pool2-2.4.2.jar"/>
+        <pathelement location="${user-relation.location}/../lib/grizzly-http-all-2.3.26.jar"/>
+        <pathelement location="${user-relation.location}/../lib/jackson.jar"/>
+        <pathelement location="${user-relation.location}/../lib/jettison-1.2.jar"/>
+        <pathelement location="${user-relation.location}/../lib/junit.jar"/>
+        <pathelement location="${user-relation.location}/../lib/mongo-java-driver-3.0.2.jar"/>
+        <pathelement location="${user-relation.location}/../lib/taobao-sdk-java-auto_1455552377940-20160607.jar"/>
+        <path refid="ddia-common.classpath"/>
+    </path>
+    <path id="b2c-renting.classpath">
+        <pathelement location="${b2c-renting.location}/bin"/>
+        <pathelement location="${b2c-renting.location}/../lib/apache-http.jar"/>
+        <pathelement location="${b2c-renting.location}/../lib/commons-codec-1.9.jar"/>
+        <pathelement location="${b2c-renting.location}/../lib/commons-logging-1.2.jar"/>
+        <pathelement location="${b2c-renting.location}/../lib/commons-net-3.3.jar"/>
+        <pathelement location="${b2c-renting.location}/../lib/commons-pool-1.6.jar"/>
+        <pathelement location="${b2c-renting.location}/../lib/commons-pool2-2.4.2.jar"/>
+        <pathelement location="${b2c-renting.location}/../lib/grizzly-http-all-2.3.26.jar"/>
+        <pathelement location="${b2c-renting.location}/../lib/grizzly-http-servlet-extras-2.4.0-beta8.jar"/>
+        <pathelement location="${b2c-renting.location}/../lib/hamcrest-all-1.3.jar"/>
+        <pathelement location="${b2c-renting.location}/../lib/jackson.jar"/>
+        <pathelement location="${b2c-renting.location}/../lib/jettison-1.2.jar"/>
+        <pathelement location="${b2c-renting.location}/../lib/junit.jar"/>
+        <pathelement location="${b2c-renting.location}/../lib/mongo-java-driver-3.0.2.jar"/>
+        <pathelement location="${b2c-renting.location}/../lib/taobao-sdk-java-auto_1455552377940-20160607.jar"/>
+        <path refid="ddia-common.classpath"/>
+    </path>
+    <path id="virtual-assets.classpath">
+        <pathelement location="${virtual-assets.location}/bin"/>
+        <pathelement location="${virtual-assets.location}/../lib/apache-http.jar"/>
+        <pathelement location="${virtual-assets.location}/../lib/commons-codec-1.9.jar"/>
+        <pathelement location="${virtual-assets.location}/../lib/commons-logging-1.2.jar"/>
+        <pathelement location="${virtual-assets.location}/../lib/commons-net-3.3.jar"/>
+        <pathelement location="${virtual-assets.location}/../lib/commons-pool-1.6.jar"/>
+        <pathelement location="${virtual-assets.location}/../lib/commons-pool2-2.4.2.jar"/>
+        <pathelement location="${virtual-assets.location}/../lib/grizzly-http-all-2.3.26.jar"/>
+        <pathelement location="${virtual-assets.location}/../lib/grizzly-http-servlet-extras-2.4.0-beta8.jar"/>
+        <pathelement location="${virtual-assets.location}/../lib/grizzly-http-server-multipart-2.4.0-beta8.jar"/>
+        <pathelement location="${virtual-assets.location}/../lib/hamcrest-all-1.3.jar"/>
+        <pathelement location="${virtual-assets.location}/../lib/jackson.jar"/>
+        <pathelement location="${virtual-assets.location}/../lib/jettison-1.2.jar"/>
+        <pathelement location="${virtual-assets.location}/../lib/junit.jar"/>
+        <pathelement location="${virtual-assets.location}/../lib/mongo-java-driver-3.0.2.jar"/>
+        <pathelement location="${virtual-assets.location}/../lib/taobao-sdk-java-auto_1455552377940-20160607.jar"/>
+        <pathelement location="${virtual-assets.location}/../lib/async-http-client-2.1.0-alpha20.jar"/>
+        <pathelement location="${virtual-assets.location}/../lib/netty-all-4.1.12.Final.jar"/>
+        <pathelement location="${virtual-assets.location}/../lib/slf4j-api-1.7.25.jar"/>
+        <pathelement location="${virtual-assets.location}/../lib/slf4j-simple-1.7.25.jar"/>
+        <pathelement location="${virtual-assets.location}/../lib/reactive-streams-1.0.0.final.jar"/>
+        <pathelement location="${virtual-assets.location}/../lib/amqp-client-4.1.1.jar"/>
+        <path refid="ddia-common.classpath"/>
+    </path>
+    <path id="third-party-pay.classpath">
+        <pathelement location="${third-party-pay.location}/bin"/>
+        <pathelement location="${third-party-pay.location}/../lib/apache-http.jar"/>
+        <pathelement location="${third-party-pay.location}/../lib/commons-codec-1.9.jar"/>
+        <pathelement location="${third-party-pay.location}/../lib/commons-logging-1.2.jar"/>
+        <pathelement location="${third-party-pay.location}/../lib/commons-net-3.3.jar"/>
+        <pathelement location="${third-party-pay.location}/../lib/commons-pool-1.6.jar"/>
+        <pathelement location="${third-party-pay.location}/../lib/commons-pool2-2.4.2.jar"/>
+        <pathelement location="${third-party-pay.location}/../lib/grizzly-http-all-2.3.26.jar"/>
+        <pathelement location="${third-party-pay.location}/../lib/grizzly-http-servlet-extras-2.4.0-beta8.jar"/>
+        <pathelement location="${third-party-pay.location}/../lib/grizzly-http-server-multipart-2.4.0-beta8.jar"/>
+        <pathelement location="${third-party-pay.location}/../lib/hamcrest-all-1.3.jar"/>
+        <pathelement location="${third-party-pay.location}/../lib/jackson.jar"/>
+        <pathelement location="${third-party-pay.location}/../lib/jettison-1.2.jar"/>
+        <pathelement location="${third-party-pay.location}/../lib/junit.jar"/>
+        <pathelement location="${third-party-pay.location}/../lib/mongo-java-driver-3.0.2.jar"/>
+        <pathelement location="${third-party-pay.location}/../lib/taobao-sdk-java-auto_1455552377940-20160607.jar"/>
+        <pathelement location="${third-party-pay.location}/../lib/async-http-client-2.1.0-alpha20.jar"/>
+        <pathelement location="${third-party-pay.location}/../lib/netty-all-4.1.12.Final.jar"/>
+        <pathelement location="${third-party-pay.location}/../lib/slf4j-api-1.7.25.jar"/>
+        <pathelement location="${third-party-pay.location}/../lib/slf4j-simple-1.7.25.jar"/>
+        <pathelement location="${third-party-pay.location}/../lib/reactive-streams-1.0.0.final.jar"/>
+        <pathelement location="${third-party-pay.location}/../lib/amqp-client-4.1.1.jar"/>
+        <path refid="ddia-common.classpath"/>
+    </path>
+    <path id="ddia-chat.classpath">
+        <pathelement location="${ddia-chat.location}/bin"/>
+        <pathelement location="${ddia-chat.location}/../lib/apache-http.jar"/>
+        <pathelement location="${ddia-chat.location}/../lib/commons-codec-1.9.jar"/>
+        <pathelement location="${ddia-chat.location}/../lib/commons-logging-1.2.jar"/>
+        <pathelement location="${ddia-chat.location}/../lib/commons-net-3.3.jar"/>
+        <pathelement location="${ddia-chat.location}/../lib/commons-pool-1.6.jar"/>
+        <pathelement location="${ddia-chat.location}/../lib/commons-pool2-2.4.2.jar"/>
+        <pathelement location="${ddia-chat.location}/../lib/grizzly-http-all-2.3.26.jar"/>
+        <pathelement location="${ddia-chat.location}/../lib/grizzly-http-servlet-extras-2.4.0-beta8.jar"/>
+        <pathelement location="${ddia-chat.location}/../lib/grizzly-http-server-multipart-2.4.0-beta8.jar"/>
+        <pathelement location="${ddia-chat.location}/../lib/hamcrest-all-1.3.jar"/>
+        <pathelement location="${ddia-chat.location}/../lib/jackson.jar"/>
+        <pathelement location="${ddia-chat.location}/../lib/jettison-1.2.jar"/>
+        <pathelement location="${ddia-chat.location}/../lib/junit.jar"/>
+        <pathelement location="${ddia-chat.location}/../lib/mongo-java-driver-3.0.2.jar"/>
+        <pathelement location="${ddia-chat.location}/../lib/taobao-sdk-java-auto_1455552377940-20160607.jar"/>
+        <pathelement location="${ddia-chat.location}/../lib/async-http-client-2.1.0-alpha20.jar"/>
+        <pathelement location="${ddia-chat.location}/../lib/netty-all-4.1.12.Final.jar"/>
+        <pathelement location="${ddia-chat.location}/../lib/slf4j-api-1.7.25.jar"/>
+        <pathelement location="${ddia-chat.location}/../lib/slf4j-simple-1.7.25.jar"/>
+        <pathelement location="${ddia-chat.location}/../lib/reactive-streams-1.0.0.final.jar"/>
+        <pathelement location="${ddia-chat.location}/../lib/amqp-client-4.1.1.jar"/>
+        <path refid="ddia-common.classpath"/>
+    </path>
+    <path id="ddia-launchers.classpath">
+        <pathelement location="bin"/>
+        <path refid="ddia-common.classpath"/>
+        <path refid="ddia-gateway.classpath"/>
+        <path refid="user-basic.classpath"/>
+        <path refid="user-relation.classpath"/>
+        <path refid="b2c-renting.classpath"/>
+        <path refid="virtual-assets.classpath"/>
+        <path refid="third-party-pay.classpath"/>
+        <path refid="ddia-chat.classpath"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall">
+        <ant antfile="build.xml" dir="${ddia-common.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${ddia-chat.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${b2c-renting.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${ddia-gateway.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${third-party-pay.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${user-basic.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${user-relation.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${virtual-assets.location}" inheritAll="false" target="clean"/>
+    </target>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects">
+        <ant antfile="build.xml" dir="${ddia-common.location}" inheritAll="false" target="build-project"/>
+        <ant antfile="build.xml" dir="${ddia-chat.location}" inheritAll="false" target="build-project"/>
+        <ant antfile="build.xml" dir="${b2c-renting.location}" inheritAll="false" target="build-project"/>
+        <ant antfile="build.xml" dir="${ddia-gateway.location}" inheritAll="false" target="build-project"/>
+        <ant antfile="build.xml" dir="${third-party-pay.location}" inheritAll="false" target="build-project"/>
+        <ant antfile="build.xml" dir="${user-basic.location}" inheritAll="false" target="build-project"/>
+        <ant antfile="build.xml" dir="${user-relation.location}" inheritAll="false" target="build-project"/>
+        <ant antfile="build.xml" dir="${virtual-assets.location}" inheritAll="false" target="build-project"/>
+    </target>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" encoding="utf-8" includeantruntime="false" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="ddia-launchers.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target name="AllInOneLauncher">
+        <java classname="coopci.ddia.launchers.AllInOneLauncher" failonerror="true" fork="yes">
+            <classpath refid="ddia-launchers.classpath"/>
+        </java>
+    </target>
+              	
+
+    <target name="jar">
+        <mkdir dir="build/jar"/>
+    	
+        <jar destfile="build/jar/ddia.jar" basedir="bin" filesetmanifest="skip">
+                <zipgroupfileset dir="../lib" includes="*.jar" excludes=""/>
+        	<fileset dir="${ddia-common.location}/bin"/>
+        	<fileset dir="${ddia-chat.location}/bin"/>
+			<fileset dir="${b2c-renting.location}/bin"/>
+        	<fileset dir="${ddia-gateway.location}/bin"/>
+        	<fileset dir="${third-party-pay.location}/bin"/>
+        	<fileset dir="${user-basic.location}/bin"/>
+        	<fileset dir="${user-relation.location}/bin"/>
+        	<fileset dir="${virtual-assets.location}/bin"/>
+        </jar>
+    </target>
+              	
+  	<target name="run-jar">
+  	        <java classpath="build/jar/ddia.jar" 
+  	        	fork="false"
+  	        	classname="coopci.ddia.launchers.AllInOneLauncher"
+  	        >
+  	        	
+  	    	</java>
+  	    </target>
+              	
+              	
+</project>
