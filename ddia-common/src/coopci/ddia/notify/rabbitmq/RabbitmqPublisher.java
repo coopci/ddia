@@ -36,11 +36,16 @@ public class RabbitmqPublisher implements IPublisher {
 	String exchangeName = "user.notify";
 	String queueName = "";
 	Channel channel = null;
+	
+	String username = "ddia";
+	String passwd = "ddia";
 	@Override
 	public void start() throws KeyManagementException, NoSuchAlgorithmException, URISyntaxException, IOException, TimeoutException {
 		ConnectionFactory factory = new ConnectionFactory();
 		factory.setUri("amqp://localhost:5672/");
 		factory.setVirtualHost("/");
+		factory.setUsername(username);
+		factory.setPassword(passwd);
 		Connection conn = factory.newConnection();
 		channel = conn.createChannel();
 		channel.exchangeDeclare(exchangeName, "topic", true);
