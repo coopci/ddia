@@ -234,6 +234,32 @@ public class Engine {
 		return res;
 	}
 	
+	
+	
+	/**
+	 *  把请求转发给user-basic 去验证。
+	 *  @param sessid 由 startNewSession 生成的sessid。
+	 *  
+	 * */
+	public LoginResult loginWithPassword(String sessid, String ident, String password) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException {
+		LoginResult res = new LoginResult();
+		HashMap<String, String> args = new HashMap<String, String> (); 
+		args.put("ident", ident);
+		args.put("password", password);
+		args.put("fields", "");
+		String httpPrefix = this.getMicroserviceHttpPrefix(MICROSERVICE_NAME_USER_BASIC, ident);
+		String url = httpPrefix + "user-basic/login/password";
+		byte[] response = HttpClientUtil.post(url, args);
+		res = getObjectMapper().readValue(response, LoginResult.class);
+		if (res.code == Result.CODE_OK && res.uid > 0) {
+			this.saveSessionUid(sessid, res.uid);
+		}
+		res.sessid = sessid;
+		
+		return res;
+	}
+	
+	
 	// 获取nickname指明的用户的公开信息。
 	public Result getPublicUserinfo(String sessid, String nickname) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException, InterruptedException, ExecutionException {
 		// Result result = new Result();

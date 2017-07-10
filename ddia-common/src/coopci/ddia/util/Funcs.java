@@ -1,5 +1,10 @@
 package coopci.ddia.util;
 
+import java.util.HashMap;
+import java.util.HashSet;
+
+import org.glassfish.grizzly.http.server.Request;
+
 public class Funcs {
 
 	public static String toHexString(byte[] bytes) {
@@ -14,6 +19,30 @@ public class Funcs {
 	    }
 
 	    return hexString.toString();
+	}
+	
+	
+	
+	public static HashSet<String> csvToHashSet(String csv) {
+		HashSet<String> ret = new HashSet<String>();
+		if (csv != null) {
+			for (String v : csv.split(",")) {
+				ret.add(v);
+			}
+		}
+		
+		return ret;
+	}
+	
+	public static HashMap<String, Object> parametersToHashMap(Request request, HashSet<String> blockFields ) {
+		HashMap<String, Object> ret = new HashMap<String, Object>();
+		for (String n:request.getParameterNames()) {
+			if (blockFields!= null && blockFields.contains(n))
+				continue;
+			ret.put(n, request.getAttribute(n));
+		}
+		
+		return ret;
 	}
 	
 }

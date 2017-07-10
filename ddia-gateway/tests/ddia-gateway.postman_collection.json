@@ -78,14 +78,12 @@
 								{
 									"key": "phone",
 									"value": "13333333333",
-									"type": "text",
-									"enabled": true
+									"type": "text"
 								},
 								{
 									"key": "session_id",
 									"value": "{{session_id}}",
-									"type": "text",
-									"enabled": true
+									"type": "text"
 								}
 							]
 						},
@@ -125,20 +123,17 @@
 								{
 									"key": "session_id",
 									"value": "{{session_id}}",
-									"type": "text",
-									"enabled": true
+									"type": "text"
 								},
 								{
 									"key": "phone",
 									"value": "13333333333",
-									"type": "text",
-									"enabled": true
+									"type": "text"
 								},
 								{
 									"key": "vcode",
 									"value": "111111",
-									"type": "text",
-									"enabled": true
+									"type": "text"
 								}
 							]
 						},
@@ -166,14 +161,12 @@
 						{
 							"key": "sessid",
 							"value": "test-sess-6",
-							"type": "text",
-							"enabled": true
+							"type": "text"
 						},
 						{
 							"key": "followee",
 							"value": "gubo",
-							"type": "text",
-							"enabled": true
+							"type": "text"
 						}
 					]
 				},
@@ -199,14 +192,12 @@
 						{
 							"key": "sessid",
 							"value": "test-sess-6",
-							"type": "text",
-							"enabled": true
+							"type": "text"
 						},
 						{
 							"key": "followee",
 							"value": "gubo",
-							"type": "text",
-							"enabled": true
+							"type": "text"
 						}
 					]
 				},
@@ -232,20 +223,17 @@
 						{
 							"key": "sessid",
 							"value": "test-sess-6",
-							"type": "text",
-							"enabled": true
+							"type": "text"
 						},
 						{
 							"key": "sendto",
 							"value": "gubo",
-							"type": "text",
-							"enabled": true
+							"type": "text"
 						},
 						{
 							"key": "msg",
 							"value": "from-postman",
-							"type": "text",
-							"enabled": true
+							"type": "text"
 						}
 					]
 				},
@@ -288,20 +276,17 @@
 						{
 							"key": "sessid",
 							"value": "test-sess-6",
-							"type": "text",
-							"enabled": true
+							"type": "text"
 						},
 						{
 							"key": "number",
 							"value": "7",
-							"type": "text",
-							"enabled": true
+							"type": "text"
 						},
 						{
 							"key": "pay_channel",
 							"value": "backdoor",
-							"type": "text",
-							"enabled": true
+							"type": "text"
 						}
 					]
 				},
@@ -327,14 +312,12 @@
 						{
 							"key": "sessid",
 							"value": "test-sess-6",
-							"type": "text",
-							"enabled": true
+							"type": "text"
 						},
 						{
 							"key": "apptranxid",
 							"value": "59538ce84c9d3e2b1c5333fe",
-							"type": "text",
-							"enabled": true
+							"type": "text"
 						}
 					]
 				},
@@ -374,15 +357,13 @@
 					"urlencoded": [
 						{
 							"key": "phone",
-							"value": "13333333333",
-							"type": "text",
-							"enabled": true
+							"value": "13521241456",
+							"type": "text"
 						},
 						{
 							"key": "session_id",
-							"value": "{{session_id}}",
-							"type": "text",
-							"enabled": true
+							"value": "1f383183-0c58-4322-9077-d099bf1b16b0",
+							"type": "text"
 						}
 					]
 				},
@@ -408,20 +389,56 @@
 						{
 							"key": "sessid",
 							"value": "test-sess-6",
-							"type": "text",
-							"enabled": true
+							"type": "text"
 						},
 						{
 							"key": "sendto",
-							"value": "gubo",
-							"type": "text",
-							"enabled": true
+							"value": "user18",
+							"type": "text"
 						},
 						{
 							"key": "message",
 							"value": "hello~",
-							"type": "text",
-							"enabled": true
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "用密码登陆。",
+			"request": {
+				"url": "http://localhost:8887/login_with_password",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "ident",
+							"value": "user26",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "session_id",
+							"value": "session_id5665",
+							"description": "",
+							"type": "text"
 						}
 					]
 				},

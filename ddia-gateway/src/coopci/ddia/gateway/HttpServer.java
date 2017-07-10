@@ -16,6 +16,7 @@ import coopci.ddia.gateway.handlers.FollowHandler;
 import coopci.ddia.gateway.handlers.GetPublicUsrinfoHandler;
 import coopci.ddia.gateway.handlers.LoginSubmitPhoneHandler;
 import coopci.ddia.gateway.handlers.LoginSubmitVcodeHandler;
+import coopci.ddia.gateway.handlers.LoginWithPasswordHandler;
 import coopci.ddia.gateway.handlers.NewSessionHandler;
 import coopci.ddia.gateway.handlers.SendChatMessageHandler;
 import coopci.ddia.gateway.handlers.SendMsgHandler;
@@ -120,6 +121,12 @@ public class HttpServer {
 		server.getServerConfiguration().addHttpHandler(
 				sendChatMessageHandler,
 				"/send_chat_message");
+		
+		LoginWithPasswordHandler loginWithPasswordHandler = new LoginWithPasswordHandler();
+		loginWithPasswordHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				loginWithPasswordHandler,
+				"/login_with_password");
 		
 		
 		
