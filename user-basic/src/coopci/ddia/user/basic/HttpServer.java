@@ -13,6 +13,8 @@ import org.glassfish.grizzly.http.server.Request;
 import org.glassfish.grizzly.http.server.Response;
 import org.glassfish.grizzly.threadpool.ThreadPoolConfig;
 
+import coopci.ddia.user.basic.handlers.AddUserHandler;
+import coopci.ddia.user.basic.handlers.LoginWithPasswordHandler;
 import coopci.ddia.user.basic.handlers.LookupUserinfoHandler;
 import coopci.ddia.user.basic.handlers.SetUserinfoHandler;
 import coopci.ddia.user.basic.handlers.sms.GetUidBySessidHandler;
@@ -88,12 +90,27 @@ public class HttpServer {
 				setUserinfoHandler,
 				"/user-basic/set_user_info_by_uid");
 		
-		
+
+
 		LoginWithWeixinHandler loginWithWeixinHandler = new LoginWithWeixinHandler();
 		loginWithWeixinHandler.setEngine(engine);
 		server.getServerConfiguration().addHttpHandler(
 				loginWithWeixinHandler,
 				"/user-basic/login/weixin");
+		
+		LoginWithPasswordHandler loginWithPasswordHandler = new LoginWithPasswordHandler();
+		loginWithPasswordHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				loginWithPasswordHandler,
+				"/user-basic/login/password");
+		
+		AddUserHandler addUserHandler = new AddUserHandler();
+		addUserHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				addUserHandler,
+				"/user-basic/add_user/");
+		
+		
 		
 		// "/user-basic/set_user_info_by_uid"
 		// "/user-basic/get_user_info_by_session_id"

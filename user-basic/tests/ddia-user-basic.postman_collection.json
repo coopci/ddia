@@ -1,0 +1,145 @@
+{
+	"variables": [],
+	"info": {
+		"name": "ddia-user-basic",
+		"_postman_id": "c058c59a-67d2-a115-9674-a3cd0a55d45a",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "http://localhost:8888/login/submit_phone",
+			"request": {
+				"url": "http://localhost:8888/login/submit_phone",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "phone",
+							"value": "77777777",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "根据用户字段值获取用户信息",
+			"request": {
+				"url": "http://localhost:8888/user-basic/lookup_userinfo?fieldname=nickname&fieldvalue=gubo&fields=nickname,touxiang",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "根据uid设置用户信息",
+			"request": {
+				"url": "http://localhost:8888/user-basic/set_user_info_by_uid",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "uid",
+							"value": "7",
+							"type": "text"
+						},
+						{
+							"key": "nickname",
+							"value": "gubo",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "后台添加用户。",
+			"request": {
+				"url": "http://localhost:8888/user-basic/add_user/",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "password",
+							"value": "",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "nickname",
+							"value": "",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "用密码登陆。",
+			"request": {
+				"url": "http://localhost:8888/user-basic/login/password",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "ident",
+							"value": "user26",
+							"description": "目前只能填nickname的值。",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
