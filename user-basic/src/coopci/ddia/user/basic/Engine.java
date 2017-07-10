@@ -374,9 +374,9 @@ public class Engine implements IMongodbAspect {
 	 * 如果登陆成功，返回fields里面指定的字段。
 	 * 
 	 * */
-	public DictResult loginWithPassword(String ident, String password, HashSet<String> fields) throws IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException {
+	public LoginResult loginWithPassword(String ident, String password, HashSet<String> fields) throws IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException {
 		
-		DictResult res = new DictResult();
+		LoginResult res = new LoginResult();
 		
 		LinkedList<Document> docs = this.getUserinfoDocsByNickname(ident);
 		
@@ -397,7 +397,8 @@ public class Engine implements IMongodbAspect {
 		
 		res.code = 200;
 		res.msg = "OK";
-		res.put("uid", doc.getLong("_id"));
+		res.uid = doc.getLong("_id");
+		
 		if (fields!=null){
 			for (String f : fields) {
 				res.put(f, doc.get(f));	
