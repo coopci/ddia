@@ -43,7 +43,6 @@ public class Utils {
 	
 	
 	
-	
 	public static String mailSenderUsername = "cooper@xinwaihui.com";
 	public static String mailSenderPassword = "xwh123QWE";
 	public static String smtpHost = "smtp.exmail.qq.com";

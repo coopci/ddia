@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.crypto.BadPaddingException;
@@ -81,6 +82,8 @@ public class Engine implements IMongodbAspect {
 	MongoClient mongoClient = null;
 	// mongodb://host:27017/?replicaSet=rs0&maxPoolSize=200
 	
+	
+	PasswordUtils passwordUtils = new PasswordUtils();
 
 	public void close() {
 		if (this.mongoClient == null)
@@ -317,8 +320,91 @@ public class Engine implements IMongodbAspect {
 		return;
 	}
 	
-	
 
+	/**
+	 * 用于后台程序 向数据库里 增加任意新用户。
+	 * 如果没指定nickname，在把nickname设置为 "user"+uid;
+	 * @throws NoSuchAlgorithmException 
+	 * @throws BadPaddingException 
+	 * @throws IllegalBlockSizeException 
+	 * */
+	public DictResult addUser(String nickname, String password, HashMap<String, Object> properties) throws IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException {
+		DictResult ret = new DictResult();
+		long uid = this.genNewUserid();
+		if (nickname == null || nickname.length() == 0) {
+			nickname = "user"+uid;
+		}
+		
+		String storedPassword = this.passwordUtils.genStoredPassword(password);
+		Document userdata = new Document();
+		userdata.append("nickname", nickname);
+		userdata.append("password", storedPassword);
+		
+		if (properties != null) {
+			properties.remove("password");
+			properties.remove("nickname");
+			for (Entry<String, Object> entry : properties.entrySet()) {
+				userdata.append(entry.getKey(), entry.getValue());
+			}
+			ret.data = properties;
+		}
+		
+		this.addNewUserToMongo(this.mongodbDBName, this.mongodbDBCollUserInfo, uid, userdata);
+		
+		
+		
+		ret.put("uid", uid);
+		ret.put("nickname", nickname);
+		ret.data.remove("password");
+		
+		return ret;
+		
+	}
+	
+	public LinkedList<Document> getUserinfoDocsByNickname(String nickname) {
+		Document query = new Document();
+		query.append("nickname", nickname);
+		LinkedList<Document>  ret = this.getMongoDocuments(this.mongodbDBName, this.mongodbDBCollUserInfo, query, 0, 10);
+		return ret;	
+	}
+	
+	
+	
+	/***
+	 * 如果登陆成功，返回fields里面指定的字段。
+	 * 
+	 * */
+	public DictResult loginWithPassword(String ident, String password, HashSet<String> fields) throws IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException {
+		
+		DictResult res = new DictResult();
+		
+		LinkedList<Document> docs = this.getUserinfoDocsByNickname(ident);
+		
+		if (docs == null || docs.isEmpty()) {
+			res.code = 404;
+			res.msg = "No such user.";
+			return res;
+		}
+		
+		Document doc = docs.getFirst();
+		String storedPassword = doc.getString("password");
+		boolean authed = this.passwordUtils.checkPassword(password, storedPassword);
+		if (!authed) {
+			res.code = 401;
+			res.msg = "Incorrect password.";
+			return res;
+		}
+		
+		res.code = 200;
+		res.msg = "OK";
+		res.put("uid", doc.getLong("_id"));
+		if (fields!=null){
+			for (String f : fields) {
+				res.put(f, doc.get(f));	
+			}
+		}
+		return res;
+	}
 
 	public Result loginSubmitPhone(String phone) throws ApiException {
 		Result res = new Result();
