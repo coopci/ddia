@@ -27,6 +27,7 @@ public class Funcs {
 		HashSet<String> ret = new HashSet<String>();
 		if (csv != null) {
 			for (String v : csv.split(",")) {
+				if (v!=null && v.length() > 0)
 				ret.add(v);
 			}
 		}
