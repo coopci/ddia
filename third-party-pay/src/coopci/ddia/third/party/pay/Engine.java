@@ -56,7 +56,7 @@ import coopci.ddia.requests.CheckOrderRequest;
 import coopci.ddia.requests.CreateOrderRequest;
 import coopci.ddia.results.DictResult;
 import coopci.ddia.results.ListResult;
-import coopci.ddia.results.UserInfo;
+import coopci.ddia.results.KVItem;
 import coopci.ddia.util.SessidPacker;
 import coopci.ddia.util.Vcode;
 

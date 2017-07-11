@@ -11,9 +11,9 @@ import coopci.ddia.Result;
 public class ListResult extends Result {
 	
 	
-	public List<UserInfo> data = new LinkedList<UserInfo>();
+	public List<KVItem> data = new LinkedList<KVItem>();
 	
-	public void add(UserInfo ui) {
-		this.data.add(ui);
+	public void add(KVItem kvitem) {
+		this.data.add(kvitem);
 	}
 }

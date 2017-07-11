@@ -59,7 +59,7 @@ import coopci.ddia.Result;
 import coopci.ddia.SessionId;
 import coopci.ddia.UidResult;
 import coopci.ddia.results.DictResult;
-import coopci.ddia.results.UserInfo;
+import coopci.ddia.results.KVItem;
 import coopci.ddia.results.UserInfosResult;
 import coopci.ddia.util.SessidPacker;
 import coopci.ddia.util.Vcode;
@@ -493,7 +493,7 @@ public class Engine implements IMongodbAspect {
 				Long uid = Long.parseLong(s);
 				Document doc = this.getMongoDocumentById(this.mongodbDBName, this.mongodbDBCollUserInfo, uid);
 				if (doc != null) {
-					UserInfo ui = ret.addEmpty(uid);
+					KVItem ui = ret.addEmpty(uid);
 					
 					for (String fieldname : fieldslist) {
 						Object value = doc.get(fieldname);
@@ -544,7 +544,7 @@ public class Engine implements IMongodbAspect {
 		}
 		
 		long uid = first.getLong("_id");
-		UserInfo ui = result.addEmpty(uid);
+		KVItem ui = result.addEmpty(uid);
 		for (String f : fields) {
 			if (first.containsKey(f)) {
 				Object v = first.get(f);

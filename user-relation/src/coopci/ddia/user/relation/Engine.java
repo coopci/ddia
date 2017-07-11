@@ -46,7 +46,7 @@ import coopci.ddia.Result;
 import coopci.ddia.SessionId;
 import coopci.ddia.UidResult;
 import coopci.ddia.results.ListResult;
-import coopci.ddia.results.UserInfo;
+import coopci.ddia.results.KVItem;
 import coopci.ddia.util.SessidPacker;
 import coopci.ddia.util.Vcode;
 
@@ -260,7 +260,7 @@ public class Engine {
 			Long followee = doc.getLong("followee");
 			Date optime = doc.getDate("optime");
 			
-			UserInfo ui = new UserInfo();
+			KVItem ui = new KVItem();
 			ui.put("uid", followee);
 			ui.put("optime", optime);
 			ret.add(ui);
@@ -281,7 +281,7 @@ public class Engine {
 			Long fan = doc.getLong("fan");
 			Date optime = doc.getDate("optime");
 			
-			UserInfo ui = new UserInfo();
+			KVItem ui = new KVItem();
 			ui.put("uid", fan);
 			ui.put("optime", optime);
 			ret.add(ui);
@@ -303,7 +303,7 @@ public class Engine {
 			Long followee = doc.getLong("followee");
 			Date optime = doc.getDate("optime");
 			
-			UserInfo ui = new UserInfo();
+			KVItem ui = new KVItem();
 			ui.put("uid", followee);
 			ui.put("optime", optime);
 			ret.add(ui);

@@ -58,7 +58,7 @@ import coopci.ddia.notify.IPublisher;
 import coopci.ddia.notify.rabbitmq.RabbitmqPublisher;
 import coopci.ddia.results.DictResult;
 import coopci.ddia.results.ListResult;
-import coopci.ddia.results.UserInfo;
+import coopci.ddia.results.KVItem;
 import coopci.ddia.util.SessidPacker;
 import coopci.ddia.util.Vcode;
 

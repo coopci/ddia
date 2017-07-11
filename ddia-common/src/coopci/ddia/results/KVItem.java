@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
-public class UserInfo extends HashMap<String, Object> {
+public class KVItem extends HashMap<String, Object> {
 	/**
 	 * 
 	 */

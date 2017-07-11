@@ -58,7 +58,7 @@ import coopci.ddia.requests.CheckOrderRequest;
 import coopci.ddia.requests.CreateOrderRequest;
 import coopci.ddia.results.DictResult;
 import coopci.ddia.results.ListResult;
-import coopci.ddia.results.UserInfo;
+import coopci.ddia.results.KVItem;
 import coopci.ddia.util.SessidPacker;
 import coopci.ddia.util.Vcode;
 
@@ -293,15 +293,78 @@ public class Engine implements IMongodbAspect {
 		return res;
 	}
 	
+	static class MemberLocator {
+		ObjectId id;
+		Long owner_id = -1L;
+		Long order = -1L;
+	}
+	
 	/**	
-	 *	获取按成员顺序获取成员的内容。
+	 *	获取按成员id列表。
+	 *  
+	 *  @param start 只获取order大于等于start的成员。
+	 *  @param limit 如果 limit > 0， 那么最多获取limit个成员。
+	 * */
+	public List<MemberLocator> getMembersLocatorlist(String container_id, int start, int limit) {
+		LinkedList<MemberLocator> ret = new LinkedList<MemberLocator>();
+		Document query = new Document();
+		query.append("container_id", container_id);
+		Document sort = new Document();
+		sort.append("order", 1);
+		LinkedList<Document> docs = this.getMongoDocuments(this.mongodbDBName, this.mongodbDBCollContain, query, sort,start, limit);
+		for (Document doc : docs) {
+			MemberLocator ml = new MemberLocator();
+			
+			Object memberid = doc.get("member_id");
+			if (memberid instanceof String) {
+				ml.id = new ObjectId((String)memberid);	
+			} else if (memberid instanceof String) {
+				ml.id = (ObjectId)memberid;
+			}
+			
+			if (doc.containsKey("member_owner_id")) {
+				ml.owner_id = doc.getLong("member_owner_id");
+			}
+			
+			if (doc.containsKey("order")) {
+				ml.order = doc.getLong("order");
+			}
+			ml.order = doc.getLong("order");
+			ret.add(ml);
+		}
+		
+		return ret;
+	}
+	
+	
+	
+
+	public Document getItem(MemberLocator ml) {
+		// TODO 如果 mongodbDBCollItems 是按owner_id part，那么这里还可以"优化" 一下。
+		// TODO 另外还可以用内存cache"优化"一下。
+		Document doc = this.getMongoDocumentById(this.mongodbDBName, this.mongodbDBCollItems, ml.id);
+		return doc;
+	}
+	
+	
+	/**	
+	 *	获取按成员顺序 获取成员的内容。
 	 *  @param uid 检查权限用，而不是简单的筛选条件。
 	 *  @param start 只获取order大于等于start的成员。
 	 *  @param limit 如果 limit > 0， 那么最多获取limit个成员。
 	 * */
-	public Result getMembers(Long uid, String container_id, HashSet<String> fields, long start, long limit) {
-		Result res = new Result();
+	public ListResult getMembers(Long uid, String container_id, HashSet<String> fields, long start, long limit) {
+		ListResult res = new ListResult();
 		
+		List<MemberLocator> memberlocs = this.getMembersLocatorlist(container_id, (int)start, (int)limit);
+		for (MemberLocator ml : memberlocs) {
+			Document item = this.getItem(ml);
+			KVItem kvitem = new KVItem(); 
+			this.put(kvitem, item, fields);
+			kvitem.put("order", ml.order);
+			kvitem.put("id", ml.id.toHexString());
+			res.add(kvitem);
+		}
 		return res;
 	}
 	

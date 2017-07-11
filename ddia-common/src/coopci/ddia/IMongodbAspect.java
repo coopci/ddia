@@ -20,6 +20,7 @@ import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.UpdateResult;
 
 import coopci.ddia.results.DictResult;
+import coopci.ddia.results.KVItem;
 
 public interface IMongodbAspect {
 
@@ -59,6 +60,22 @@ public interface IMongodbAspect {
 		this.setMongoClient(null);
 	}
 	
+	
+	
+	default LinkedList<Document> getMongoDocuments(String dbname, String collname, Document query, Document sort, int skip, int limit) {
+		MongoClient client = this.getMongoClient();
+		MongoDatabase db = client.getDatabase(dbname);
+		MongoCollection<Document> collection = db.getCollection(collname);
+		FindIterable<Document> iterable = collection.find(query).sort(sort).skip(skip).limit(limit);
+		LinkedList<Document> ret = new LinkedList<Document>();
+		MongoCursor<Document> cur = iterable.iterator();
+		
+		while(cur.hasNext()){
+			ret.add(cur.next());
+		}
+		cur.close();
+		return ret;
+	}
 	
 	
 
@@ -267,6 +284,18 @@ public interface IMongodbAspect {
 	
 	
 	default void put(DictResult res, Document doc, HashSet<String> fields) {
+		if (res == null)
+			return;
+		if (doc == null)
+			return;
+		for (Entry<String, Object> entry: doc.entrySet()) {
+			String k = entry.getKey();
+			if (fields != null && fields.contains(k))
+				res.put(k, entry.getValue());
+		}
+	}
+	
+	default void put(KVItem res, Document doc, HashSet<String> fields) {
 		if (res == null)
 			return;
 		if (doc == null)

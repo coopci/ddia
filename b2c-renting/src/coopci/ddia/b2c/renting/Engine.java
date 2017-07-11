@@ -19,7 +19,7 @@ import com.mongodb.client.result.UpdateResult;
 import coopci.ddia.Result;
 import coopci.ddia.results.ListResult;
 import coopci.ddia.results.RentingStatusResult;
-import coopci.ddia.results.UserInfo;
+import coopci.ddia.results.KVItem;
 
 public class Engine {
 	public static String TRANX_LOG_STATUS_NEW = "new"; // 表示还没做。
@@ -621,7 +621,7 @@ public class Engine {
 		
 		Document doc = this.getMongoDocumentById(this.mongodbDBName, this.mongodbDBCollRenting, uid);
 		if (doc != null) {
-			UserInfo ui = new UserInfo();
+			KVItem ui = new KVItem();
 			long pledge = 0;
 			if (doc.containsKey("pledge")) {
 				pledge = doc.getLong("pledge");

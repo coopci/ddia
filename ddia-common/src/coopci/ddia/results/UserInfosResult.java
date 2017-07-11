@@ -9,10 +9,10 @@ import coopci.ddia.Result;
 public class UserInfosResult extends Result {
 	
 	
-	public HashMap<Long, UserInfo> data = new HashMap<Long, UserInfo>();
+	public HashMap<Long, KVItem> data = new HashMap<Long, KVItem>();
 	
-	public UserInfo addEmpty(Long uid) {
-		UserInfo ui = new UserInfo();
+	public KVItem addEmpty(Long uid) {
+		KVItem ui = new KVItem();
 		data.put(uid, ui);
 		return ui;
 	}
