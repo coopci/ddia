@@ -105,6 +105,15 @@ public interface IMongodbAspect {
 		Document doc = iter.first();
 		return doc;
 	}
+	
+
+	default MongoCollection<Document> getMongoColl(String dbname, String collname) {
+		MongoClient client = this.getMongoClient();
+		MongoDatabase db = client.getDatabase(dbname);
+		MongoCollection<Document> collection = db.getCollection(collname);
+		return collection;
+	}
+	
 	/*
 	default Document getMongoDocumentById(String dbname, String collname, ObjectId id) {
 		MongoClient client = this.getMongoClient();

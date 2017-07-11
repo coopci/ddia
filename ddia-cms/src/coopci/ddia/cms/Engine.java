@@ -35,6 +35,7 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import com.mongodb.BasicDBObject;
+import com.mongodb.DBCursor;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoClientURI;
@@ -72,7 +73,7 @@ public class Engine implements IMongodbAspect {
 	String mongodbDBName = "cms";     // mongodb的库名字
 	String mongodbDBCollItems = "cms_item"; // 存 内容的collection。
 	
-	String mongodbDBCollContain = "cms_contain"; // 存 容器内容的collection。 container_id 是 容器item的_id, member_id 是成员item的_id, order是成员在容器中的顺序。
+	String mongodbDBCollContain = "cms_contain"; // 存 容器内容的collection。 container_id 是 容器item的_id, member_id 是成员item的_id, order是成员在容器中的顺序。 按container_id part。
 	
 	
 	public static String FIELD_NAME_OWNER_ID = "owner_id";
@@ -243,11 +244,67 @@ public class Engine implements IMongodbAspect {
 	 * */
 	public Result setContainer(Long uid, String member_id, String container_id, long order) {
 		Result res = new Result();
+		Document container = this.getItem(container_id);
+		if (container == null) {
+			res.code = 404;
+			res.msg = "No such container.";
+			return res;
+		}
+		
+		Document member = this.getItem(member_id);
+		if (member == null) {
+			res.code = 404;
+			res.msg = "No such member.";
+			return res;
+		}
+		
+		if (order < 0) {
+			 // 找到已有的最大的order， 让新member的order = 目前最大的order + 1;
+			 // 如果目前还没有member，则让order = 1。
+			 MongoCollection<Document> coll = this.getMongoColl(this.mongodbDBName, this.mongodbDBCollContain);
+			 Document filter = new Document();
+			 filter.append("container_id", container_id);
+			 MongoCursor<Document> cur = coll.find(filter).sort(new Document("order", -1)).iterator();
+			 if (cur.hasNext()) {
+				 Document last = cur.next();
+				 order = last.getLong("order") + 1L;
+			 } else {
+				 order  = 1L;
+			 }
+		} else {
+			Document inc = new Document();
+			inc.append("order", 1L);
+			Document update = new Document();
+			update.append("$inc", inc);
+			Document filter = new Document();
+			filter.append("container_id", container_id);
+			filter.append("order", new Document("$gte", order));
+			
+			MongoCollection<Document> coll = this.getMongoColl(this.mongodbDBName, this.mongodbDBCollContain);
+			UpdateResult ur = coll.updateMany(filter, update);
+		}
+		
+		Document newdoc = new Document();
+		newdoc.append("container_id", container_id);
+		newdoc.append("member_id", member_id);
+		newdoc.append("order", order);
+		this.insertMongoDocument(this.mongodbDBName, this.mongodbDBCollContain, newdoc);
 		
 		return res;
 	}
 	
-
+	/**	
+	 *	获取按成员顺序获取成员的内容。
+	 *  @param uid 检查权限用，而不是简单的筛选条件。
+	 *  @param start 只获取order大于等于start的成员。
+	 *  @param limit 如果 limit > 0， 那么最多获取limit个成员。
+	 * */
+	public Result getMembers(Long uid, String container_id, HashSet<String> fields, long start, long limit) {
+		Result res = new Result();
+		
+		return res;
+	}
+	
 	/**	
 	 *	获取内容。
 	 *
@@ -273,17 +330,7 @@ public class Engine implements IMongodbAspect {
 		return res;
 	}
 	
-	/**	
-	 *	获取按成员顺序获取成员的内容。
-	 *  @param uid 检查权限用，而不是简单的筛选条件。
-	 *  @param start 只获取order大于等于start的成员。
-	 *  @param limit 如果 limit > 0， 那么最多获取limit个成员。
-	 * */
-	public Result getMembers(Long uid, String container_id, HashSet<String> fields, long start, long limit) {
-		Result res = new Result();
-		
-		return res;
-	}
+	
 	
 	public static void docToDictResult(DictResult res, Document doc) {
 

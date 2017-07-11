@@ -120,4 +120,87 @@ public class TestEngine extends Engine {
 		assertEquals(getRes.data.get("long1"), item.getLong("long1"));
 	}
 	
+	
+	
+	@Test
+	public void testAppendToContainer() throws Exception {
+		
+		Engine engine = new Engine();
+		engine.init();
+		Long uid = 26L;
+		DictResult result;
+		
+		result = engine.createItem(uid, null);
+		String container_id = (String) result.data.get("id");
+		
+		
+		
+		result = engine.createItem(uid, null);
+		String member_id = (String) result.data.get("id");
+		
+		
+		long order = -1;
+		engine.setContainer(uid, member_id, container_id, order);
+		
+		
+		
+		result = engine.createItem(uid, null);
+		String member2_id = (String) result.data.get("id");
+		engine.setContainer(uid, member2_id, container_id, order);
+		
+		
+		
+		
+		System.out.println("container_id: " + container_id);
+		System.out.println("member_id: " + member_id);
+		System.out.println("member2_id: " + member2_id);
+		
+	}
+	
+	
+	
+	
+
+	
+	// 测试插到中间的位置。
+	@Test
+	public void testInsertToContainer() throws Exception {
+		long order = -1;
+		Engine engine = new Engine();
+		engine.init();
+		Long uid = 26L;
+		DictResult result;
+		
+		result = engine.createItem(uid, null);
+		String container_id = (String) result.data.get("id");
+		
+		
+		
+		 
+		result = engine.createItem(uid, null);
+		String member_id = (String) result.data.get("id");
+		engine.setContainer(uid, member_id, container_id, order);
+		
+		
+		
+		result = engine.createItem(uid, null);
+		String member2_id = (String) result.data.get("id");
+		engine.setContainer(uid, member2_id, container_id, order);
+		
+
+		result = engine.createItem(uid, null);
+		String member3_id = (String) result.data.get("id");
+		engine.setContainer(uid, member3_id, container_id, 1L);
+		
+		
+		
+		System.out.println("container_id: " + container_id);
+		System.out.println("member_id: " + member_id);
+		System.out.println("member2_id: " + member2_id);
+		System.out.println("member3_id: " + member3_id);
+		
+	}
+	
+	
+	
 }
