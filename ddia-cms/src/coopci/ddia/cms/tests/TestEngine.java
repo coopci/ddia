@@ -16,7 +16,7 @@ import org.junit.Test;
 import coopci.ddia.results.DictResult;
 import coopci.ddia.cms.Engine;
 
-public class TestEngine {
+public class TestEngine extends Engine {
 	
 	
 	
@@ -52,7 +52,6 @@ public class TestEngine {
 		assertEquals((Long)result.data.get(Engine.FIELD_NAME_OWNER_ID), uid);
 		assertEquals((String)result.data.get("random"), randomValue);
 	}
-	
 	
 	@Test
 	public void testSaveItem() throws Exception {
@@ -90,6 +89,35 @@ public class TestEngine {
 		
 		assertEquals(randomValue, doc.getString("random"));	
 		assertEquals(longvalue + 1L, doc.getLong("long1").longValue());
+	}
+	
+	
+
+	@Test
+	public void testGetItem() throws Exception {
+		
+		Engine engine = new Engine();
+		engine.init();
+		Long uid = 26L;
+		
+		Document item = engine.getOneItem(uid);
+		
+		
+		HashSet<String> fields = new HashSet<String>(); 
+		for (String k : item.keySet()) {
+			fields.add(k);
+		}
+		String item_id = item.getObjectId("_id").toHexString();
+		
+		
+		
+		DictResult getRes = engine.getItem(uid, item_id, fields);
+		
+		assertEquals(200, getRes.code);
+		
+		
+		assertEquals(getRes.data.get("random"), item.getString("random"));	
+		assertEquals(getRes.data.get("long1"), item.getLong("long1"));
 	}
 	
 }

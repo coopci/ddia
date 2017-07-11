@@ -21,5 +21,4 @@ public class DictResult extends Result {
 			this.data.put(k, v);
 		}
 	}
-	
 }

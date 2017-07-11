@@ -251,11 +251,25 @@ public class Engine implements IMongodbAspect {
 	/**	
 	 *	获取内容。
 	 *
-	 * @param uid 检查权限用，而不是简单的筛选条件。 
+	 * @param uid 要获取内容用户的id。 检查权限用，而不是简单的筛选条件。 
 	 * */
-	public Result getItem(Long uid, String item_id, HashSet<String> fields) {
-		Result res = new Result();
+	public DictResult getItem(Long uid, String item_id, HashSet<String> fields) {
+		DictResult res = new DictResult();
+		Document item = getItem(item_id);
+		if (item == null) {
+			res.code = 404;
+			res.msg = "No such item.";
+			return res;
+		}
+
+		if (item.containsKey("private") && item.getLong(FIELD_NAME_OWNER_ID) != uid) {
+			res.code = 403;
+			res.msg = "Permission denied.";
+			return res;
+		}
 		
+		this.put(res, item, fields);
+		res.put("id", item_id);
 		return res;
 	}
 	

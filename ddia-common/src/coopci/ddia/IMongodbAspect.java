@@ -1,6 +1,8 @@
 package coopci.ddia;
 
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Map.Entry;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -16,6 +18,8 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.UpdateResult;
+
+import coopci.ddia.results.DictResult;
 
 public interface IMongodbAspect {
 
@@ -249,6 +253,19 @@ public interface IMongodbAspect {
 			return true;
 		} catch (Exception ex) {
 			return false;
+		}
+	}
+	
+	
+	default void put(DictResult res, Document doc, HashSet<String> fields) {
+		if (res == null)
+			return;
+		if (doc == null)
+			return;
+		for (Entry<String, Object> entry: doc.entrySet()) {
+			String k = entry.getKey();
+			if (fields != null && fields.contains(k))
+				res.put(k, entry.getValue());
 		}
 	}
 
