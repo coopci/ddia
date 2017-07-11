@@ -54,5 +54,42 @@ public class TestEngine {
 	}
 	
 	
+	@Test
+	public void testSaveItem() throws Exception {
+		
+		Engine engine = new Engine();
+		engine.init();
+		Long uid = 26L;
+		
+		Document item = engine.getOneItem(uid);
+		
+		long longvalue = 0;
+		if (item.containsKey("long1")) {
+			longvalue = item.getLong("long1");
+		}
+		String item_id = item.getObjectId("_id").toHexString();
+		
+		HashMap<String, Object> content = new HashMap<String, Object>();
+		
+		
+		
+		String randomValue = UUID.randomUUID().toString();
+		content.put("set__random", randomValue);
+		
+		content.put("incrby__long1", "1");
+		
+				
+		DictResult saveResult = engine.saveItem(uid, item_id, content);
+			
+		
+		Document doc = engine.getItem(item_id);
+		
+		
+		assertEquals(200, saveResult.code);
+		
+		
+		assertEquals(randomValue, doc.getString("random"));	
+		assertEquals(longvalue + 1L, doc.getLong("long1").longValue());
+	}
 	
 }

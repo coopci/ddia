@@ -77,7 +77,7 @@ public class Engine implements IMongodbAspect {
 	
 	public static String FIELD_NAME_OWNER_ID = "owner_id";
 	public static String FIELD_NAME_CREATE_TIME = "create_time";
-	
+	public static String FIELD_NAME_UPDATE_TIME = "update_time";
 	// 据http://mongodb.github.io/mongo-java-driver/2.13/getting-started/quick-tour/ :
 	// The MongoClient class is designed to be thread safe and shared among threads. Typically you create only 1 instance for a given database cluster and use it across your application.
 	MongoClient mongoClient = null;
@@ -151,19 +151,88 @@ public class Engine implements IMongodbAspect {
 
 	/**
 	 * 	更新item_id指定的item的内容。
-	 *	content 中的 key如果以  __set结尾，        那么表示要直接设置 __set前面部分为名字的字段的值为value； 	 
-	 *  content 中的 key如果以  __incrby结尾，那么表示要将 __incrby前面部分为名字的字段的值数字增加value；
-	 *  content 中的 key如果以  __add结尾，那么表示要将  value作为元素添加到     __add前面部分为名字所表示的 集合 中。 尚未实现。
+	 *	content 中的 key如果以 set__开头，        那么表示要直接设置 set__后面部分为名字的字段的值为value； 	 
+	 *  content 中的 key如果以  incrby__开头，那么表示要将 incrby后面部分为名字的字段的值数字增加value；
+	 *  content 中的 key如果以  add__开头，那么表示要将  value作为元素添加到   add后面部分为名字所表示的 集合 中。 尚未实现。
 	 *  
 	 *  @param uid 必须和item的owner_id相同才允许这个操作。
 	 * */
-	public Result saveItem(Long uid, String item_id, HashMap<String, Object> content) {
-		Result res = new Result();
+	public DictResult saveItem(Long uid, String item_id, HashMap<String, Object> content) {
+		DictResult res = new DictResult();
+		
+		ObjectId oid = new ObjectId(item_id);
+		Document filter = new Document();
+		filter.append(FIELD_NAME_OWNER_ID, uid);
+		filter.append("_id", oid);
+		
+		Document setData = new Document();
+		Document incrbyData = new Document();
+		
+		
+		for (Entry<String, Object> entry: content.entrySet()) {
+			String k = entry.getKey();
+			String fn = null;
+			
+			if (k.startsWith("set__")) {
+				fn = k.substring("set__".length());
+				setData.append(fn, entry.getValue());
+			} else if (k.startsWith("incrby__")) {
+				fn = k.substring("incrby__".length());
+				Object v = entry.getValue(); 
+				if( v instanceof String) {
+					incrbyData.append(fn, 
+							Long.parseLong((String)v)
+							);
+				} else if (v instanceof Long) {
+					incrbyData.append(fn, 
+							(Long)v);
+				}
+			} 
+//			else if (k.startsWith("add__")) {
+//				fn = k.substring("add__".length());
+//			}
+		}
+		Document update = new Document();
+		Date now = new Date();
+		setData.append(FIELD_NAME_UPDATE_TIME, now);
+		if (setData.size() > 0) 
+			update.append("$set", setData);
+		
+		if (incrbyData.size() > 0) 
+			update.append("$inc", incrbyData);
+		
+		MongoClient client = this.getMongoClient();
+		MongoDatabase db = client.getDatabase(this.mongodbDBName);
+		MongoCollection<Document> collection = db.getCollection(this.mongodbDBCollItems);
+		
+		
+		UpdateOptions opt = new UpdateOptions();
+		opt.upsert(false);
+		
+		UpdateResult ur = collection.updateOne(filter, update, opt);
+		
+		if(ur.getModifiedCount() == 0) {
+			res.code = 404;
+			res.msg = "No such item.";
+			return res;
+		}
 		
 		return res;
 	}
 	
-	
+	public Document getOneItem(Long uid) {
+		
+		Document query = new Document();
+		query.append("owner_id", uid);
+		Document doc = this.getOneMongoDocument(this.mongodbDBName, this.mongodbDBCollItems, query, 0, 1);
+		return doc;
+	}
+
+	public Document getItem(String item_id) {
+		
+		Document doc = this.getMongoDocumentById(this.mongodbDBName, this.mongodbDBCollItems, new ObjectId(item_id));
+		return doc;
+	}
 
 	/**
 	 * 	把member_id表示的内容放入container_id表达的容器。 mongodbDBCollContain。
