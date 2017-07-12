@@ -10,5 +10,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/virtual-assets"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/third-party-pay"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ddia-chat"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ddia-cms"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
