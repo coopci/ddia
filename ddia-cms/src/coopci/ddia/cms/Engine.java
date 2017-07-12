@@ -66,6 +66,7 @@ import coopci.ddia.util.Vcode;
 // 每一个内容被称为一个item。 每个item可以有任意多个属性。
 // 有一些属性是"强制的": create_time, appid(表示出数据哪一个应用  例如 gift), type(表示在appid指明的范围内的作用。 例如 album, article)。 
 // item可以作为容器包含其他的item。 容器中的子item有顺序。任何一个item都可以属于多个容器。 容器可以包含容器。
+// item可以有名字也可以没有名字。在有名字的情况下，相同owner_id的item的名字不能重复。
 // 
 public class Engine implements IMongodbAspect {
 	
@@ -94,9 +95,20 @@ public class Engine implements IMongodbAspect {
 	}
 
 	
+	
+	public void initIndex() {
+		Document fields = new Document();
+		fields.append("owner_id", 1); 
+		fields.append("name", 1);
+		IndexOptions opt = new IndexOptions();
+		opt.unique(true);
+		opt.sparse(true);
+		this.ensureIndex(this.mongodbDBName, this.mongodbDBCollItems, fields, opt);
+		
+	}
 	public void init() throws Exception {
 		connectMongo();
-		
+		this.initIndex();
 		return;
 	}
 	
@@ -118,6 +130,43 @@ public class Engine implements IMongodbAspect {
 		blockFields.add("create_time");
 		blockFields.add("update_time");
 		
+	}
+	
+	
+	
+	/**
+	 * 	获取或创建uid名下 名为name的item。
+	 *	每一个uid名下的item的name不能重复。
+	 *  
+	 *  @param uid 会被作为item的owner_id。
+	 *  @param name 要创建或者获取的item的名字。
+	 *  @param fields 要获取的字段。
+	 * */
+	public DictResult getOrCreateNamedItem(Long uid, String name, HashSet<String> fields) {
+		DictResult res = new DictResult();
+		Document query = new Document();
+		
+		query.append("owner_id", uid);
+		query.append("name", name);
+		LinkedList<Document> docs = this.getMongoDocuments(this.mongodbDBName, this.mongodbDBCollItems, query, 0, 1);
+		
+		if (docs.size() == 0) {
+			// 创建一个新的。
+			Date now = new Date();
+			Document newdoc = new Document();
+			newdoc.append("owner_id", uid);
+			newdoc.append("name", name);
+			newdoc.append("create_time", now);
+
+			ObjectId oid = this.insertMongoDocument(this.mongodbDBName, this.mongodbDBCollItems, newdoc);
+			this.put(res, newdoc, fields);
+			res.put("id", oid.toHexString());
+			return res;
+		}
+		Document doc = docs.getFirst();
+		this.put(res, doc, fields);
+		res.put("id", doc.getObjectId("_id").toHexString());
+		return res;
 	}
 	/**
 	 * 	向 mongodbDBCollItems 增加新内容。

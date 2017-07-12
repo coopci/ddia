@@ -219,5 +219,33 @@ public class TestEngine extends Engine {
 		System.out.println(content);
 	}
 	
+	@Test
+	public void testGetOrCreateItem() throws Exception {
+		
+		Engine engine = new Engine();
+		engine.init();
+		Long uid = 26L;
+		String name = "test-named_item";
+		HashSet<String> fields = new HashSet<String>();
+		// fields.add("_id");
+		fields.add("random");
+		fields.add("long1");
+		fields.add("name");
+		// fields.add("long2");
+		
+		DictResult result = engine.getOrCreateNamedItem(uid, name, fields);
+		
+		
+		System.out.println("result.data.size(): " + result.data.size());
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+		String content = objectMapper.writeValueAsString(result);
+		System.out.println("result: ");
+		System.out.println(content);
+		
+		
+		assertEquals(result.data.get("name"), name);
+	}
 	
 }
