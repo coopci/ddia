@@ -1,0 +1,220 @@
+{
+	"variables": [],
+	"info": {
+		"name": "ddia-cms",
+		"_postman_id": "ac1cdad1-b6a1-f4f8-8de5-3d6f0844ef58",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "get_or_greate_named_item",
+			"request": {
+				"url": "http://localhost:8895/cms/get_or_create_named_item",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "uid",
+							"value": "26",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "name",
+							"value": "test-named-item",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "fields",
+							"value": "name",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get_item",
+			"request": {
+				"url": {
+					"raw": "http://localhost:8895/cms/get_item?uid=26&id=5965efe34c9d3e3c3ce0fc9e&fields=name,create_time,field1,field2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8895",
+					"path": [
+						"cms",
+						"get_item"
+					],
+					"query": [
+						{
+							"key": "uid",
+							"value": "26",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "id",
+							"value": "5965efe34c9d3e3c3ce0fc9e",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "fields",
+							"value": "name,create_time,field1,field2",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get_members",
+			"request": {
+				"url": {
+					"raw": "http://localhost:8895/cms/get_members?uid=26&container_id=596474b74c9d3e38842b8aea&fields=name,create_time&start=0&limit=20",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8895",
+					"path": [
+						"cms",
+						"get_members"
+					],
+					"query": [
+						{
+							"key": "uid",
+							"value": "26",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "container_id",
+							"value": "596474b74c9d3e38842b8aea",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "fields",
+							"value": "name,create_time",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "start",
+							"value": "0",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "limit",
+							"value": "20",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "create_item",
+			"request": {
+				"url": "http://localhost:8895/cms/create_item",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "uid",
+							"value": "26",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "field1",
+							"value": "aaa",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "save_item",
+			"request": {
+				"url": "http://localhost:8895/cms/save_item",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "uid",
+							"value": "26",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "id",
+							"value": "5965efe34c9d3e3c3ce0fc9e",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "set__field1",
+							"value": "bbbb",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
