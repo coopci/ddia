@@ -133,7 +133,19 @@ public class Engine implements IMongodbAspect {
 	}
 	
 	
-	
+	Document getNamedItem(Long uid, String name, HashSet<String> fields) {
+		Document query = new Document();
+		
+		query.append("owner_id", uid);
+		query.append("name", name);
+		LinkedList<Document> docs = this.getMongoDocuments(this.mongodbDBName, this.mongodbDBCollItems, query, 0, 1);
+		
+		if (docs.size() == 0) {
+			return null;
+		}
+		return docs.getFirst();
+		
+	}
 	/**
 	 * 	获取或创建uid名下 名为name的item。
 	 *	每一个uid名下的item的name不能重复。
@@ -144,14 +156,9 @@ public class Engine implements IMongodbAspect {
 	 * */
 	public DictResult getOrCreateNamedItem(Long uid, String name, HashSet<String> fields) {
 		DictResult res = new DictResult();
-		Document query = new Document();
 		
-		query.append("owner_id", uid);
-		query.append("name", name);
-		LinkedList<Document> docs = this.getMongoDocuments(this.mongodbDBName, this.mongodbDBCollItems, query, 0, 1);
-		
-		if (docs.size() == 0) {
-			// 创建一个新的。
+		Document doc = getNamedItem(uid, name, fields);
+		if (doc == null) {
 			Date now = new Date();
 			Document newdoc = new Document();
 			newdoc.append("owner_id", uid);
@@ -163,7 +170,6 @@ public class Engine implements IMongodbAspect {
 			res.put("id", oid.toHexString());
 			return res;
 		}
-		Document doc = docs.getFirst();
 		this.put(res, doc, fields);
 		res.put("id", doc.getObjectId("_id").toHexString());
 		return res;
@@ -397,7 +403,7 @@ public class Engine implements IMongodbAspect {
 	
 	
 	/**	
-	 *	获取按成员顺序 获取成员的内容。
+	 *	按成员顺序 获取成员的内容。
 	 *  @param uid 检查权限用，而不是简单的筛选条件。
 	 *  @param start 只获取order大于等于start的成员。
 	 *  @param limit 如果 limit > 0， 那么最多获取limit个成员。

@@ -21,7 +21,11 @@ public class Funcs {
 	    return hexString.toString();
 	}
 	
-	
+	public static int parseInt(String v, int defaultValue) {
+		if (v==null)
+			return defaultValue;
+		return Integer.parseInt(v);
+	}
 	
 	public static HashSet<String> csvToHashSet(String csv) {
 		HashSet<String> ret = new HashSet<String>();
@@ -34,7 +38,32 @@ public class Funcs {
 		
 		return ret;
 	}
+	public static HashSet<String> trueStrings = new HashSet<String>();
+	public static HashSet<String> falsyStrings = new HashSet<String>();
 	
+	static {
+		trueStrings.add("1");
+		trueStrings.add("on");
+		trueStrings.add("true");
+		trueStrings.add("yes");
+		
+		falsyStrings.add("0");
+		falsyStrings.add("off");
+		falsyStrings.add("false");
+		falsyStrings.add("no");
+	}
+	public static boolean parseBoolean (String v, boolean defaultValue) {
+		if (v == null)
+			return defaultValue;
+		if (trueStrings.contains(v)) {
+			return true;
+		}
+		if (falsyStrings.contains(v)) {
+			return false;
+		}
+		return defaultValue;
+		
+	}
 	public static HashMap<String, Object> parametersToHashMap(Request request, HashSet<String> blockFields ) {
 		HashMap<String, Object> ret = new HashMap<String, Object>();
 		for (String n:request.getParameterNames()) {

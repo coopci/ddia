@@ -12,6 +12,7 @@ public class AllInOneLauncher {
 		coopci.ddia.virtual.assets.HttpServer httpVirualAssets = new coopci.ddia.virtual.assets.HttpServer();
 		coopci.ddia.third.party.pay.HttpServer httpThirdPartyPay = new coopci.ddia.third.party.pay.HttpServer();
 		coopci.ddia.chat.HttpServer httpChat = new coopci.ddia.chat.HttpServer();
+		coopci.ddia.cms.HttpServer httpCms = new coopci.ddia.cms.HttpServer();
 		
 		httpGateway.start();
 		httpUserbasic.start();
@@ -20,6 +21,7 @@ public class AllInOneLauncher {
 		httpVirualAssets.start();
 		httpThirdPartyPay.start();
 		httpChat.start();
+		httpCms.start();
 	}
 	
 	

@@ -109,6 +109,7 @@ public class Engine {
 	public static String VIRTUAL_ASSETS_HTTP_PREFIX = "http://localhost:8893/";
 	public static String THIRD_PARTY_PAY_HTTP_PREFIX = "http://localhost:8892/";
 	public static String CHAT_HTTP_PREFIX = "http://localhost:8894/";
+	public static String CMS_HTTP_PREFIX = "http://localhost:8895/";
 	
 	public static String MICROSERVICE_NAME_USER_BASIC = "user-basic";
 	public static String MICROSERVICE_NAME_USER_RELATION = "user-relation";

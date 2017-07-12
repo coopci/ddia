@@ -8,15 +8,18 @@ import org.glassfish.grizzly.http.server.Response;
 import org.glassfish.grizzly.threadpool.ThreadPoolConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import coopci.ddia.cms.handlers.GetItemHandler;
+import coopci.ddia.cms.handlers.GetMembersHandler;
+import coopci.ddia.cms.handlers.GetOrCreateNamedItemHandler;
 
 
 
 public class HttpServer {
 	
-	public static int listenPort = 8892;
+	public static int listenPort = 8895;
 	Logger logger = LoggerFactory.getLogger(HttpServer.class);
 	public void start() throws Exception {
 		Engine engine = new Engine();
@@ -33,7 +36,7 @@ public class HttpServer {
 			new HttpHandler() {
 	    	// http://127.0.0.1:8080/time
 	        public void service(Request request, Response response) throws Exception {
-	            String content = "ddia/virtual-assets";
+	            String content = "ddia/cms";
 	            response.setContentType("text/html;charset=utf-8");
 	            response.getWriter().write(content);
 	        }
@@ -43,6 +46,26 @@ public class HttpServer {
 		// create
 		
 		
+
+		GetOrCreateNamedItemHandler getOrCreateNamedItemHandler = new GetOrCreateNamedItemHandler();
+		getOrCreateNamedItemHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				getOrCreateNamedItemHandler,
+				"/cms/get_or_create_named_item");
+		
+		
+		GetItemHandler getItemHandler = new GetItemHandler();
+		getItemHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				getItemHandler,
+				"/cms/get_item");
+		
+		
+		GetMembersHandler getMembersHandler = new GetMembersHandler();
+		getMembersHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				getMembersHandler,
+				"/cms/get_members");
 		
 		// set_container
 		
