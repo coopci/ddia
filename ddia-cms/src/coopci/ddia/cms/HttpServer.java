@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import coopci.ddia.cms.handlers.CreateItemHandler;
 import coopci.ddia.cms.handlers.GetItemByGlobalNameHandler;
 import coopci.ddia.cms.handlers.GetItemHandler;
+import coopci.ddia.cms.handlers.GetMembersByGlobalNameHandler;
 import coopci.ddia.cms.handlers.GetMembersByNameHandler;
 import coopci.ddia.cms.handlers.GetMembersHandler;
 import coopci.ddia.cms.handlers.GetOrCreateNamedItemHandler;
@@ -106,6 +107,12 @@ public class HttpServer {
 		server.getServerConfiguration().addHttpHandler(
 				getItemByGlobalNameHandler,
 				"/cms/get_item_by_global_name");
+		
+		GetMembersByGlobalNameHandler getMembersByGlobalNameHandler = new GetMembersByGlobalNameHandler();
+		getMembersByGlobalNameHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				getMembersByGlobalNameHandler,
+				"/cms/get_members_by_global_name");
 		
 		try {
 			server.removeListener("grizzly");

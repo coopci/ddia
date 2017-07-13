@@ -565,6 +565,37 @@ public class Engine implements IMongodbAspect {
 	
 	
 	
+	/**	
+	 *	从容器的global_name  按成员顺序 获取成员的内容。
+	 *  @param uid container_name 所表示 item的owner_id。
+	 *  @param start 只获取order大于等于start的成员。
+	 *  @param limit 如果 limit > 0， 那么最多获取limit个成员。
+	 * */
+	public ListResult getMembersByGlobalName(Long uid, String container_global_name, HashSet<String> fields, long start, long limit) {
+		ListResult res = new ListResult();
+		
+		ObjectId oid = this.getIdByGlobalName(container_global_name);
+		if (oid == null){
+			res.code = 404;
+			res.msg = "No such global name.";
+			return res;
+		}
+		String container_id = oid.toHexString();
+		
+		
+		List<MemberLocator> memberlocs = this.getMembersLocatorlist(container_id, (int)start, (int)limit);
+		for (MemberLocator ml : memberlocs) {
+			Document item = this.getItem(ml);
+			KVItem kvitem = new KVItem(); 
+			this.put(kvitem, item, fields);
+			kvitem.put("order", ml.order);
+			kvitem.put("id", ml.id.toHexString());
+			res.add(kvitem);
+		}
+		return res;
+	}
+	
+	
 	
 	
 	
