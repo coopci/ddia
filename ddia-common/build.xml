@@ -7,6 +7,7 @@
     <property environment="env"/>
     <property name="b2c-renting.location" value="../b2c-renting"/>
     <property name="ddia-chat.location" value="../ddia-chat"/>
+    <property name="ddia-cms.location" value="../ddia-cms"/>
     <property name="ddia-gateway.location" value="../ddia-gateway"/>
     <property name="ddia-launchers.location" value="../ddia-launchers"/>
     <property name="file-upload.location" value="../file-upload"/>
@@ -63,6 +64,8 @@
         <ant antfile="build.xml" dir="${b2c-renting.location}" inheritAll="false" target="build"/>
         <ant antfile="build.xml" dir="${ddia-chat.location}" inheritAll="false" target="clean"/>
         <ant antfile="build.xml" dir="${ddia-chat.location}" inheritAll="false" target="build"/>
+        <ant antfile="build.xml" dir="${ddia-cms.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${ddia-cms.location}" inheritAll="false" target="build"/>
         <ant antfile="build.xml" dir="${ddia-gateway.location}" inheritAll="false" target="clean"/>
         <ant antfile="build.xml" dir="${ddia-gateway.location}" inheritAll="false" target="build"/>
         <ant antfile="build.xml" dir="${ddia-launchers.location}" inheritAll="false" target="clean"/>
