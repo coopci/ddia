@@ -67,7 +67,7 @@ import coopci.ddia.util.Vcode;
 // 有一些属性是"强制的": create_time, appid(表示出数据哪一个应用  例如 gift), type(表示在appid指明的范围内的作用。 例如 album, article)。 
 // item可以作为容器包含其他的item。 容器中的子item有顺序。任何一个item都可以属于多个容器。 容器可以包含容器。
 // item可以有名字也可以没有名字。在有名字的情况下，相同owner_id的item的名字不能重复。
-// global_name 是一个全局查找item的机制。用来实现"B端发布所有人可读的内容"功能。
+// global_name 是一个全局查找item的机制。用来实现"运营方发布所有人可读的内容"功能。
 //
 
 public class Engine implements IMongodbAspect {
@@ -474,6 +474,7 @@ public class Engine implements IMongodbAspect {
 		
 	}
 	
+	
 	/**	
 	 *	从容器名字  按成员顺序 获取成员的内容。
 	 *  @param uid container_name 所表示 item的owner_id。
@@ -526,6 +527,44 @@ public class Engine implements IMongodbAspect {
 		res.put("id", item_id);
 		return res;
 	}
+	
+	
+	
+
+	/**	
+	 *	按global_name获取内容。
+	 *
+	 * @param uid 要获取内容用户的id。 检查权限用，而不是简单的筛选条件。 
+	 * */
+	public DictResult getItemByGlobalName(Long uid, String globalName, HashSet<String> fields) {
+		DictResult res = new DictResult();
+		ObjectId oid = this.getIdByGlobalName(globalName);
+		if (oid == null) {
+			res.code = 404;
+			res.msg = "No such global name.";
+			return res;
+		}
+		String item_id = oid.toHexString();
+		Document item = getItem(item_id);
+		if (item == null) {
+			res.code = 404;
+			res.msg = "No such item.";
+			return res;
+		}
+
+		if (item.containsKey("private") && item.getLong(FIELD_NAME_OWNER_ID) != uid) {
+			res.code = 403;
+			res.msg = "Permission denied.";
+			return res;
+		}
+		
+		this.put(res, item, fields);
+		res.put("id", item_id);
+		return res;
+	}
+	
+	
+	
 	
 	
 	

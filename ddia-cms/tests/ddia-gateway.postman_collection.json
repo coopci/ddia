@@ -1,0 +1,450 @@
+{
+	"variables": [],
+	"info": {
+		"name": "ddia-gateway",
+		"_postman_id": "3bad9d6c-d85d-f248-84ca-e6eaae92a476",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "login-with-phone",
+			"description": "",
+			"item": [
+				{
+					"name": "创建一个新会话(获取session_id)。",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code == 200;\r",
+									"var jsonData = JSON.parse(responseBody);\r",
+									"var session_id = jsonData.data.session_id;\r",
+									"tests[\"session_id is not empty\"] = session_id.length > 0;\r",
+									"postman.setEnvironmentVariable(\"session_id\", jsonData.data.session_id);\r",
+									"console.log(jsonData.data.session_id);\r",
+									"tests[responseBody] = true;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "http://localhost:8887/start_new_session",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "提交手机号(获取短信验证码)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code == 200;\r",
+									"var jsonData = JSON.parse(responseBody);\r",
+									"tests[\"msg is OK\"] = jsonData.msg == \"OK\";\r",
+									"console.log(\"ggg\");\r",
+									"tests[responseBody] = true;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "http://localhost:8887/login/submit_phone",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "phone",
+									"value": "13333333333",
+									"type": "text"
+								},
+								{
+									"key": "session_id",
+									"value": "{{session_id}}",
+									"type": "text"
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "提交短信验证码",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code == 200;\r",
+									"var jsonData = JSON.parse(responseBody);\r",
+									"tests[\"msg is OK\"] = jsonData.msg == \"OK\";\r",
+									"tests[responseBody] = true;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "http://localhost:8887/login/submit_vcode",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "session_id",
+									"value": "{{session_id}}",
+									"type": "text"
+								},
+								{
+									"key": "phone",
+									"value": "13333333333",
+									"type": "text"
+								},
+								{
+									"key": "vcode",
+									"value": "111111",
+									"type": "text"
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "按昵称跟随",
+			"request": {
+				"url": "http://localhost:8887/follow",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "sessid",
+							"value": "test-sess-6",
+							"type": "text"
+						},
+						{
+							"key": "followee",
+							"value": "gubo",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "按昵称取消跟随",
+			"request": {
+				"url": "http://localhost:8887/unfollow",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "sessid",
+							"value": "test-sess-6",
+							"type": "text"
+						},
+						{
+							"key": "followee",
+							"value": "gubo",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "发消息给指定用户",
+			"request": {
+				"url": "http://localhost:8887/sendmsg",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "sessid",
+							"value": "test-sess-6",
+							"type": "text"
+						},
+						{
+							"key": "sendto",
+							"value": "gubo",
+							"type": "text"
+						},
+						{
+							"key": "msg",
+							"value": "from-postman",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "创建一个新会话(获取session_id)。",
+			"request": {
+				"url": "http://localhost:8887/start_new_session",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "买钻石步骤1--生成订单。",
+			"request": {
+				"url": "localhost:8887/buy_diamonds/create_order",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "sessid",
+							"value": "test-sess-6",
+							"type": "text"
+						},
+						{
+							"key": "number",
+							"value": "7",
+							"type": "text"
+						},
+						{
+							"key": "pay_channel",
+							"value": "backdoor",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "买钻石步骤2--检查支付状态并交付订单。",
+			"request": {
+				"url": "localhost:8887/buy_diamonds/check_order",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "sessid",
+							"value": "test-sess-6",
+							"type": "text"
+						},
+						{
+							"key": "apptranxid",
+							"value": "59538ce84c9d3e2b1c5333fe",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "提交手机号(获取短信验证码)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code == 200;\r",
+							"var jsonData = JSON.parse(responseBody);\r",
+							"tests[\"msg is OK\"] = jsonData.msg == \"OK\";\r",
+							"console.log(\"ggg\");\r",
+							"tests[responseBody] = true;"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "http://localhost:8887/login/submit_phone",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "phone",
+							"value": "13521241456",
+							"type": "text"
+						},
+						{
+							"key": "session_id",
+							"value": "1f383183-0c58-4322-9077-d099bf1b16b0",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "发送聊天信息。",
+			"request": {
+				"url": "http://localhost:8887/send_chat_message",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "sessid",
+							"value": "test-sess-6",
+							"type": "text"
+						},
+						{
+							"key": "sendto",
+							"value": "user18",
+							"type": "text"
+						},
+						{
+							"key": "message",
+							"value": "hello~",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "用密码登陆。",
+			"request": {
+				"url": "http://localhost:8887/login_with_password",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "ident",
+							"value": "user26",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "session_id",
+							"value": "session_id5665",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
