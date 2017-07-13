@@ -15,7 +15,8 @@ import coopci.ddia.util.Funcs;
 import coopci.ddia.GrizzlyUtils;
 
 /**
- * 用户之间发送即时聊天消息。
+ * 把member_id表示的内容放入container_id表达的容器。
+ * container_id 必须是自己名下的。
  * */
 public class SetContainerHandler extends HttpHandler {
 	public Engine getEngine() {

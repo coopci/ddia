@@ -1,6 +1,5 @@
 package coopci.ddia.cms.handlers;
 
-import java.util.HashMap;
 import java.util.HashSet;
 
 import org.glassfish.grizzly.http.Method;
@@ -15,7 +14,7 @@ import coopci.ddia.util.Funcs;
 import coopci.ddia.GrizzlyUtils;
 
 /**
- * 用户之间发送即时聊天消息。
+ * 获取属于自己的名字为参数name的容器的成员。
  * */
 public class GetMembersByNameHandler extends HttpHandler {
 	public Engine getEngine() {

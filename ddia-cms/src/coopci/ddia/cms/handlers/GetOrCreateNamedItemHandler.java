@@ -15,7 +15,7 @@ import coopci.ddia.util.Funcs;
 import coopci.ddia.GrizzlyUtils;
 
 /**
- * 用户之间发送即时聊天消息。
+ * 获取自己名下的名为name的item。如果自己名下没有名字和参数name相同的item，则在自己名下创建一个名字为参数name的item。
  * */
 public class GetOrCreateNamedItemHandler extends HttpHandler {
 	public Engine getEngine() {

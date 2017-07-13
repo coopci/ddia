@@ -14,7 +14,7 @@ import coopci.ddia.cms.Engine;
 import coopci.ddia.GrizzlyUtils;
 
 /**
- * 用户之间发送即时聊天消息。
+ * 在自己名下创建一个新item。
  * */
 public class CreateItemHandler extends HttpHandler {
 	public Engine getEngine() {

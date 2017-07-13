@@ -15,7 +15,7 @@ import coopci.ddia.util.Funcs;
 import coopci.ddia.GrizzlyUtils;
 
 /**
- * 用户之间发送即时聊天消息。
+ * 获取参数id表示的item的内容。可以获取不属于自己的item。
  * */
 public class GetItemHandler extends HttpHandler {
 	public Engine getEngine() {

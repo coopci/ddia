@@ -148,7 +148,7 @@ public class Engine implements IMongodbAspect {
 	}
 	
 	/**
-	 * 	获取或创建uid名下 名为name的item。
+	 * 	获取或创建uid名下 名为name的item。uid是进行这个操作的本人。
 	 *	每一个uid名下的item的name不能重复。
 	 *  
 	 *  @param uid 会被作为item的owner_id。
@@ -442,7 +442,7 @@ public class Engine implements IMongodbAspect {
 	
 	/**	
 	 *	从容器名字  按成员顺序 获取成员的内容。
-	 *  @param uid 检查权限用，而不是简单的筛选条件。
+	 *  @param uid container_name 所表示 item的owner_id。
 	 *  @param start 只获取order大于等于start的成员。
 	 *  @param limit 如果 limit > 0， 那么最多获取limit个成员。
 	 * */
