@@ -146,6 +146,7 @@ public class Engine implements IMongodbAspect {
 		return docs.getFirst();
 		
 	}
+	
 	/**
 	 * 	获取或创建uid名下 名为name的item。
 	 *	每一个uid名下的item的name不能重复。
@@ -403,13 +404,57 @@ public class Engine implements IMongodbAspect {
 	
 	
 	/**	
-	 *	按成员顺序 获取成员的内容。
+	 *	从容器id  按成员顺序 获取成员的内容。
 	 *  @param uid 检查权限用，而不是简单的筛选条件。
 	 *  @param start 只获取order大于等于start的成员。
 	 *  @param limit 如果 limit > 0， 那么最多获取limit个成员。
 	 * */
 	public ListResult getMembers(Long uid, String container_id, HashSet<String> fields, long start, long limit) {
 		ListResult res = new ListResult();
+		
+		List<MemberLocator> memberlocs = this.getMembersLocatorlist(container_id, (int)start, (int)limit);
+		for (MemberLocator ml : memberlocs) {
+			Document item = this.getItem(ml);
+			KVItem kvitem = new KVItem(); 
+			this.put(kvitem, item, fields);
+			kvitem.put("order", ml.order);
+			kvitem.put("id", ml.id.toHexString());
+			res.add(kvitem);
+		}
+		return res;
+	}
+	
+
+	
+	public String getIdByName(Long uid, String name) {
+		Document query = new Document();
+		
+		query.append("owner_id", uid);
+		query.append("name", name);
+		LinkedList<Document> docs = this.getMongoDocuments(this.mongodbDBName, this.mongodbDBCollItems, query, 0, 1);
+		
+		if (docs.size() == 0) {
+			return null;
+		}
+		return docs.getFirst().getObjectId("_id").toHexString();
+		
+	}
+	
+	/**	
+	 *	从容器名字  按成员顺序 获取成员的内容。
+	 *  @param uid 检查权限用，而不是简单的筛选条件。
+	 *  @param start 只获取order大于等于start的成员。
+	 *  @param limit 如果 limit > 0， 那么最多获取limit个成员。
+	 * */
+	public ListResult getMembersByName(Long uid, String container_name, HashSet<String> fields, long start, long limit) {
+		ListResult res = new ListResult();
+		String container_id = this.getIdByName(uid, container_name);
+		if (container_id == null) {
+			res.code = 404;
+			res.msg = "No such container.";
+			return res;
+		}
+		
 		
 		List<MemberLocator> memberlocs = this.getMembersLocatorlist(container_id, (int)start, (int)limit);
 		for (MemberLocator ml : memberlocs) {

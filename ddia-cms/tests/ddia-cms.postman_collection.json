@@ -215,6 +215,61 @@
 				"description": ""
 			},
 			"response": []
+		},
+		{
+			"name": "get_members_by_name",
+			"request": {
+				"url": {
+					"raw": "http://localhost:8895/cms/get_members_by_name?uid=26&container_name=test-named-item&fields=name,create_time&start=0&limit=20",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8895",
+					"path": [
+						"cms",
+						"get_members_by_name"
+					],
+					"query": [
+						{
+							"key": "uid",
+							"value": "26",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "container_name",
+							"value": "test-named-item",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "fields",
+							"value": "name,create_time",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "start",
+							"value": "0",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "limit",
+							"value": "20",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
 		}
 	]
 }

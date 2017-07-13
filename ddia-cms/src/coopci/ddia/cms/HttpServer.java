@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import coopci.ddia.cms.handlers.CreateItemHandler;
 import coopci.ddia.cms.handlers.GetItemHandler;
+import coopci.ddia.cms.handlers.GetMembersByNameHandler;
 import coopci.ddia.cms.handlers.GetMembersHandler;
 import coopci.ddia.cms.handlers.GetOrCreateNamedItemHandler;
 import coopci.ddia.cms.handlers.SaveItemHandler;
@@ -70,7 +71,13 @@ public class HttpServer {
 				getMembersHandler,
 				"/cms/get_members");
 		
-
+		GetMembersByNameHandler getMembersByNameHandler = new GetMembersByNameHandler();
+		getMembersByNameHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				getMembersByNameHandler,
+				"/cms/get_members_by_name");
+		
+		
 		CreateItemHandler createItemHandler = new CreateItemHandler();
 		createItemHandler.setEngine(engine);
 		server.getServerConfiguration().addHttpHandler(
