@@ -270,6 +270,92 @@
 				"description": ""
 			},
 			"response": []
+		},
+		{
+			"name": "get_item_by_global_name",
+			"request": {
+				"url": {
+					"raw": "http://localhost:8895/cms/get_item_by_global_name?uid=26&name=test-global-name-aaa&fields=name,create_time,field1,field2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8895",
+					"path": [
+						"cms",
+						"get_item_by_global_name"
+					],
+					"query": [
+						{
+							"key": "uid",
+							"value": "26",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "name",
+							"value": "test-global-name-aaa",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "fields",
+							"value": "name,create_time,field1,field2",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get_members_by_global_name",
+			"request": {
+				"url": {
+					"raw": "http://localhost:8895/cms/get_members_by_global_name?uid=26&container_name=test-global-name-aaa&fields=name,create_time,field1,field2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8895",
+					"path": [
+						"cms",
+						"get_members_by_global_name"
+					],
+					"query": [
+						{
+							"key": "uid",
+							"value": "26",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "container_name",
+							"value": "test-global-name-aaa",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "fields",
+							"value": "name,create_time,field1,field2",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
 		}
 	]
 }
