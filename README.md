@@ -23,3 +23,12 @@ b2c-renting   是微服务类项目。 提供的功能是用户自助租用/归�
 
 最简单的试用流程是用eclipse导入这些项目，以 Run as java application 的形式 运行各个项目里的HttpServer类。 然后就可以用POSTMAN或者普通浏览器看效果了。
 
+使用docker运行的方法:
+
+docker pull coopci/ddia
+
+docker run --net="host" coopci/ddia
+
+docker ps
+
+docker stop
