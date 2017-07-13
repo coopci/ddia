@@ -67,7 +67,9 @@ import coopci.ddia.util.Vcode;
 // 有一些属性是"强制的": create_time, appid(表示出数据哪一个应用  例如 gift), type(表示在appid指明的范围内的作用。 例如 album, article)。 
 // item可以作为容器包含其他的item。 容器中的子item有顺序。任何一个item都可以属于多个容器。 容器可以包含容器。
 // item可以有名字也可以没有名字。在有名字的情况下，相同owner_id的item的名字不能重复。
-// 
+// global_name 是一个全局查找item的机制。用来实现"B端发布所有人可读的内容"功能。
+//
+
 public class Engine implements IMongodbAspect {
 	
 	String mongoConnStr = "mongodb://localhost:27017/";
@@ -76,6 +78,7 @@ public class Engine implements IMongodbAspect {
 	
 	String mongodbDBCollContain = "cms_contain"; // 存 容器内容的collection。 container_id 是 容器item的_id, member_id 是成员item的_id, order是成员在容器中的顺序。 按container_id part。
 	
+	String mongodbDBCollGlobalNames = "cms_global_name"; // 存global_name的collection， _id字段是global name， item_id字段是cms_item的_id。
 	
 	public static String FIELD_NAME_OWNER_ID = "owner_id";
 	public static String FIELD_NAME_CREATE_TIME = "create_time";
@@ -104,6 +107,7 @@ public class Engine implements IMongodbAspect {
 		opt.unique(true);
 		opt.sparse(true);
 		this.ensureIndex(this.mongodbDBName, this.mongodbDBCollItems, fields, opt);
+		
 		
 	}
 	public void init() throws Exception {
@@ -424,7 +428,37 @@ public class Engine implements IMongodbAspect {
 		return res;
 	}
 	
-
+	public ObjectId getIdByGlobalName(String name) {
+		Document query = new Document();
+		
+		query.append("_id", name);
+		LinkedList<Document> docs = this.getMongoDocuments(this.mongodbDBName, this.mongodbDBCollGlobalNames, query, 0, 1);
+		
+		if (docs.size() == 0) {
+			return null;
+		}
+		return docs.getFirst().getObjectId("item_id");
+	}
+	
+	public void setGlobalName(String name, ObjectId oid, boolean replaceOnExist) {
+		if (replaceOnExist) {
+			Document data = new Document();
+			data.append("item_id", oid);
+			this.saveMongoDocumentById(this.mongodbDBName, this.mongodbDBCollGlobalNames, data, name);
+			return;
+		} else {
+			Document doc = new Document();
+			doc.append("_id", name);
+			doc.append("item_id", oid);
+			this.insertMongoDocument(this.mongodbDBName, this.mongodbDBCollGlobalNames, doc);
+			return;
+		}
+		
+	}
+	public void setGlobalName(String name, String item_id, boolean replaceOnExist) {
+		ObjectId oid = new ObjectId(item_id);
+		setGlobalName(name, oid, replaceOnExist);
+	}
 	
 	public String getIdByName(Long uid, String name) {
 		Document query = new Document();

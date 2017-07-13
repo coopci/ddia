@@ -248,4 +248,31 @@ public class TestEngine extends Engine {
 		assertEquals(result.data.get("name"), name);
 	}
 	
+	
+	
+	@Test
+	public void testGlobalName() throws Exception {
+		
+		Engine engine = new Engine();
+		engine.init();
+		Long uid = 26L;
+		String name = "test-named-item";
+		String globalName = "test-global-name-aaa";
+		
+		String item_id = engine.getIdByName(uid, name);
+		
+		
+		engine.setGlobalName(globalName, item_id, true);
+		
+		
+		
+		String retrieved_id = engine.getIdByGlobalName(globalName).toHexString();
+		
+		
+		assertEquals(item_id, retrieved_id);
+		
+		
+	}
+	
+	
 }
