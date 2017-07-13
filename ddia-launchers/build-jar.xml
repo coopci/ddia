@@ -1,0 +1,27 @@
+<project name="ddia-launchers-jar" basedir="." default="...">
+    <target name="jar">
+        <mkdir dir="build/jar"/>
+    	
+        <jar destfile="build/jar/ddia.jar" basedir="bin" filesetmanifest="skip">
+                <zipgroupfileset dir="../lib" includes="*.jar" excludes=""/>
+        	<fileset dir="${ddia-common.location}/bin"/>
+        	<fileset dir="${ddia-chat.location}/bin"/>
+			<fileset dir="${b2c-renting.location}/bin"/>
+        	<fileset dir="${ddia-gateway.location}/bin"/>
+        	<fileset dir="${third-party-pay.location}/bin"/>
+        	<fileset dir="${user-basic.location}/bin"/>
+        	<fileset dir="${user-relation.location}/bin"/>
+        	<fileset dir="${virtual-assets.location}/bin"/>
+        	<fileset dir="${ddia-cms.location}/bin"/>
+        </jar>
+    </target>
+              	
+  	<target name="run-jar">
+  	        <java classpath="build/jar/ddia.jar" 
+  	        	fork="false"
+  	        	classname="coopci.ddia.launchers.AllInOneLauncher"
+  	        >
+  	        	
+  	    	</java>
+  	    </target>
+</project>
