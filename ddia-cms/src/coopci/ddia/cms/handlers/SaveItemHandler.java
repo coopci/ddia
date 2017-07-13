@@ -1,7 +1,6 @@
 package coopci.ddia.cms.handlers;
 
 import java.util.HashMap;
-import java.util.HashSet;
 
 import org.glassfish.grizzly.http.Method;
 import org.glassfish.grizzly.http.server.HttpHandler;
