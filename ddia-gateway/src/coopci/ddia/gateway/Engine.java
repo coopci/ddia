@@ -179,12 +179,17 @@ public class Engine {
 	}
 	
 	
+	String newSessid() {
+		String newSessid =  UUID.randomUUID().toString();
+		return newSessid;
+	}
+	
 	/**
 	 *  创建一个新的sessid并返回给客户端。 
 	 * */
 	public DictResult startNewSession() {
 		DictResult result = new DictResult();
-		String newSessid=  UUID.randomUUID().toString();
+		String newSessid =  this.newSessid();
 		result.put("session_id", newSessid);
 		return result;
 	}
@@ -243,11 +248,14 @@ public class Engine {
 	 *  
 	 * */
 	public LoginResult loginWithPassword(String sessid, String ident, String password) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException {
+		if (sessid==null || sessid.equals("")) {
+			sessid = this.newSessid();
+		}
 		LoginResult res = new LoginResult();
 		HashMap<String, String> args = new HashMap<String, String> (); 
 		args.put("ident", ident);
 		args.put("password", password);
-		args.put("fields", "");
+		args.put("fields", "nickname,");
 		String httpPrefix = this.getMicroserviceHttpPrefix(MICROSERVICE_NAME_USER_BASIC, ident);
 		String url = httpPrefix + "user-basic/login/password";
 		byte[] response = HttpClientUtil.post(url, args);
