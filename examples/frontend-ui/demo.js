@@ -78,6 +78,8 @@ app.config(function($routeProvider) {
   $routeProvider.when('/new-prediction/:receiver_username', {templateUrl: 'new-prediction.html', reloadOnSearch: false});
   $routeProvider.when('/new-prediction/', {templateUrl: 'new-prediction.html', reloadOnSearch: false});
   
+  $routeProvider.when('/cms-root', {templateUrl: 'cms-root.html', reloadOnSearch: false});
+  
 });
 
 //
@@ -401,6 +403,13 @@ $scope.chatUsers = [];
 	var token = localStorage.getItem("token");
 	return token;
   }
+  
+  $scope.getLocalSessionid = function(){
+	var token = localStorage.getItem("sessid");
+	return token;
+  }
+  
+  
   $scope.gotoSentList = function(){
 	  $location.path("/sent");
   }
@@ -482,8 +491,10 @@ $scope.chatUsers = [];
 		localStorage.setItem("sessid", sessid);
 		localStorage.setItem("uid", uid);
 		
+		
 		if (response.data.code==200) {
 			localStorage.setItem("logedin", true);
+			localStorage.setItem("nickname", response.data.data.nickname);
 			$scope.logedin = true;
 			$scope.nickname = response.data.data.nickname;
 		}
@@ -546,6 +557,42 @@ $scope.chatUsers = [];
 		  });
 	}
 	
+	
+	
+	$scope.fetchCMSRoot = function() {
+		console.log("$scope.fetchCMSRoot");
+		var token = $scope.getLocalToken();
+		var url = getAPIUrlPrefix() + "get_cms_root/?";
+		var sessid = $scope.getLocalSessionid();
+		console.log("sessid: " + sessid);
+		
+		url += toQueryStirng({
+				"sessid": sessid,
+				"fields": "name,create_time",
+				"start": "0",
+				"limit":  "1000"
+				});
+		var req = {
+			url: url,
+			method: 'GET',
+		};
+	
+		$http(req).then(function successCallback(response) {
+			console.log("fetchCMSRoot successCallback");
+			$scope.cmsRoot = response.data.data;
+			
+			
+			console.log(response);
+		  }, function errorCallback(response) {
+			console.log("fetchSentByMeList errorCallback");
+		  });
+		
+		// http://localhost:8887/get_cms_root?sessid=test-sess-26&fields=name,create_time&start=0&limit=20
+	}
+	
+	
+	
+	
 	$scope.fetchSentToMeList = function() {
 		var token = $scope.getLocalToken();
 		var url = getAPIUrlPrefix() + "prediction/sent_to_me_list/?";
@@ -595,6 +642,9 @@ $scope.chatUsers = [];
 	
 	$scope.currentPrediction = null;
 	$scope.$on('$routeChangeSuccess', function (next, last) {
+		$scope.sessid = $scope.getLocalSessionid();
+		$scope.nickname = localStorage.getItem("nickname");
+		
 		console.log('$routeChangeSuccess: ' + $location.$$path);
 		if ($location.$$path == "/sent") {
 			$scope.fetchSentByMeList();
@@ -629,7 +679,10 @@ $scope.chatUsers = [];
 			
 			
 			console.log("$scope.username: " + $scope.username);
-		} 
+		} else if ($location.$$path.startsWith("/cms-root")) {
+			
+			$scope.fetchCMSRoot();
+		}
 		
 	});
 	$scope.new_prediction = function() {
