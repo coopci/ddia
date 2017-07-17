@@ -1,0 +1,38 @@
+<div ui-content-for="title">
+  <span>New Prediction</span>
+</div>
+
+<div class="scrollable">
+ <div class="scrollable-content section">
+   
+  <form role="form" ng-submit='new_prediction()'>
+    <fieldset>
+      <legend>New Prediction</legend>
+        <div class="form-group has-success has-feedback">
+          <label>目标用户名</label>
+          <input type="text"
+                 ng-model="newPredictionForm.receiverUsername"
+                 class="form-control"
+                 placeholder="要发给谁">
+        </div>
+
+        <div class="form-group">
+          <label>内容</label>
+          <input type="text"
+				ng-model="newPredictionForm.content"
+                 class="form-control"
+                 placeholder="内容">
+        </div>
+
+    </fieldset>
+    <hr>
+
+    <button class="btn btn-primary btn-block">
+      Send
+    </button>
+
+	{{content}}
+
+  </form>
+ </div>
+</div>

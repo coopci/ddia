@@ -1,0 +1,30 @@
+<div ui-content-for="title">
+  <span>Received</span>
+</div>
+
+<div class="scrollable" ui-shared-state="searchBar">
+  <input
+    ng-if="Ui.active('searchBar')"
+    type="search"
+    class="form-control scrollable-header"
+    placeholder="Search.." />
+
+  <div class="scrollable-content" ui-scroll-bottom="bottomReached()">
+    <div class="list-group">
+      <a ng-repeat="item in sentToMeList  track by item.id" href="#/prediction-detail/{{item.id}}" class="list-group-item">
+        <i class="fa fa-chevron-right pull-right"></i>
+		<p>{{ item.content }}</p> 
+		
+		<p class="subtitle">{{ item.create_time }}  来自 {{item.sender}}</p> 
+		
+      </a>
+    </div>
+  </div>
+
+  <a class="btn btn-block btn-lg btn-primary scrollable-footer" ui-toggle="searchBar">
+    <i class="fa fa-search"></i>
+    <span ui-hide="searchBar">Show</span>
+    <span ui-show="searchBar">Hide</span>
+    Search Bar
+  </a>
+</div>

@@ -1,0 +1,17 @@
+<div class="scrollable">
+  <div class="scrollable-content">
+      <div class="list-group" ui-toggle="uiSidebarRight">
+
+          <a class="list-group-item media" href="#/new-prediction/{{user.name}}" ng-repeat="user in chatUsers" >
+              <div class="pull-left">
+                  <i class="fa fa-user chat-user-avatar"></i>
+              </div>
+              <div class="media-body">
+                  <h5 class="media-heading">{{user.name}}</h5>
+                  
+              </div>
+          </a>
+
+      </div>
+  </div>
+</div>

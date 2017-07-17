@@ -1,0 +1,87 @@
+<div class="scrollable">
+  <div class="scrollable-content">
+
+    <div class="list-group text-center">
+	
+	<div ng-if="logedin==false" class="panel panel-default" style="margin: 60px 30px;">
+	  <div class="panel-heading">
+	
+		<h4 class="panel-title">
+			Login
+		</h4>
+	  </div>
+
+	  <div>
+		<div class="panel-body">
+		  <form role="form" ng-submit='login()'>
+			<fieldset>
+			  
+				<div class="form-group has-success has-feedback">
+				  <label>Email</label>
+				  <input type="text"
+						 ng-model="loginForm.email"
+						 class="form-control"
+						 placeholder="Enter email">
+				</div>
+
+				<div class="form-group">
+				  <label>Password</label>
+				  <input type="password" 
+				  ng-model="loginForm.password"
+						 class="form-control"
+						 placeholder="Password">
+				</div>
+<!--
+				<div class="form-group">
+				  <label>Remember Me</label>
+				  <ui-switch 
+					ng-model="rememberMe"></ui-switch>
+				</div>
+				-->
+			</fieldset>
+			<hr>
+
+			<button class="btn btn-primary btn-block">
+			  Login
+			</button>
+			
+			{{email}}
+<!--
+			<div ui-content-for="navbarAction">
+			  <a class="btn" ng-click="login()">Login</a>
+			</div>
+-->
+		  </form>
+		  
+		</div>
+	  </div>
+	</div>
+		
+		
+	<div ng-if="logedin==true" class="panel panel-default" style="margin: 60px 30px;">
+	  <div class="panel-heading">
+	
+		<h4 class="panel-title">
+			{{nickname}}
+		</h4>
+	  </div>
+
+	  <div>
+		<div class="panel-body">
+		  
+		  <form role="form" ng-submit='logout()'>
+		  
+			<button class="btn btn-primary btn-block">
+			  Logout
+			</button>
+		  </form>
+		  
+		</div>
+	  </div>
+	</div>
+		
+   
+    </div>
+
+  </div>
+</div>

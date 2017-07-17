@@ -1,0 +1,45 @@
+<div ui-content-for="title">
+  <span>Prediction detail</span>
+</div>
+
+<div class="scrollable">
+ <div class="scrollable-content section">
+   
+  <form role="form" >
+    <fieldset>
+      <legend>Prediction detail</legend>
+        
+		<div class="form-group has-success has-feedback">
+          <label>内容</label>
+          <p>{{currentPrediction.content}}
+		  </p>
+        </div>
+
+		<div class="form-group has-success has-feedback">
+          <label>创建时间</label>
+          <p>{{currentPrediction.create_time}}</p>
+        </div>
+
+		
+		
+		<div ng-if="currentPrediction.sender == username" class="form-group has-success has-feedback">
+          <label>发给了</label>
+          <p>{{currentPrediction.receiver}}</p>
+        </div>
+
+		
+		<div ng-if="currentPrediction.receiver == username" class="form-group has-success has-feedback">
+          <label>来自</label>
+          <p>{{currentPrediction.sender}}</p>
+        </div>
+		
+		
+		
+    </fieldset>
+    <hr>
+
+  
+
+  </form>
+ </div>
+</div>
