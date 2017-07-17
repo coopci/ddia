@@ -79,6 +79,7 @@ app.config(function($routeProvider) {
   $routeProvider.when('/new-prediction/', {templateUrl: 'new-prediction.html', reloadOnSearch: false});
   
   $routeProvider.when('/cms-root', {templateUrl: 'cms-root.html', reloadOnSearch: false});
+  $routeProvider.when('/cms-content/:item_id', {templateUrl: 'cms-content.html', reloadOnSearch: false});
   
 });
 
@@ -561,11 +562,9 @@ $scope.chatUsers = [];
 	
 	$scope.fetchCMSRoot = function() {
 		console.log("$scope.fetchCMSRoot");
-		var token = $scope.getLocalToken();
 		var url = getAPIUrlPrefix() + "get_cms_root/?";
 		var sessid = $scope.getLocalSessionid();
 		console.log("sessid: " + sessid);
-		
 		url += toQueryStirng({
 				"sessid": sessid,
 				"fields": "name,create_time",
@@ -576,7 +575,6 @@ $scope.chatUsers = [];
 			url: url,
 			method: 'GET',
 		};
-	
 		$http(req).then(function successCallback(response) {
 			console.log("fetchCMSRoot successCallback");
 			$scope.cmsRoot = response.data.data;
@@ -590,6 +588,36 @@ $scope.chatUsers = [];
 		// http://localhost:8887/get_cms_root?sessid=test-sess-26&fields=name,create_time&start=0&limit=20
 	}
 	
+	
+	
+	$scope.fetchCMSItem = function(item_id) {
+		console.log("$scope.fetchCMSItem");
+		var url = getAPIUrlPrefix() + "get_cms_item/?";
+		var sessid = $scope.getLocalSessionid();
+		console.log("sessid: " + sessid);
+		url += toQueryStirng({
+				"sessid": sessid,
+				"fields": "name,title,create_time,content", // 这里还可以加其他需要的字段。
+				"id": item_id,
+				});
+		var req = {
+			url: url,
+			method: 'GET',
+		};
+		$http(req).then(function successCallback(response) {
+			console.log("fetchCMSRoot successCallback");
+			$scope.cmsRoot = response.data.data;
+			
+			
+			console.log(response);
+		  }, function errorCallback(response) {
+			console.log("fetchSentByMeList errorCallback");
+		  });
+		
+		// http://localhost:8887/get_cms_root?sessid=test-sess-26&fields=name,create_time&start=0&limit=20
+		
+		
+	}
 	
 	
 	
@@ -682,6 +710,10 @@ $scope.chatUsers = [];
 		} else if ($location.$$path.startsWith("/cms-root")) {
 			
 			$scope.fetchCMSRoot();
+		} else if ($location.$$path.startsWith("/cms-content")) {
+			var item_id = $routeParams.item_id;
+			console.log("/cms-content, item_id: " + item_id);
+			$scope.fetchCMSItem(item_id);
 		}
 		
 	});

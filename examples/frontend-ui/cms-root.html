@@ -11,12 +11,9 @@
 
   <div class="scrollable-content" ui-scroll-bottom="bottomReached()">
     <div class="list-group">
-      <a ng-repeat="item in sentByMeList  track by item.id" href="#/prediction-detail/{{item.id}}" class="list-group-item">
+      <a ng-repeat="item in cmsRoot track by item.item_id" href="#/cms-content/{{item.item_id}}" class="list-group-item">
         <i class="fa fa-chevron-right pull-right"></i>
-		<p>{{ item.content }}</p> 
-		
-		<p class="subtitle">{{ item.create_time }}  发给 {{item.receiver}}</p> 
-		
+		<p>{{ item.global_name }}</p>
       </a>
     </div>
   </div>
