@@ -596,7 +596,28 @@ public class Engine implements IMongodbAspect {
 	}
 	
 	
+
 	
+	/**	
+	 *	
+	 * */
+	public ListResult getGlobalNamedItems(Long uid, HashSet<String> fields, long start, long limit) {
+		ListResult res = new ListResult();
+		
+		
+		LinkedList<Document> docs = this.getMongoDocuments(this.mongodbDBName, this.mongodbDBCollGlobalNames, new Document(), (int)start, (int)limit);
+		
+		
+		for (Document doc : docs) {
+			KVItem kv = new KVItem();
+			kv.put("global_name", doc.getString("_id"));
+			kv.put("item_id", doc.getObjectId("item_id").toHexString());
+			res.add(kv);
+		}
+		
+		
+		return res;
+	}
 	
 	
 	public static void docToDictResult(DictResult res, Document doc) {
