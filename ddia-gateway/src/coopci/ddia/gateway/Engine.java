@@ -21,9 +21,12 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.asynchttpclient.DefaultAsyncHttpClientConfig;
+import org.bson.Document;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.MongoClient;
 
+import coopci.ddia.IMongodbAspect;
 import coopci.ddia.LoginResult;
 import coopci.ddia.Result;
 import coopci.ddia.SessionId;
@@ -36,7 +39,7 @@ import coopci.ddia.results.UserInfosResult;
 import coopci.ddia.util.SessidPacker;
 import coopci.ddia.util.Vcode;
 
-public class Engine {
+public class Engine implements IMongodbAspect {
 
 	DefaultAsyncHttpClientConfig.Builder httpclientconfigbuilder = new DefaultAsyncHttpClientConfig.Builder();
     
@@ -75,6 +78,7 @@ public class Engine {
 		publisher.start();
 	}
 	public void init() throws Exception {
+		connectMongo();
 		initSessidPacker();
 		initHttpClientConfigBuilder();
 		initSubscriber();
@@ -87,6 +91,10 @@ public class Engine {
 		sessidPacker.initDes(deskeyPath);
 	}
 	
+	
+	
+	
+	
 	public long getUidFromSessid(String sessid) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException {
 		
 		if (sessid.startsWith("test-sess-")) {
@@ -96,8 +104,17 @@ public class Engine {
 		if (this.cachedSessionUid.containsKey(sessid)) {
 			return this.cachedSessionUid.get(sessid);
 		}
-		SessionId sessionid = sessidPacker.unpack(sessid);
-		return sessionid.uid;
+			
+		Document doc = this.getMongoDocumentById(this.mongodbDBName, this.mongodbDBCollSessionid, sessid);
+		if (doc != null) {
+			long uid = doc.getLong("uid");
+			cachedSessionUid.put(sessid, uid);
+			return uid;
+		}		
+		
+		return -1;
+		// SessionId sessionid = sessidPacker.unpack(sessid);
+		//return sessionid.uid;
 	}
 	
 	
@@ -116,6 +133,7 @@ public class Engine {
 	public static String MICROSERVICE_NAME_VIRTUAL_ASSETS = "virtual-assets";
 	public static String MICROSERVICE_NAME_THIRD_PARTY_PAY = "third-party-pay";
 	public static String MICROSERVICE_NAME_CHAT = "chat";
+	public static String MICROSERVICE_NAME_CMS = "cms";
 	
 	String getMicroserviceHttpPrefix(String serviceName, String partKey) {
 		String ret = "";
@@ -129,6 +147,8 @@ public class Engine {
 			return THIRD_PARTY_PAY_HTTP_PREFIX;
 		} else if (MICROSERVICE_NAME_CHAT.equals(serviceName)) {
 			return CHAT_HTTP_PREFIX;
+		} else if (MICROSERVICE_NAME_CMS.equals(serviceName)) {
+			return CMS_HTTP_PREFIX;
 		}
 		
 		return ret;
@@ -145,6 +165,8 @@ public class Engine {
 			return THIRD_PARTY_PAY_HTTP_PREFIX;
 		} else if (MICROSERVICE_NAME_CHAT.equals(serviceName)) {
 			return CHAT_HTTP_PREFIX;
+		} else if (MICROSERVICE_NAME_CMS.equals(serviceName)) {
+			return CMS_HTTP_PREFIX;
 		}
 		
 		
@@ -216,7 +238,12 @@ public class Engine {
 	HashMap<String, Long> cachedSessionUid = new HashMap<String, Long>(); 
 	public void saveSessionUid(String sessid, long uid) {
 		cachedSessionUid.put(sessid, uid);
-		// TODO 把这个对应关系存到共享数据里。
+		
+		// 把这个对应关系存到共享数据里。
+		Document doc = new Document();
+		doc.append("_id", sessid);
+		doc.append("uid", uid);
+		this.insertMongoDocumentWithId(this.mongodbDBName, this.mongodbDBCollSessionid, doc);
 		return;
 	}
 	/**
@@ -328,5 +355,30 @@ public class Engine {
 		engine.init();
 		// engine.f();
 		// engine.follow("", "");
+	}
+
+	
+	
+	
+	
+	String mongodbDBName = "ddia-gateway";     // mongodb的库名字
+	String mongodbDBCollSessionid = "ddia-sessionid"; // _id是sessid， ui字段是 用户id。
+	
+	String mongoConnStr = "mongodb://localhost:27017/";
+	MongoClient mongoClient = null;
+	@Override
+	public String getMongoConnStr() {
+		return mongoConnStr;
+	}
+
+	@Override
+	public void setMongoClient(MongoClient mc) {
+		this.mongoClient = mc;
+		
+	}
+
+	@Override
+	public MongoClient getMongoClient() {
+		return mongoClient;
 	}
 }
