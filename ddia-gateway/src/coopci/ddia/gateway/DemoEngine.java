@@ -208,6 +208,29 @@ public class DemoEngine extends Engine {
 		return result;
 	}
 		
+	
+	public Result getCmsItem(String sessid, String fields, String id) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException, InterruptedException, ExecutionException {
+		DictResult result = new DictResult();
+		long uid = getUidFromSessid(sessid);
+		if (fields==null) {
+			fields = "";
+		}
+		
+		String httpPrefix = this.getMicroserviceHttpPrefix(MICROSERVICE_NAME_CMS, id);
+		HashMap<String, String> args = new HashMap<String, String> (); 
+		args.put("uid", Long.toString(uid));
+		args.put("fields", fields);
+		args.put("id", id);
+		
+		byte[] cmsRootResponse = HttpClientUtil.get(httpPrefix + "cms/get_item", args);	
+		
+		result = getObjectMapper().readValue(cmsRootResponse, DictResult.class);
+		
+		
+		return result;
+	}
+		
+	
 	public static void main(String[] args) throws Exception {
 		DemoEngine engine = new DemoEngine();
 		engine.init();

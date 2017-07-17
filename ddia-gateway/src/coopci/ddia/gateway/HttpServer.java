@@ -13,6 +13,7 @@ import org.glassfish.grizzly.websockets.WebSocketEngine;
 import coopci.ddia.gateway.handlers.BuyDiamondsCheckOrderHandler;
 import coopci.ddia.gateway.handlers.BuyDiamondsCreateOrderHandler;
 import coopci.ddia.gateway.handlers.FollowHandler;
+import coopci.ddia.gateway.handlers.GetCMSItemHandler;
 import coopci.ddia.gateway.handlers.GetCMSRootHandler;
 import coopci.ddia.gateway.handlers.GetPublicUsrinfoHandler;
 import coopci.ddia.gateway.handlers.LoginSubmitPhoneHandler;
@@ -135,6 +136,12 @@ public class HttpServer {
 		server.getServerConfiguration().addHttpHandler(
 				getCMSRootHandler,
 				"/get_cms_root");
+		
+		GetCMSItemHandler getCMSItemHandler = new GetCMSItemHandler();
+		getCMSItemHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				getCMSItemHandler,
+				"/get_cms_item");
 		
 		
 		
