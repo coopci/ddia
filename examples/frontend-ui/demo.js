@@ -606,7 +606,7 @@ $scope.chatUsers = [];
 		};
 		$http(req).then(function successCallback(response) {
 			console.log("fetchCMSRoot successCallback");
-			$scope.cmsRoot = response.data.data;
+			$scope.currentCMSItem = response.data.data;
 			
 			
 			console.log(response);
