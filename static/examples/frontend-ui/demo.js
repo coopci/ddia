@@ -901,7 +901,7 @@ app.controller('CMSTreeController', function($rootScope, $scope, $http, $locatio
 		// http://localhost:8887/get_cms_root?sessid=test-sess-26&fields=name,create_time&start=0&limit=20
 		url += toQueryStirng({
 				"sessid": sessid,
-				"fields": "name,create_time",
+				"fields": "name,create_time,title",
 				"start": "0",
 				"limit":  "1000"
 				});
@@ -943,7 +943,7 @@ app.controller('CMSTreeController', function($rootScope, $scope, $http, $locatio
 		// http://localhost:8887/get_cms_members?sessid=test-sess-26&fields=name,create_time&start=0&limit=20&container_id=XXX
 		url += toQueryStirng({
 				"sessid": sessid,
-				"fields": "name,create_time",
+				"fields": "name,create_time,title",
 				"container_id": id,
 				"start": "0",
 				"limit":  "1000"
@@ -963,6 +963,9 @@ app.controller('CMSTreeController', function($rootScope, $scope, $http, $locatio
 				itm["text"] = itm["id"];
 				if (itm["name"] != null)
 					itm["text"] = itm["name"];
+				
+				if (itm["title"] != null)
+					itm["text"] = itm["title"];
 				
 				itm["expanded"] = false;
 				itm["hasChildren"] = true;
@@ -1015,6 +1018,47 @@ app.controller('CMSTreeController', function($rootScope, $scope, $http, $locatio
 			// if (e.item.items)
 			// 	e.item.items.splice(0, 1);
 		}
+	}
+		
+	$scope.unsetGlobalName = function(){
+		console.log("$scope.unsetGlobalName");
+		
+		var selectedItem = IntegralUITreeViewService.selectedItem($scope.treeName);
+		
+		console.log(selectedItem["id"]);
+	}
+	
+	$scope.setGlobalName = function(){
+		console.log("$scope.setGlobalName");
+		
+		var selectedItem = IntegralUITreeViewService.selectedItem($scope.treeName);
+		console.log(selectedItem["id"]);
+		
+	}
+	
+	
+	
+	$scope.shouldDisableUnsetGlobalName = function(){
+		
+		var selectedItem = IntegralUITreeViewService.selectedItem($scope.treeName);
+		if (selectedItem == null)
+			return true;
+		if (selectedItem["isRoot"] == true)
+			return false;
+		return true;
+	}
+	
+	
+	$scope.shouldDisableSetGlobalName = function(){
+		
+		
+		var selectedItem = IntegralUITreeViewService.selectedItem($scope.treeName);
+		if (selectedItem == null)
+			return true;
+		if (selectedItem["isRoot"] == true)
+			return true;
+		return false;
+		
 	}
 		
 		
