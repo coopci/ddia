@@ -192,19 +192,14 @@ public class DemoEngine extends Engine {
 		if (fields==null) {
 			fields = "";
 		}
-		
 		String httpPrefix = this.getMicroserviceHttpPrefix(MICROSERVICE_NAME_CMS, uid);
 		HashMap<String, String> args = new HashMap<String, String> (); 
 		args.put("uid", Long.toString(uid));
 		args.put("fields", fields);
 		args.put("start", Integer.toString(start));
 		args.put("limit", Integer.toString(limit));
-		
 		byte[] cmsRootResponse = HttpClientUtil.get(httpPrefix + "cms/get_global_named_items", args);	
-		
 		result = getObjectMapper().readValue(cmsRootResponse, ListResult.class);
-		
-		
 		return result;
 	}
 		
@@ -230,6 +225,23 @@ public class DemoEngine extends Engine {
 		return result;
 	}
 		
+	public Result cmsMembers(String sessid, String container_id, String fields, int start, int limit) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException, InterruptedException, ExecutionException {
+		ListResult result = new ListResult();
+		long uid = getUidFromSessid(sessid);
+		if (fields==null) {
+			fields = "";
+		}
+		String httpPrefix = this.getMicroserviceHttpPrefix(MICROSERVICE_NAME_CMS, uid);
+		HashMap<String, String> args = new HashMap<String, String> (); 
+		args.put("uid", Long.toString(uid));
+		args.put("fields", fields);
+		args.put("container_id", container_id);
+		args.put("start", Integer.toString(start));
+		args.put("limit", Integer.toString(limit));
+		byte[] cmsResponse = HttpClientUtil.get(httpPrefix + "cms/get_members", args);	
+		result = getObjectMapper().readValue(cmsResponse, ListResult.class);
+		return result;
+	}
 	
 	public static void main(String[] args) throws Exception {
 		DemoEngine engine = new DemoEngine();

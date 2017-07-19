@@ -5,6 +5,7 @@ import org.glassfish.grizzly.http.server.HttpHandler;
 import org.glassfish.grizzly.http.server.NetworkListener;
 import org.glassfish.grizzly.http.server.Request;
 import org.glassfish.grizzly.http.server.Response;
+import org.glassfish.grizzly.http.server.StaticHttpHandler;
 import org.glassfish.grizzly.threadpool.ThreadPoolConfig;
 import org.glassfish.grizzly.websockets.OptimizedBroadcaster;
 import org.glassfish.grizzly.websockets.WebSocketAddOn;
@@ -14,6 +15,7 @@ import coopci.ddia.gateway.handlers.BuyDiamondsCheckOrderHandler;
 import coopci.ddia.gateway.handlers.BuyDiamondsCreateOrderHandler;
 import coopci.ddia.gateway.handlers.FollowHandler;
 import coopci.ddia.gateway.handlers.GetCMSItemHandler;
+import coopci.ddia.gateway.handlers.GetCMSMembersHandler;
 import coopci.ddia.gateway.handlers.GetCMSRootHandler;
 import coopci.ddia.gateway.handlers.GetPublicUsrinfoHandler;
 import coopci.ddia.gateway.handlers.LoginSubmitPhoneHandler;
@@ -143,7 +145,17 @@ public class HttpServer {
 				getCMSItemHandler,
 				"/get_cms_item");
 		
+		GetCMSMembersHandler getCMSMembersHandler = new GetCMSMembersHandler();
+		getCMSMembersHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				getCMSMembersHandler,
+				"/get_cms_members");
 		
+		
+		
+		
+		//server.getServerConfiguration().addHttpHandler(
+		//            new StaticHttpHandler("D:\\src\\ddia\\"), "/static");
 		
 		try {
 			server.removeListener("grizzly");
