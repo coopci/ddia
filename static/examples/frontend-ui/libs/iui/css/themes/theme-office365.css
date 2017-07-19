@@ -1,0 +1,974 @@
+
+.iui-dropdown-mark
+{
+	background-color: #428bca;
+}
+
+/* --- IntegralUI Widget -------------------------------------------------- */
+
+.iui-widget
+{
+	background-color: white;
+	border-color: #cecece;
+    color: black;
+}
+
+/* --- IntegralUI Accordion ----------------------------------------------- */
+
+.iui-accordion-group-header, .iui-accordion-header
+{
+	background-color: #ebf2f7;
+	border: solid thin #a5c7fe;
+	color: #484848;
+}
+.iui-accordion-group-header-disabled
+{
+	background-color: #f5f5f5;
+	border: solid thin #dddddd;
+	color: #ababab;
+}
+.iui-accordion-group-header-hovered
+{
+	background-color: #dde4e9;
+	border-color: #dde4e9;
+}
+.iui-accordion-group-header-selected
+{
+	background-color: #2e7fc2;
+	border-color: #2e7fc2;
+	color: #efefef;
+}
+.iui-accordion-group-content
+{
+	background-color: #ffffff;
+	border: solid thin #a5c7fe;
+}
+.iui-accordion-group-content-disabled
+{
+	background: #f5f5f5;
+	border-color: #dddddd;
+	color: #ababab;
+}
+
+.iui-accordion-expand-box
+{
+	background: url(../../resources/icons.png) no-repeat 0 0;
+}
+.iui-accordion-expand-box-expanded 
+{
+	background-position: -80px 0px;
+}
+.iui-accordion-expand-box-collapsed
+{
+	background-position: -96px 0px;
+}
+
+/* --- IntegralUI ComboBox ----------------------------------------------- */
+.iui-combobox
+{
+	background-color: white;
+	border-color: #cecece;
+	border-radius: 1px;
+    color: black;
+}
+
+/* --- IntegralUI ContextMenu -------------------------------------------- */
+
+.iui-contextmenu
+{
+	background-color: white;
+    color: #484848;
+    padding: 0;
+}
+.iui-contextmenu-block, .iui-contextmenu li > ul
+{
+	background-color: #ffffff;
+	border: solid thin #c8c8c8;
+	border-radius: 0;
+	padding: 0;
+}
+.iui-contextmenu-item
+{
+	color: black;
+	padding: 5px;
+}
+.iui-contextmenu-item-disabled
+{
+	color: #cecece;
+	opacity: 0.5;
+}
+.iui-contextmenu-item-hovered, .iui-contextmenu-item-selected
+{
+	background-color: #e6f2fb !important;
+	border: solid thin #e6f2fb !important;
+	color: #242424;
+}
+.iui-contextmenu-item-separator
+{
+    background-color: #eaeaea;
+}
+.iui-contextmenu-item-header
+{
+    background: #9ccbf0;
+    border-radius: 0;
+    color: #242424;
+    padding: 7px;
+    text-align: center;
+}
+.iui-contextmenu-expand-box
+{
+	width: 16px;
+	height: 16px;
+	background: url(../resources/icons.png) no-repeat 0 0;
+}
+.iui-contextmenu-item
+{
+	background-color: #fefefe;
+	border: solid thin #fefefe;
+	color: black;
+}
+.iui-contextmenu-marker-expand-right::before
+{
+	border: 5px solid #66ade8;
+	border-color: transparent transparent transparent #66ade8;
+	top: 30%;
+	left: auto;
+	right: 3px;
+}
+.iui-contextmenu-marker-expand-right::after
+{
+	border: 5px solid #ffffff;
+	border-color: transparent transparent transparent #ffffff;
+	top: 30%;
+	left: auto;
+	right: 5px;
+}
+.iui-contextmenu-marker-expand-left::before
+{
+	border: 5px solid #66ade8;
+	border-color: transparent #66ade8 transparent transparent;
+	top: 30%;
+	left: 3px;
+	right: auto;
+}
+.iui-contextmenu-marker-expand-left::after
+{
+	border: 5px solid #ffffff;
+	border-color: transparent #ffffff transparent transparent;
+	top: 30%;
+	left: 5px;
+	right: auto;
+}
+.iui-contextmenu-marker-top::before
+{
+	border: 8px solid #ffffff;
+	border-color: transparent transparent #c8c8c8 transparent;
+}
+.iui-contextmenu-marker-top::after
+{
+	border: 8px solid #ffffff;
+	border-color: transparent transparent #ffffff transparent;
+}
+.iui-contextmenu-marker-top-rtl::before
+{
+	border: 8px solid #ffffff;
+	border-color: transparent transparent #c8c8c8 transparent;
+}
+.iui-contextmenu-marker-top-rtl::after
+{
+	border: 8px solid #ffffff;
+	border-color: transparent transparent #ffffff transparent;
+}
+.iui-contextmenu-marker-left::before
+{
+	border: 8px solid #ffffff;
+	border-color: transparent #c8c8c8 transparent transparent;
+	top: 13px;
+	left: -16px;
+}
+.iui-contextmenu-marker-left::after
+{
+	border: 8px solid #ffffff;
+	border-color: transparent #ffffff transparent transparent;
+	top: 13px;
+	left: -15px;
+}
+.iui-contextmenu-marker-right::before
+{
+	border: 8px solid #ffffff;
+	border-color: transparent transparent transparent #c8c8c8;
+	top: 13px;
+	right: -16px;
+}
+.iui-contextmenu-marker-right::after
+{
+	border: 8px solid #ffffff;
+	border-color: transparent transparent transparent #ffffff;
+	top: 13px;
+	right: -15px;
+}
+
+/* --- IntegralUI Grid ----------------------------------------------- */
+.iui-grid
+{
+	background-color: white;
+	border: thin solid #dddddd;
+    color: #000000;
+}
+.iui-grid-column-header
+{
+	background-color: #ffffff;
+	border-color: transparent;
+	border-bottom: thin solid #eaeaea;
+	padding: 3px 0;
+}
+.iui-grid-column-footer
+{
+	background-color: #ffffff;
+	border-color: transparent;
+	border-top: thin solid #eaeaea;
+	padding: 3px 0;
+}
+.iui-grid-column-header-disabled
+{
+	border-color: transparent;
+	border-bottom: thin solid #dddddd;
+	color: #cecece;
+}
+.iui-grid-column-footer-disabled
+{
+	border-color: transparent;
+	border-top: thin solid #dddddd;
+	color: #cecece;
+}
+.iui-grid-column-header-hovered
+{
+	background-color: #eaeaea !important;
+	border-color: #eaeaea !important;
+    color: #000000;
+}
+.iui-grid-column-header-selected
+{
+	background-color: #c8c8c8 !important;
+	border-bottom-color: #767676 !important;
+    color: #000000;
+}
+.iui-grid-column-header-cell-selected
+{
+	background-color: transparent;
+}
+.iui-grid-row-disabled
+{
+	background-color: white;
+	color: #cecece;
+}
+.iui-grid-row-hovered
+{
+	background-color: #beddf4;
+}
+.iui-grid-row-selected
+{
+	background-color: #d7eaf9;
+	color: #000000;
+}
+.iui-grid-row-cell
+{
+	border: thin solid transparent;
+	padding: 3px 0;
+}
+.iui-grid-row-cell:focus {
+    outline: none !important;
+    border: thin dotted #b4b4b4;
+}
+.iui-grid-row-cell:first-child
+{
+	border-left: thin solid transparent;
+}
+.iui-grid-row-cell:last-child
+{
+	border-right: thin solid transparent;
+}
+.iui-grid-lines-horizontal
+{
+	border-bottom: thin solid transparent;
+}
+.iui-grid-lines-vertical
+{
+	border-right: thin solid transparent;
+}
+.iui-grid-lines-both
+{
+	border-right: thin solid transparent;
+	border-bottom: thin solid transparent;
+}
+.iui-grid-expand-box-open
+{
+	background: url(../../resources/expandbox-icons.png) no-repeat 0 0;
+}
+.iui-grid-expand-box-open-disabled
+{
+	background: url(../../resources/expandbox-icons.png) no-repeat 0 0;
+	opacity: 0.5;
+}
+.iui-grid-expand-box-close
+{
+	background: url(../../resources/expandbox-icons.png) no-repeat 0 -16px;
+}
+.iui-grid-expand-box-close-disabled
+{
+	background: url(../../resources/expandbox-icons.png) no-repeat 0 -16px;
+	opacity: 0.5;
+}
+.iui-grid-expand-box-open-rtl
+{
+	background: url(../../resources/expandbox-icons.png) no-repeat 0 -32px;
+}
+.iui-grid-expand-box-open-rtl-disabled
+{
+	background: url(../../resources/expandbox-icons.png) no-repeat 0 -32px;
+	opacity: 0.5;
+}
+.iui-grid-expand-box-close-rtl
+{
+	background: url(../../resources/expandbox-icons.png) no-repeat 0 -16px;
+}
+.iui-grid-expand-box-close-rtl-disabled
+{
+	background: url(../../resources/expandbox-icons.png) no-repeat 0 -16px;
+	opacity: 0.5;
+}
+.iui-grid-rows-top-block
+{
+	border-bottom: thin solid #efefef;
+}
+.iui-grid-rows-bottom-block
+{
+	border-top: thin solid #efefef;
+}
+
+/* --- IntegralUI List ----------------------------------------------- */
+.iui-list
+{
+	background-color: white;
+	border-color: #cecece;
+	border-radius: 1px;
+    color: black;
+}
+.iui-list-item
+{
+	border: thin solid transparent;
+	padding: 0px 3px;
+}
+.iui-list-item-disabled
+{
+	color: #cecece;
+}
+.iui-list-item-hovered
+{
+	background-color: #A6C9E6;
+	border: thin solid #97C0E1;
+}
+
+.iui-list-item-selected
+{
+	background-color: #428bca;
+	border: thin solid #357ebd;
+	color: white;
+}
+.iui-list-item-content
+{
+	border-radius: 0;
+	padding: 3px;
+}
+
+/* --- IntegralUI ListBox ----------------------------------------------- */
+.iui-listbox
+{
+	background-color: white;
+	border-color: #cecece;
+    color: black;
+}
+.iui-listbox-item-content
+{
+	display: inline-block;
+	border: thin solid transparent;
+	padding: 0px 3px;
+}
+
+.iui-listbox-item-content-hovered
+{
+	background-color: #A6C9E6;
+	border: thin solid #97C0E1;
+}
+
+.iui-listbox-item-content-selected
+{
+	background-color: #428bca;
+	border: thin solid #357ebd;
+	color: white;
+}
+.iui-listbox-item-content
+{
+	border-radius: 0;
+	padding: 3px;
+}
+
+/* --- IntegralUI Menu ------------------------------------------------------ */
+
+.iui-menu
+{
+	background-color: white;
+    color: #000000;
+}
+.iui-menu-block
+{
+	border-radius: 0;
+	padding: 0;
+}
+.iui-menu > ul
+{
+	background-color: #e6f2fb;
+	border-radius: 0;
+}
+.iui-menu-item-root, .iui-menu-item-root-vertical
+{
+	background: none;
+	border: solid thin #e6f2fb;
+	color: #000000;
+	padding: 5px 6px 5px 4px;
+}
+.iui-menu-item-root-hovered, .iui-menu-item-root-selected
+{
+	background-color: #d7eaf9;
+	border: solid thin #d7eaf9;
+	border-radius: 0;
+	color: #000000;
+}
+.iui-menu-item-root .iui-menu-item-root-content
+{
+	margin: 0 10px;
+}
+.iui-menu-item-root-vertical
+{
+    border-bottom: thin solid #ffffff !important;
+}
+.iui-menu-item-root-hovered a
+{
+	color: black;
+}
+.iui-menu-disabled > ul
+{
+	background: #808080;
+}
+.iui-menu-item-root-disabled, .iui-menu-item-disabled
+{
+	border: solid thin transparent;
+	color: #858585;
+	opacity: 0.5;
+}
+.iui-menu-item
+{
+	background-color: #ffffff;
+	border: solid thin #ffffff;
+	border-radius: 0;
+	color: #484848;
+	padding: 4px 4px 5px 4px;
+}
+.iui-menu-item-hovered, .iui-menu-item-selected
+{
+	background-color: #e6f2fb !important;
+	border: solid thin #e6f2fb !important;
+	color: #242424;
+}
+.iui-menu-item-selected a
+{
+	color: black;
+}
+.iui-menu-item-separator
+{
+    background-color: #eaeaea;
+}
+.iui-menu li > ul
+{
+	background-color: #ffffff;
+	border: solid thin #c8c8c8;
+	border-radius: 0;
+	padding: 0;
+}
+.iui-menu-expand-box
+{
+	width: 16px;
+	height: 16px;
+	background: url(../resources/icons.png) no-repeat 0 0;
+}
+.iui-menu-marker-expand-down::before
+{
+	border: 5px solid #094ab2;
+	border-color: #094ab2 transparent transparent transparent;
+	top: 14px;
+	right: 5px;
+}
+.iui-menu-marker-expand-down::after
+{
+	border: 5px solid #e6f2fb;
+	border-color: #e6f2fb transparent transparent transparent;
+	top: 12px;
+	right: 5px;
+}
+.iui-menu-marker-expand-down:hover::after
+{
+	border: 5px solid #d7eaf9;
+	border-color: #d7eaf9 transparent transparent transparent;
+	top: 12px;
+	right: 5px;
+}
+.iui-menu-marker-expand-down-rtl::before
+{
+	border: 5px solid #094ab2;
+	border-color: #094ab2 transparent transparent transparent;
+	top: 14px;
+	left: 5px;
+}
+.iui-menu-marker-expand-down-rtl::after
+{
+	border: 5px solid #e6f2fb;
+	border-color: #e6f2fb transparent transparent transparent;
+	top: 12px;
+	left: 5px;
+}
+.iui-menu-marker-expand-down-rtl:hover::after
+{
+	border: 5px solid #d7eaf9;
+	border-color: #d7eaf9 transparent transparent transparent;
+	top: 12px;
+	left: 5px;
+}
+.iui-menu-marker-expand-right::before
+{
+	border: 5px solid #323232;
+	border-color: transparent transparent transparent #323232;
+	top: 30%;
+	left: auto;
+	right: 2px;
+}
+.iui-menu-marker-expand-right::after
+{
+	border: 5px solid #ffffff;
+	border-color: transparent transparent transparent #ffffff;
+	top: 30%;
+	left: auto;
+	right: 4px;
+}
+.iui-menu-marker-expand-right:hover::after
+{
+	border: 5px solid #e6f2fb;
+	border-color: transparent transparent transparent #e6f2fb;
+	top: 30%;
+	left: auto;
+	right: 4px;
+}
+.iui-menu-marker-expand-left::before
+{
+	border: 5px solid #323232;
+	border-color: transparent #323232 transparent transparent;
+	top: 30%;
+	left: 2px;
+	right: auto;
+}
+.iui-menu-marker-expand-left::after
+{
+	border: 5px solid #ffffff;
+	border-color: transparent #ffffff transparent transparent;
+	top: 30%;
+	left: 4px;
+	right: auto;
+}
+.iui-menu-marker-expand-left:hover::after
+{
+	border: 5px solid #e6f2fb;
+	border-color: transparent #e6f2fb transparent transparent;
+	top: 30%;
+	left: 4px;
+	right: auto;
+}
+.iui-menu-marker-top::before
+{
+	border: 6px solid #ffffff;
+	border-color: transparent transparent #c8c8c8 transparent;
+	top: -13px;
+	left: 10px;
+}
+.iui-menu-marker-top::after
+{
+	border: 6px solid #ffffff;
+	border-color: transparent transparent #fefefe transparent;
+	top: -12px;
+	left: 10px;
+}
+.iui-menu-marker-top-rtl::before
+{
+	border: 6px solid #ffffff;
+	border-color: transparent transparent #c8c8c8 transparent;
+	top: -13px;
+	right: 10px;
+}
+.iui-menu-marker-top-rtl::after
+{
+	border: 6px solid #ffffff;
+	border-color: transparent transparent #ffffff transparent;
+	top: -12px;
+	right: 10px;
+}
+.iui-menu-marker-left::before
+{
+	border: 8px solid #ffffff;
+	border-color: transparent #c8c8c8 transparent transparent;
+	top: 9px;
+	left: -16px;
+}
+.iui-menu-marker-left::after
+{
+	border: 8px solid #ffffff;
+	border-color: transparent #ffffff transparent transparent;
+	top: 9px;
+	left: -15px;
+}
+.iui-menu-marker-right::before
+{
+	border: 8px solid #ffffff;
+	border-color: transparent transparent transparent #c8c8c8;
+	top: 9px;
+	right: -16px;
+}
+.iui-menu-marker-right::after
+{
+	border: 8px solid #ffffff;
+	border-color: transparent transparent transparent #ffffff;
+	top: 9px;
+	right: -15px;
+}
+
+/* --- IntegralUI SlideBar -------------------------------------------------- */
+
+.iui-slidebar-button
+{
+	background: url(../../resources/icons.png) no-repeat -144px 0;
+}
+.iui-slidebar-button-selected
+{
+	background: url(../../resources/icons.png) no-repeat -160px 0;
+}
+
+/* --- IntegralUI TabStrip ----------------------------------------------- */
+
+.iui-tabstrip-tab-header, .iui-tab-header
+{
+	background-color: #ebf2f7;
+	border: solid thin #ebf2f7;
+	border-bottom-color: #ebf2f7;
+	color: #484848;
+}
+.iui-tabstrip-tab-header-top, .iui-tab-header-top
+{
+	border-radius: 0;
+}
+.iui-tabstrip-tab-header-right, .iui-tab-header-right
+{
+	border-radius: 0;
+}
+.iui-tabstrip-tab-header-bottom, .iui-tab-header-bottom
+{
+	border-radius: 0;
+}
+.iui-tabstrip-tab-header-left, .iui-tab-header-left
+{
+	border-radius: 0;
+}
+.iui-tabstrip-tab-disabled, .iui-tab-header-disabled
+{
+	background-color: transparent;
+	border: solid thin transparent;
+	color: #ababab;
+}
+.iui-tabstrip-tab-hovered, .iui-tab-header-hovered
+{
+	background-color: #dde4e9;
+	border: solid thin #dde4e9;
+	color: #242424;
+}
+.iui-tabstrip-tab-selected, .iui-tab-header-selected
+{
+	background-color: #c5dbea;
+	border: solid thin #c5dbea;
+	color: #242424;
+}
+.iui-tabstrip-tab-selected-top, .iui-tab-header-selected-top
+{
+	border-bottom-color: #c5dbea;
+}
+.iui-tabstrip-tab-selected-right, .iui-tab-header-selected-right
+{
+	border-left-color: #c5dbea;
+}
+.iui-tabstrip-tab-selected-bottom, .iui-tab-header-selected-bottom
+{
+	border-top-color: #c5dbea;
+}
+.iui-tabstrip-tab-selected-left, .iui-tab-header-selected-left
+{
+	border-right-color: #c5dbea;
+}
+.iui-tabstrip-tab-content, .iui-tab-content
+{
+	background: #ffffff;
+	border-color: #c5dbea;
+}
+.iui-tabstrip-tab-content-disabled, .iui-tab-content-disabled
+{
+	background: #f5f5f5;
+	border-color: #dedede;
+	color: #ababab;
+}
+.iui-tabstrip-navigation-button:hover, .iui-tabstrip-nav-buttons span:hover
+{
+	background-color: #dde4e9;
+	border: thin solid #dde4e9;
+	border-radius: 0;
+}
+.iui-tabstrip-navigation-button-left span
+{
+	background: url(../../resources/icons.png) no-repeat -112px -96px;
+}
+.iui-tabstrip-navigation-button-right span
+{
+	background: url(../../resources/icons.png) no-repeat -128px -96px;
+}
+.iui-tabstrip-navigation-button-up span
+{
+	background: url(../../resources/icons.png) no-repeat -160px -80px;
+}
+.iui-tabstrip-navigation-button-down span
+{
+	background: url(../../resources/icons.png) no-repeat -144px -80px;
+}
+.iui-tabstrip-navigation-button-close span
+{
+	background: url(../../resources/icons.png) no-repeat -160px -96px;
+}
+
+/* --- IntegralUI TreeGrid ----------------------------------------------- */
+.iui-treegrid
+{
+	background-color: white;
+	border: thin solid #dddddd;
+    color: #000000;
+}
+.iui-treegrid-column-header
+{
+	background-color: #ffffff;
+	border-color: transparent;
+	border-bottom: thin solid #eaeaea;
+	padding: 3px 0;
+}
+.iui-treegrid-column-footer
+{
+	background-color: #ffffff;
+	border-color: transparent;
+	border-top: thin solid #eaeaea;
+	padding: 3px 0;
+}
+.iui-treegrid-column-header-disabled
+{
+	border-color: transparent;
+	border-bottom: thin solid #dddddd;
+	color: #cecece;
+}
+.iui-treegrid-column-footer-disabled
+{
+	border-color: transparent;
+	border-top: thin solid #dddddd;
+	color: #cecece;
+}
+.iui-treegrid-column-header-hovered
+{
+	background-color: #eaeaea !important;
+	border-color: #eaeaea !important;
+    color: #000000;
+}
+.iui-treegrid-column-header-selected
+{
+	background-color: #c8c8c8 !important;
+	border-bottom-color: #c8c8c8 !important;
+    color: #000000;
+}
+.iui-treegrid-column-header-cell-selected
+{
+	background-color: transparent;
+}
+.iui-treegrid-row-disabled
+{
+	background-color: white;
+	color: #cecece;
+}
+.iui-treegrid-row-hovered
+{
+	background-color: #beddf4;
+}
+.iui-treegrid-row-selected
+{
+	background-color: #d7eaf9;
+	color: #000000;
+}
+.iui-treegrid-row-cell
+{
+	border: thin solid transparent;
+	padding: 3px 0;
+}
+.iui-treegrid-row-cell:focus {
+    outline: none !important;
+    border: thin dotted #b4b4b4;
+}
+.iui-treegrid-row-cell:first-child
+{
+	border-left: thin solid transparent;
+}
+.iui-treegrid-row-cell:last-child
+{
+	border-right: thin solid transparent;
+}
+.iui-treegrid-lines-horizontal
+{
+	border-bottom: thin solid transparent;
+}
+.iui-treegrid-lines-vertical
+{
+	border-right: thin solid transparent;
+}
+.iui-treegrid-lines-both
+{
+	border-right: thin solid transparent;
+	border-bottom: thin solid transparent;
+}
+.iui-treegrid-expand-box-open
+{
+	background: url(../../resources/expandbox-icons.png) no-repeat 0 0;
+}
+.iui-treegrid-expand-box-open-disabled
+{
+	background: url(../../resources/expandbox-icons.png) no-repeat 0 0;
+	opacity: 0.5;
+}
+.iui-treegrid-expand-box-close
+{
+	background: url(../../resources/expandbox-icons.png) no-repeat 0 -16px;
+}
+.iui-treegrid-expand-box-close-disabled
+{
+	background: url(../../resources/expandbox-icons.png) no-repeat 0 -16px;
+	opacity: 0.5;
+}
+.iui-treegrid-expand-box-open-rtl
+{
+	background: url(../../resources/expandbox-icons.png) no-repeat 0 -32px;
+}
+.iui-treegrid-expand-box-open-rtl-disabled
+{
+	background: url(../../resources/expandbox-icons.png) no-repeat 0 -32px;
+	opacity: 0.5;
+}
+.iui-treegrid-expand-box-close-rtl
+{
+	background: url(../../resources/expandbox-icons.png) no-repeat 0 -16px;
+}
+.iui-treegrid-expand-box-close-rtl-disabled
+{
+	background: url(../../resources/expandbox-icons.png) no-repeat 0 -16px;
+	opacity: 0.5;
+}
+.iui-treegrid-rows-top-block
+{
+	border-bottom: thin solid #efefef;
+}
+.iui-treegrid-rows-bottom-block
+{
+	border-top: thin solid #efefef;
+}
+
+
+/* --- IntegralUI TreeView ----------------------------------------------- */
+.iui-treeview
+{
+	background-color: white;
+	border-color: #d9d9d9;
+    color: #484848;
+}
+.iui-treeview-item
+{
+	border: thin solid transparent;
+	border-radius: 0;
+}
+.iui-treeview-item-disabled
+{
+	background-color: white;
+	color: #cecece;
+}
+.iui-treeview-item-hovered
+{
+	background-color: #e6f2fb;
+	border: thin solid #e6f2fb;
+	color: #242424;
+}
+.iui-treeview-item-selected
+{
+	background-color: #d7eaf9;
+	border: thin solid #d7eaf9;
+	color: #242424;
+}
+.iui-treeview-item-content
+{
+	display: inline-block;
+	border: thin solid transparent;
+	border-radius: 0;
+	padding: 3px;
+}
+.iui-treeview-item-content:focus {
+    outline: none !important;
+    border: thin dotted #b4b4b4;
+}
+.iui-treeview-expand-box-open
+{
+	background: url(../../resources/expandbox-icons.png) no-repeat 0 0;
+}
+.iui-treeview-expand-box-open-disabled
+{
+	background: url(../../resources/expandbox-icons.png) no-repeat 0 0;
+	opacity: 0.5;
+}
+.iui-treeview-expand-box-close
+{
+	background: url(../../resources/expandbox-icons.png) no-repeat 0 -16px;
+}
+.iui-treeview-expand-box-close-disabled
+{
+	background: url(../../resources/expandbox-icons.png) no-repeat 0 -16px;
+	opacity: 0.5;
+}
+.iui-treeview-expand-box-open-rtl
+{
+	background: url(../../resources/expandbox-icons.png) no-repeat 0 -32px;
+}
+.iui-treeview-expand-box-open-rtl-disabled
+{
+	background: url(../../resources/expandbox-icons.png) no-repeat 0 -32px;
+	opacity: 0.5;
+}
+.iui-treeview-expand-box-close-rtl
+{
+	background: url(../../resources/expandbox-icons.png) no-repeat 0 -16px;
+}
+.iui-treeview-expand-box-close-rtl-disabled
+{
+	background: url(../../resources/expandbox-icons.png) no-repeat 0 -16px;
+	opacity: 0.5;
+}
+

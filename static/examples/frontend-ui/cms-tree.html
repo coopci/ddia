@@ -1,0 +1,24 @@
+<div ui-content-for="title">
+  <span>CMS 树</span>
+</div>
+
+<div class="scrollable" ui-shared-state="searchBar">
+  <input
+    ng-if="Ui.active('searchBar')"
+    type="search"
+    class="form-control scrollable-header"
+    placeholder="Search.." />
+
+	
+	
+
+	<iui-treeview name="{{treeName}}" class="directive" items="cmsTreeData" before-expand="onBeforeExpandCMSTree(e)" after-select="afterSelectCMSTree(e)" ></iui-treeview>
+
+
+  <a class="btn btn-block btn-lg btn-primary scrollable-footer" ui-toggle="searchBar">
+    <i class="fa fa-search"></i>
+    <span ui-hide="searchBar">Show</span>
+    <span ui-show="searchBar">Hide</span>
+    Search Bar
+  </a>
+</div>
