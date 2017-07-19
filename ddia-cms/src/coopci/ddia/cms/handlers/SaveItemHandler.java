@@ -24,6 +24,7 @@ public class SaveItemHandler extends HttpHandler {
 	}
 	Engine engine;
 	public void service(Request request, Response response) throws Exception {
+		request.setCharacterEncoding("utf-8");
 		Method method = request.getMethod();
 		if (!method.getMethodString().equals("POST")) {
 			response.setStatus(HttpStatus.METHOD_NOT_ALLOWED_405);
