@@ -440,24 +440,33 @@ public class Engine implements IMongodbAspect {
 		return docs.getFirst().getObjectId("item_id");
 	}
 	
-	public void setGlobalName(String name, ObjectId oid, boolean replaceOnExist) {
-		if (replaceOnExist) {
-			Document data = new Document();
-			data.append("item_id", oid);
-			this.saveMongoDocumentById(this.mongodbDBName, this.mongodbDBCollGlobalNames, data, name);
-			return;
-		} else {
-			Document doc = new Document();
-			doc.append("_id", name);
-			doc.append("item_id", oid);
-			this.insertMongoDocument(this.mongodbDBName, this.mongodbDBCollGlobalNames, doc);
-			return;
+	public Result setGlobalName(String name, ObjectId oid, boolean replaceOnExist) {
+		Result res = new Result();
+		try {
+			if (replaceOnExist) {
+				Document data = new Document();
+				data.append("item_id", oid);
+				this.saveMongoDocumentById(this.mongodbDBName, this.mongodbDBCollGlobalNames, data, name);
+			} else {
+				Document doc = new Document();
+				doc.append("_id", name);
+				doc.append("item_id", oid);
+				this.insertMongoDocumentWithId(this.mongodbDBName, this.mongodbDBCollGlobalNames, doc);
+			}
+		} catch (com.mongodb.MongoWriteException ex) {
+			int code = ex.getCode();
+			if (ex.getCode() == 11000) {
+				res.code = 400;
+				res.msg = "Duplicate global name: " + name;
+			}
+			
 		}
-		
+		return res;
 	}
-	public void setGlobalName(String name, String item_id, boolean replaceOnExist) {
+	public Result setGlobalName(String name, String item_id, boolean replaceOnExist) {
 		ObjectId oid = new ObjectId(item_id);
-		setGlobalName(name, oid, replaceOnExist);
+		Result res = setGlobalName(name, oid, replaceOnExist);
+		return res;
 	}
 	
 	public String getIdByName(Long uid, String name) {

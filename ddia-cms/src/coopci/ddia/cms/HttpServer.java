@@ -21,6 +21,7 @@ import coopci.ddia.cms.handlers.GetMembersHandler;
 import coopci.ddia.cms.handlers.GetOrCreateNamedItemHandler;
 import coopci.ddia.cms.handlers.SaveItemHandler;
 import coopci.ddia.cms.handlers.SetContainerHandler;
+import coopci.ddia.cms.handlers.SetGlobalNameHandler;
 
 
 
@@ -120,6 +121,15 @@ public class HttpServer {
 		server.getServerConfiguration().addHttpHandler(
 				getGlobalNamedItemsHandler,
 				"/cms/get_global_named_items");
+		
+		
+		SetGlobalNameHandler setGlobalNameHandler = new SetGlobalNameHandler();
+		setGlobalNameHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				setGlobalNameHandler,
+				"/cms/set_global_name");
+		
+		
 		
 		try {
 			server.removeListener("grizzly");
