@@ -22,6 +22,7 @@ import coopci.ddia.cms.handlers.GetOrCreateNamedItemHandler;
 import coopci.ddia.cms.handlers.SaveItemHandler;
 import coopci.ddia.cms.handlers.SetContainerHandler;
 import coopci.ddia.cms.handlers.SetGlobalNameHandler;
+import coopci.ddia.cms.handlers.UnsetGlobalNameHandler;
 
 
 
@@ -129,6 +130,12 @@ public class HttpServer {
 				setGlobalNameHandler,
 				"/cms/set_global_name");
 		
+
+		UnsetGlobalNameHandler unsetGlobalNameHandler = new UnsetGlobalNameHandler();
+		unsetGlobalNameHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				unsetGlobalNameHandler,
+				"/cms/unset_global_name");
 		
 		
 		try {

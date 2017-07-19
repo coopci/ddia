@@ -50,7 +50,7 @@
 			"name": "get_item",
 			"request": {
 				"url": {
-					"raw": "http://localhost:8895/cms/get_item?uid=26&id=5965efe34c9d3e3c3ce0fc9e&fields=name,create_time,field1,field2",
+					"raw": "http://localhost:8895/cms/get_item?uid=26&id=5965efe34c9d3e3c3ce0fc9e&fields=name,title,create_time,field1,field2",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -75,7 +75,7 @@
 						},
 						{
 							"key": "fields",
-							"value": "name,create_time,field1,field2",
+							"value": "name,title,create_time,field1,field2",
 							"equals": true,
 							"description": ""
 						}
@@ -207,6 +207,18 @@
 						{
 							"key": "set__field1",
 							"value": "bbbb",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "set__name",
+							"value": "通俗演义\n",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "set__title",
+							"value": "通俗演义title",
 							"description": "",
 							"type": "text"
 						}
@@ -402,6 +414,84 @@
 				"method": "GET",
 				"header": [],
 				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "set_global_name",
+			"request": {
+				"url": "http://localhost:8895/cms/set_global_name",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "uid",
+							"value": "26",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "global_name",
+							"value": "test-global-name-bbb",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "item_id",
+							"value": "596593194c9d3e2edc6cd60f",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "replace_on_exist",
+							"value": "0",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "unset_global_name",
+			"request": {
+				"url": "http://localhost:8895/cms/unset_global_name",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "global_name",
+							"value": "test-global-name-bbb",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "uid",
+							"value": "26",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
 				"description": ""
 			},
 			"response": []

@@ -469,6 +469,14 @@ public class Engine implements IMongodbAspect {
 		return res;
 	}
 	
+	
+	public Result unsetGlobalName(String globalName) {
+		Result res = new Result();
+		this.removeMongoDocumentById(this.mongodbDBName, this.mongodbDBCollGlobalNames, globalName);
+		return res;
+	}
+	
+	
 	public String getIdByName(Long uid, String name) {
 		Document query = new Document();
 		
