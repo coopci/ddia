@@ -11,12 +11,12 @@ import org.glassfish.grizzly.websockets.OptimizedBroadcaster;
 import org.glassfish.grizzly.websockets.WebSocketAddOn;
 import org.glassfish.grizzly.websockets.WebSocketEngine;
 
+import coopci.ddia.gateway.cms.handlers.GetCMSItemHandler;
+import coopci.ddia.gateway.cms.handlers.GetCMSMembersHandler;
+import coopci.ddia.gateway.cms.handlers.GetCMSRootHandler;
 import coopci.ddia.gateway.handlers.BuyDiamondsCheckOrderHandler;
 import coopci.ddia.gateway.handlers.BuyDiamondsCreateOrderHandler;
 import coopci.ddia.gateway.handlers.FollowHandler;
-import coopci.ddia.gateway.handlers.GetCMSItemHandler;
-import coopci.ddia.gateway.handlers.GetCMSMembersHandler;
-import coopci.ddia.gateway.handlers.GetCMSRootHandler;
 import coopci.ddia.gateway.handlers.GetPublicUsrinfoHandler;
 import coopci.ddia.gateway.handlers.LoginSubmitPhoneHandler;
 import coopci.ddia.gateway.handlers.LoginSubmitVcodeHandler;
@@ -154,8 +154,8 @@ public class HttpServer {
 		
 		
 		
-		//server.getServerConfiguration().addHttpHandler(
-		//            new StaticHttpHandler("D:\\src\\ddia\\"), "/static");
+		server.getServerConfiguration().addHttpHandler(
+		            new StaticHttpHandler("."), "/static");
 		
 		try {
 			server.removeListener("grizzly");

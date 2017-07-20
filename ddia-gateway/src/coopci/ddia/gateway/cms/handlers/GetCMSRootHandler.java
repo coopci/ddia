@@ -1,4 +1,4 @@
-package coopci.ddia.gateway.handlers;
+package coopci.ddia.gateway.cms.handlers;
 
 import java.util.HashSet;
 
@@ -10,6 +10,7 @@ import org.glassfish.grizzly.http.util.HttpStatus;
 
 import coopci.ddia.Result;
 import coopci.ddia.gateway.DemoEngine;
+import coopci.ddia.gateway.ICMSAspect;
 import coopci.ddia.util.Funcs;
 import coopci.ddia.GrizzlyUtils;
 
@@ -17,13 +18,13 @@ import coopci.ddia.GrizzlyUtils;
 
  * */
 public class GetCMSRootHandler extends HttpHandler {
-	public DemoEngine getEngine() {
+	public ICMSAspect getEngine() {
 		return engine;
 	}
-	public void setEngine(DemoEngine engine) {
+	public void setEngine(ICMSAspect engine) {
 		this.engine = engine;
 	}
-	DemoEngine engine;
+	ICMSAspect engine;
 	public void service(Request request, Response response) throws Exception {
 		Method method = request.getMethod();
 		if (!method.getMethodString().equals("GET")) {

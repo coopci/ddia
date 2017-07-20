@@ -15,7 +15,7 @@ import coopci.ddia.Result;
 import coopci.ddia.results.DictResult;
 import coopci.ddia.results.ListResult;
 
-public class DemoEngine extends Engine {
+public class DemoEngine extends Engine implements ICMSAspect {
 	
 	// followee 是昵称或者 其他 用户可以从界面上看到的 能标出 跟随目标的 字符串
 	public Result follow(String sessid, String followee) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException, InterruptedException, ExecutionException {
@@ -185,63 +185,63 @@ public class DemoEngine extends Engine {
 		return result;
 	}
 	
-	
-	public Result cmsRoot(String sessid, String fields, int start, int limit) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException, InterruptedException, ExecutionException {
-		ListResult result = new ListResult();
-		long uid = getUidFromSessid(sessid);
-		if (fields==null) {
-			fields = "";
-		}
-		String httpPrefix = this.getMicroserviceHttpPrefix(MICROSERVICE_NAME_CMS, uid);
-		HashMap<String, String> args = new HashMap<String, String> (); 
-		args.put("uid", Long.toString(uid));
-		args.put("fields", fields);
-		args.put("start", Integer.toString(start));
-		args.put("limit", Integer.toString(limit));
-		byte[] cmsRootResponse = HttpClientUtil.get(httpPrefix + "cms/get_global_named_items", args);	
-		result = getObjectMapper().readValue(cmsRootResponse, ListResult.class);
-		return result;
-	}
-		
-	
-	public Result getCmsItem(String sessid, String fields, String id) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException, InterruptedException, ExecutionException {
-		DictResult result = new DictResult();
-		long uid = getUidFromSessid(sessid);
-		if (fields==null) {
-			fields = "";
-		}
-		
-		String httpPrefix = this.getMicroserviceHttpPrefix(MICROSERVICE_NAME_CMS, id);
-		HashMap<String, String> args = new HashMap<String, String> (); 
-		args.put("uid", Long.toString(uid));
-		args.put("fields", fields);
-		args.put("id", id);
-		
-		byte[] cmsRootResponse = HttpClientUtil.get(httpPrefix + "cms/get_item", args);	
-		
-		result = getObjectMapper().readValue(cmsRootResponse, DictResult.class);
-		
-		
-		return result;
-	}
-		
-	public Result cmsMembers(String sessid, String container_id, String fields, int start, int limit) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException, InterruptedException, ExecutionException {
-		ListResult result = new ListResult();
-		long uid = getUidFromSessid(sessid);
-		if (fields==null) {
-			fields = "";
-		}
-		String httpPrefix = this.getMicroserviceHttpPrefix(MICROSERVICE_NAME_CMS, uid);
-		HashMap<String, String> args = new HashMap<String, String> (); 
-		args.put("uid", Long.toString(uid));
-		args.put("fields", fields);
-		args.put("container_id", container_id);
-		args.put("start", Integer.toString(start));
-		args.put("limit", Integer.toString(limit));
-		byte[] cmsResponse = HttpClientUtil.get(httpPrefix + "cms/get_members", args);	
-		result = getObjectMapper().readValue(cmsResponse, ListResult.class);
-		return result;
-	}
+//	
+//	public Result cmsRoot(String sessid, String fields, int start, int limit) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException, InterruptedException, ExecutionException {
+//		ListResult result = new ListResult();
+//		long uid = getUidFromSessid(sessid);
+//		if (fields==null) {
+//			fields = "";
+//		}
+//		String httpPrefix = this.getMicroserviceHttpPrefix(MICROSERVICE_NAME_CMS, uid);
+//		HashMap<String, String> args = new HashMap<String, String> (); 
+//		args.put("uid", Long.toString(uid));
+//		args.put("fields", fields);
+//		args.put("start", Integer.toString(start));
+//		args.put("limit", Integer.toString(limit));
+//		byte[] cmsRootResponse = HttpClientUtil.get(httpPrefix + "cms/get_global_named_items", args);	
+//		result = getObjectMapper().readValue(cmsRootResponse, ListResult.class);
+//		return result;
+//	}
+//		
+//	
+//	public Result getCmsItem(String sessid, String fields, String id) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException, InterruptedException, ExecutionException {
+//		DictResult result = new DictResult();
+//		long uid = getUidFromSessid(sessid);
+//		if (fields==null) {
+//			fields = "";
+//		}
+//		
+//		String httpPrefix = this.getMicroserviceHttpPrefix(MICROSERVICE_NAME_CMS, id);
+//		HashMap<String, String> args = new HashMap<String, String> (); 
+//		args.put("uid", Long.toString(uid));
+//		args.put("fields", fields);
+//		args.put("id", id);
+//		
+//		byte[] cmsRootResponse = HttpClientUtil.get(httpPrefix + "cms/get_item", args);	
+//		
+//		result = getObjectMapper().readValue(cmsRootResponse, DictResult.class);
+//		
+//		
+//		return result;
+//	}
+//		
+//	public Result cmsMembers(String sessid, String container_id, String fields, int start, int limit) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException, InterruptedException, ExecutionException {
+//		ListResult result = new ListResult();
+//		long uid = getUidFromSessid(sessid);
+//		if (fields==null) {
+//			fields = "";
+//		}
+//		String httpPrefix = this.getMicroserviceHttpPrefix(MICROSERVICE_NAME_CMS, uid);
+//		HashMap<String, String> args = new HashMap<String, String> (); 
+//		args.put("uid", Long.toString(uid));
+//		args.put("fields", fields);
+//		args.put("container_id", container_id);
+//		args.put("start", Integer.toString(start));
+//		args.put("limit", Integer.toString(limit));
+//		byte[] cmsResponse = HttpClientUtil.get(httpPrefix + "cms/get_members", args);	
+//		result = getObjectMapper().readValue(cmsResponse, ListResult.class);
+//		return result;
+//	}
 	
 	public static void main(String[] args) throws Exception {
 		DemoEngine engine = new DemoEngine();

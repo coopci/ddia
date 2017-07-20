@@ -39,7 +39,7 @@ import coopci.ddia.results.UserInfosResult;
 import coopci.ddia.util.SessidPacker;
 import coopci.ddia.util.Vcode;
 
-public class Engine implements IMongodbAspect {
+public class Engine implements IMongodbAspect, IGatewayEngine {
 
 	DefaultAsyncHttpClientConfig.Builder httpclientconfigbuilder = new DefaultAsyncHttpClientConfig.Builder();
     
@@ -135,7 +135,7 @@ public class Engine implements IMongodbAspect {
 	public static String MICROSERVICE_NAME_CHAT = "chat";
 	public static String MICROSERVICE_NAME_CMS = "cms";
 	
-	String getMicroserviceHttpPrefix(String serviceName, String partKey) {
+	public String getMicroserviceHttpPrefix(String serviceName, String partKey) {
 		String ret = "";
 		if (MICROSERVICE_NAME_USER_BASIC.equals(serviceName)) {
 			return USER_BASIC_HTTP_PREFIX;
@@ -153,7 +153,7 @@ public class Engine implements IMongodbAspect {
 		
 		return ret;
 	}
-	String getMicroserviceHttpPrefix(String serviceName, long partKey) {
+	public String getMicroserviceHttpPrefix(String serviceName, long partKey) {
 		String ret = "";
 		if (MICROSERVICE_NAME_USER_BASIC.equals(serviceName)) {
 			return USER_BASIC_HTTP_PREFIX;
