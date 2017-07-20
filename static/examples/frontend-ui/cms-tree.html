@@ -1,5 +1,5 @@
 <div ui-content-for="title">
-  <span>CMS ТаЉ</span>
+  <span>CMS 树</span>
 </div>
 
 <div class="scrollable" ui-shared-state="searchBar">
@@ -15,8 +15,8 @@
 	<iui-treeview name="{{treeName}}" class="directive" items="cmsTreeData" before-expand="onBeforeExpandCMSTree(e)" after-select="afterSelectCMSTree(e)" ></iui-treeview>
 
 	
-	<button ng-click="unsetGlobalName()" ng-disabled="shouldDisableUnsetGlobalName()" >删除全局名</button>
-	<button ng-click="setGlobalName()" ng-disabled="shouldDisableSetGlobalName()">设置全局名</button>
+	<button ng-click="unsetGlobalName()" ng-disabled="shouldDisableUnsetGlobalName()" >删除全局名</button><br/>
+	<input ng-model="inputGlobalName"> </input><button ng-click="setGlobalName()" ng-disabled="shouldDisableSetGlobalName()">设置全局名</button>
 
   <a class="btn btn-block btn-lg btn-primary scrollable-footer" ui-toggle="searchBar">
     <i class="fa fa-search"></i>

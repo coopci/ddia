@@ -987,7 +987,7 @@ app.controller('CMSTreeController', function($rootScope, $scope, $http, $locatio
 			// console.log(response);
 		  }, function errorCallback(response) {
 			console.log("fetchSentByMeList errorCallback");
-		  });
+		});
 		  
 		  
 		
@@ -1027,13 +1027,49 @@ app.controller('CMSTreeController', function($rootScope, $scope, $http, $locatio
 		
 		console.log(selectedItem["id"]);
 	}
-	
+	$scope.inputGlobalName = "";
 	$scope.setGlobalName = function(){
-		console.log("$scope.setGlobalName");
-		
+		console.log("$scope.setGlobalName: " + $scope.inputGlobalName);
+		if ($scope.inputGlobalName == null || $scope.inputGlobalName == "") {
+			console.log("Global name must not be empty.");
+			return;
+		}
 		var selectedItem = IntegralUITreeViewService.selectedItem($scope.treeName);
 		console.log(selectedItem["id"]);
 		
+		
+		var url = getAPIUrlPrefix() + "set_cms_global_name/?";
+		var sessid = $scope.getLocalSessionid();
+		console.log("sessid: " + sessid);
+		// http://localhost:8887/set_cms_global_name
+		url += toQueryStirng({
+				"sessid": sessid,
+				"item_id": selectedItem["id"],
+				"replace_on_exist": "0",
+				"global_name": $scope.inputGlobalName,
+				});
+		var req = {
+			url: url,
+			method: 'POST',
+		};
+		$http(req).then(function successCallback(response) {
+			console.log("setGlobalName successCallback");
+			alert("设置全局名成功");
+			selectedItem["text"] = $scope.inputGlobalName;
+			IntegralUITreeViewService.addItem($scope.treeName, selectedItem);
+			// IntegralUITreeViewService.updateLayout($scope.treeName);
+		  }, function errorCallback(response) {
+			console.log("setGlobalName errorCallback");
+			if (response.status==400) {
+				if (response.data.code == 400) {
+					alert("设置全局名失败: " + response.data.msg);
+				}
+				
+			}
+			
+			
+			
+		});
 	}
 	
 	
