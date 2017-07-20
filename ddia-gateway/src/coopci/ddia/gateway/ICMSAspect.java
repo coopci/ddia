@@ -11,6 +11,8 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import org.apache.http.client.ClientProtocolException;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import coopci.ddia.Result;
@@ -77,5 +79,27 @@ public interface ICMSAspect extends IGatewayEngine {
 		result = getObjectMapper().readValue(cmsResponse, ListResult.class);
 		return result;
 	}
+	
+	
+	default Result setGlobalName(String sessid, String globalName, String itemId, boolean replaceOnExist) throws Exception {
+		
+		long uid = getUidFromSessid(sessid);
+		
+		// TODO　检查　uid 有没有设置cms的global name的权限。
+		
+		String httpPrefix = this.getMicroserviceHttpPrefix(Engine.MICROSERVICE_NAME_CMS, uid);
+		HashMap<String, String> args = new HashMap<String, String> (); 
+		args.put("uid", Long.toString(uid));
+		args.put("global_name", globalName);
+		args.put("item_id", itemId);
+		args.put("replace_on_exist", Boolean.toString(replaceOnExist));
+		byte[] cmsResponse = HttpClientUtil.post(httpPrefix + "cms/set_global_name", args);
+		String s = new String(cmsResponse);
+		Result result = getObjectMapper().readValue(cmsResponse, Result.class);
+		return result;
+	}
+	
+	
+	
 	
 }

@@ -14,6 +14,7 @@ import org.glassfish.grizzly.websockets.WebSocketEngine;
 import coopci.ddia.gateway.cms.handlers.GetCMSItemHandler;
 import coopci.ddia.gateway.cms.handlers.GetCMSMembersHandler;
 import coopci.ddia.gateway.cms.handlers.GetCMSRootHandler;
+import coopci.ddia.gateway.cms.handlers.SetGlobalNameHandler;
 import coopci.ddia.gateway.handlers.BuyDiamondsCheckOrderHandler;
 import coopci.ddia.gateway.handlers.BuyDiamondsCreateOrderHandler;
 import coopci.ddia.gateway.handlers.FollowHandler;
@@ -151,6 +152,11 @@ public class HttpServer {
 				getCMSMembersHandler,
 				"/get_cms_members");
 		
+		SetGlobalNameHandler setGlobalNameHandler = new SetGlobalNameHandler();
+		setGlobalNameHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				setGlobalNameHandler,
+				"/set_cms_global_name");
 		
 		
 		
