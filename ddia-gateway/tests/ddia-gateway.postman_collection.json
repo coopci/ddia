@@ -436,7 +436,101 @@
 						},
 						{
 							"key": "session_id",
-							"value": "session_id5665",
+							"value": "",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "get_cms_root",
+			"request": {
+				"url": {
+					"raw": "http://localhost:8887/get_cms_root/?sessid=4eb85e65-20df-476d-947d-8d2bb98b4ae1&fields=name,create_time&start=0&limit=20",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8887",
+					"path": [
+						"get_cms_root",
+						""
+					],
+					"query": [
+						{
+							"key": "sessid",
+							"value": "4eb85e65-20df-476d-947d-8d2bb98b4ae1",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "fields",
+							"value": "name,create_time",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "start",
+							"value": "0",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "limit",
+							"value": "20",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "set_cms_global_name",
+			"request": {
+				"url": "http://localhost:8887/set_cms_global_name",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "global_name",
+							"value": "test-global-name-bbb",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "item_id",
+							"value": "596593194c9d3e2edc6cd60f",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "replace_on_exist",
+							"value": "0",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "sessid",
+							"value": "test-sess-26",
 							"description": "",
 							"type": "text"
 						}
