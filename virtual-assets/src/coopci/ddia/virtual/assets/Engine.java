@@ -43,6 +43,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.FindOneAndUpdateOptions;
+import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.ReturnDocument;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.UpdateResult;
@@ -56,6 +57,7 @@ import coopci.ddia.UidResult;
 import coopci.ddia.results.DictResult;
 import coopci.ddia.results.ListResult;
 import coopci.ddia.results.KVItem;
+import coopci.ddia.util.Funcs;
 import coopci.ddia.util.SessidPacker;
 import coopci.ddia.util.Vcode;
 
@@ -65,10 +67,8 @@ public class Engine implements IMongodbAspect {
 	String mongodbDBName = "virtual_assets";     // mongodb的库名字
 	String mongodbDBCollAssets = "assets";    // 记录资产的collection， _id是uid。 以"va_"开头的字段表示一中虚拟资产。
 	String mongodbDBCollTransferTranx = "transfer_tranx";    // 记录转帐事务的。
-	
-	
 	String mongodbDBCollPurchaseOrders = "purchase_orders";    // 记录购买虚拟资产的订单。 pay_result记录支付结果，status记录的是这个订单的状态。
-	
+	String mongodbDBCollCombo = "combos";    // 用来维护可以被购买的 虚拟资产套餐。套餐的价格独立于其中资产的价格总和。 套餐 不能轻易被删除，但是可以被禁用。 套餐 的id和内容不能改， 但是其他属性可以改（包括价格）。  
 	
 	public static String PURCHASE_ORDER_STATUS_NEW = "new";  // 表示是新订单。
 	public static String PURCHASE_ORDER_STATUS_DONE = "done";  // 表示已经处理完毕。
@@ -92,7 +92,6 @@ public class Engine implements IMongodbAspect {
 	public MongoClient getMongoClient() {
 		return mongoClient;
 	}
-
 	
 	public void init() throws Exception {
 		connectMongo();
@@ -696,6 +695,128 @@ public class Engine implements IMongodbAspect {
         for (Entry<String, Long> entry : items.entrySet()) {
         	res.put(entry.getKey(), entry.getValue());
         }
+		return res;
+	}
+	
+	/**
+	 * 创建一个套餐。
+	 * @param price 套餐的价格，key是币种(RMB表示人民币，USD表示美元等等)，value是这中货币的最小单位(分或美分等等)。
+	 * @param items 套餐含的内容。
+	 * @param fields 套餐的其他属性  和 支付无关。
+	 * */
+	public Result createCombo(long uid, String comboId, HashMap<String, Long> price, HashMap<String, Long> items, HashMap<String, String> fields) {
+		Result res = new Result();
+		if (Funcs.isEmpty(comboId)) {
+			res.code = 400;
+			res.msg = "Combo id is required.";
+			return res;
+		}
+		
+		if (items == null || items.size() == 0) {
+			res.code = 400;
+			res.msg = "A combo must contain at least 1 item.";
+			return res;
+		}
+		for (Entry<String, Long> entry : items.entrySet()) {
+			String k = entry.getKey();
+			if (!k.startsWith("va_")) {
+				res.code = 400;
+				res.msg = "Items key must start with va_ : " + k;
+				return res;
+			}
+		}
+		Document combo = new Document(); 
+		combo.append("_id", comboId);
+		combo.append("uid", uid);
+		combo.append("create_time", new Date());
+		combo.append("enabled", true);
+		if (price!=null) {
+			combo.append("price", price);	
+		}
+		if (fields!=null) {
+			combo.append("fields", fields);	
+		}
+		combo.append("items", items);
+		this.insertMongoDocumentWithId(this.mongodbDBName, this.mongodbDBCollCombo, combo);
+		return res;
+	}
+	
+	/**
+	 * 更新一个套餐。
+	 * @param price 套餐的价格，key是币种(RMB表示人民币，USD表示美元等等)，value是这中货币的最小单位(分或美分等等)。
+	 * @param fields 套餐的其他属性  和 支付无关。
+	 * */
+	public Result updateCombo(long uid, String comboId, HashMap<String, Long> price, HashMap<String, String> fields) {
+		Result res = new Result();
+		return res;
+	}
+	
+	
+	public static class Combo {
+		public String id;
+		public long uid;
+		public Date create_time;
+		public boolean enabled;
+		
+		public HashMap<String, Long> price;
+		public HashMap<String, Long> items;
+		public HashMap<String, String> fields;
+		
+		public void set(Document doc) {
+			this.id = doc.getString("_id");
+			this.uid = doc.getLong("uid");
+			this.create_time = doc.getDate("create_time");
+			this.enabled = doc.getBoolean("enabled");
+			
+			// Document price = doc.get("price");
+		}
+	}
+	
+
+	public static class ComboListResult extends Result {
+		
+		// 这个data里面只有本次返回的实际数据。
+		public List<Combo> data = new LinkedList<Combo>();
+		
+		// 如过total>0， 则表示"数据库"里一共有total条符合条件的数据，data里面是本"页"的数据。
+		// 本"页"的筛选条件 和 查询的筛选条件 的语义由各个API自己定。
+		public int total = -1;
+		
+		public void add(Combo e) {
+			this.data.add(e);
+		}
+	}
+	/**
+	 * 获取所有套餐。
+	 * 
+	 * */
+	public ComboListResult getCombos() {
+		ComboListResult res = new ComboListResult();
+		LinkedList<Document> l = this.getMongoDocuments(this.mongodbDBName, this.mongodbDBCollCombo, new Document(), 0, 1000);
+		
+		for (Document doc : l) {
+			Combo e = new Combo();
+			e.set(doc);
+			res.data.add(e);
+		}
+		return res;
+	}
+	
+	/**
+	 * 禁用一个套餐。
+	 * 
+	 * */
+	public Result disableCombo(long uid, String comboId) {
+		Result res = new Result();
+		return res;
+	}
+	
+
+	/**
+	 * 启用一个套餐。
+	 * */
+	public Result enableCombo(long uid, String comboId) {
+		Result res = new Result();
 		return res;
 	}
 	
