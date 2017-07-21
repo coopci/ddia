@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import coopci.ddia.virtual.assets.handlers.CreatePurchaseOrderHandler;
 import coopci.ddia.virtual.assets.handlers.GetAssetsHandler;
+import coopci.ddia.virtual.assets.handlers.GetCombosHandler;
 import coopci.ddia.virtual.assets.handlers.IncrbyHandler;
 import coopci.ddia.virtual.assets.handlers.PostprocessPurchaseOrderHandler;
 import coopci.ddia.virtual.assets.handlers.TransferHandler;
@@ -79,6 +80,13 @@ public class HttpServer {
 		server.getServerConfiguration().addHttpHandler(
 				postprocessPurchaseOrderHandler,
 				"/virtual-assets/postprocess_purchase_order");
+		
+		
+		GetCombosHandler getCombosHandler = new GetCombosHandler();
+		getCombosHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				getCombosHandler,
+				"/virtual-assets/get_combos");
 		
 		try {
 			server.removeListener("grizzly");

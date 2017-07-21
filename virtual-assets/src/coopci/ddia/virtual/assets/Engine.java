@@ -758,9 +758,9 @@ public class Engine implements IMongodbAspect {
 		public Date create_time;
 		public boolean enabled;
 		
-		public HashMap<String, Long> price;
-		public HashMap<String, Long> items;
-		public HashMap<String, String> fields;
+		public HashMap<String, Object> price = new HashMap<String, Object>();
+		public HashMap<String, Object> items = new HashMap<String, Object>();
+		public HashMap<String, Object> fields = new HashMap<String, Object>();
 		
 		public void set(Document doc) {
 			this.id = doc.getString("_id");
@@ -768,7 +768,12 @@ public class Engine implements IMongodbAspect {
 			this.create_time = doc.getDate("create_time");
 			this.enabled = doc.getBoolean("enabled");
 			
-			// Document price = doc.get("price");
+			
+			Funcs.put(this.items, (Document)doc.get("items"));
+			Funcs.put(this.price, (Document)doc.get("price"));
+			Funcs.put(this.fields, (Document)doc.get("fields"));
+			
+			
 		}
 	}
 	
@@ -791,6 +796,7 @@ public class Engine implements IMongodbAspect {
 	 * 
 	 * */
 	public ComboListResult getCombos() {
+		
 		ComboListResult res = new ComboListResult();
 		LinkedList<Document> l = this.getMongoDocuments(this.mongodbDBName, this.mongodbDBCollCombo, new Document(), 0, 1000);
 		
@@ -799,6 +805,7 @@ public class Engine implements IMongodbAspect {
 			e.set(doc);
 			res.data.add(e);
 		}
+		res.total = l.size();
 		return res;
 	}
 	
