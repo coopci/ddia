@@ -2,7 +2,9 @@ package coopci.ddia.util;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map.Entry;
 
+import org.bson.Document;
 import org.glassfish.grizzly.http.server.Request;
 
 public class Funcs {
@@ -83,5 +85,28 @@ public class Funcs {
 		}
 		return false;
 	}
-	
+//	
+//	public static void put(HashMap<String, Long> dest, Document from) {
+//		if (dest == null)
+//			return;
+//		if (from == null)
+//			return;
+//		for (Entry<String, Object> entry: from.entrySet()) {
+//			Object v = entry.getValue();
+//			if (v instanceof Long) {
+//				dest.put(entry.getKey(), (Long)v);
+//			}
+//		}
+//	}
+//	
+
+	public static void put(HashMap<String, Object> dest, Document from) {
+		if (dest == null)
+			return;
+		if (from == null)
+			return;
+		for (Entry<String, Object> entry: from.entrySet()) {
+			dest.put(entry.getKey(), entry.getValue());
+		}
+	}
 }

@@ -1,8 +1,5 @@
 package coopci.ddia.virtual.assets.handlers;
 
-import java.util.HashMap;
-import java.util.HashSet;
-
 import org.glassfish.grizzly.http.Method;
 import org.glassfish.grizzly.http.server.HttpHandler;
 import org.glassfish.grizzly.http.server.Request;
@@ -14,9 +11,9 @@ import coopci.ddia.virtual.assets.Engine;
 import coopci.ddia.GrizzlyUtils;
 
 /**
- * 获取所有套餐。
+ * 
  * */
-public class GetCombosHandler extends HttpHandler {
+public class EnableComboHandler extends HttpHandler {
 	public Engine getEngine() {
 		return engine;
 	}
@@ -26,13 +23,14 @@ public class GetCombosHandler extends HttpHandler {
 	Engine engine;
 	public void service(Request request, Response response) throws Exception {
 		Method method = request.getMethod();
-		if (!method.getMethodString().equals("GET")) {
+		if (!method.getMethodString().equals("POST")) {
 			response.setStatus(HttpStatus.METHOD_NOT_ALLOWED_405);
 			response.getWriter().write(HttpStatus.METHOD_NOT_ALLOWED_405.getReasonPhrase());
 			return;
 		}
-        
-        Result res = this.engine.getCombos();
+		long uid = Long.parseLong(request.getParameter("uid"));
+        String id = request.getParameter("id");
+        Result res = this.engine.enableCombo(uid, id);
         GrizzlyUtils.writeJson(response, res);
 		return;
     }

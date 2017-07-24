@@ -773,7 +773,16 @@ public class Engine implements IMongodbAspect {
 			Funcs.put(this.price, (Document)doc.get("price"));
 			Funcs.put(this.fields, (Document)doc.get("fields"));
 			
-			
+		}
+		
+		public void put(DictResult res) {
+			res.data.put("id", this.id);
+			res.data.put("uid", this.id);
+			res.data.put("create_time", this.create_time);
+			res.data.put("enabled", this.enabled);
+			res.data.put("items", this.items);	
+			res.data.put("price", this.price);
+			res.data.put("fields", this.fields);
 		}
 	}
 	
@@ -809,12 +818,49 @@ public class Engine implements IMongodbAspect {
 		return res;
 	}
 	
+	
+	
+	
+	/**
+	 * 获取单个套餐。
+	 * 
+	 * */
+	public DictResult getCombo(String comboId) {
+		
+		DictResult res = new DictResult();
+		Document doc = this.getMongoDocumentById(this.mongodbDBName, this.mongodbDBCollCombo, comboId);
+		if (doc != null) {
+			Combo c = new Combo();
+			c.set(doc);
+			c.put(res);	
+		} else {
+			res.code = 404;
+			res.msg = "No such combo.";
+		}
+		
+		return res;
+	}
 	/**
 	 * 禁用一个套餐。
 	 * 
 	 * */
-	public Result disableCombo(long uid, String comboId) {
-		Result res = new Result();
+	public DictResult disableCombo(long uid, String comboId) {
+		
+		Document data = new Document();
+		data.append("enabled", false);
+		this.updateMongoDocumentById(this.mongodbDBName, this.mongodbDBCollCombo, data, comboId);
+		
+		DictResult res = new DictResult();
+		Document doc = this.getMongoDocumentById(this.mongodbDBName, this.mongodbDBCollCombo, comboId);
+		if (doc != null) {
+			Combo c = new Combo();
+			c.set(doc);
+			c.put(res);	
+		} else {
+			res.code = 404;
+			res.msg = "No such combo.";
+		}
+		
 		return res;
 	}
 	
@@ -822,8 +868,23 @@ public class Engine implements IMongodbAspect {
 	/**
 	 * 启用一个套餐。
 	 * */
-	public Result enableCombo(long uid, String comboId) {
-		Result res = new Result();
+	public DictResult enableCombo(long uid, String comboId) {
+
+		Document data = new Document();
+		data.append("enabled", true);
+		this.updateMongoDocumentById(this.mongodbDBName, this.mongodbDBCollCombo, data, comboId);
+		
+		DictResult res = new DictResult();
+		Document doc = this.getMongoDocumentById(this.mongodbDBName, this.mongodbDBCollCombo, comboId);
+		if (doc != null) {
+			Combo c = new Combo();
+			c.set(doc);
+			c.put(res);	
+		} else {
+			res.code = 404;
+			res.msg = "No such combo.";
+		}
+		
 		return res;
 	}
 	

@@ -181,6 +181,109 @@
 				"description": ""
 			},
 			"response": []
+		},
+		{
+			"name": "获取单个套餐详情。",
+			"request": {
+				"url": {
+					"raw": "http://localhost:8893/virtual-assets/get_combo?uid=26&id=test-combo-1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8893",
+					"path": [
+						"virtual-assets",
+						"get_combo"
+					],
+					"query": [
+						{
+							"key": "uid",
+							"value": "26",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "id",
+							"value": "test-combo-1",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "启用一个套餐。",
+			"request": {
+				"url": "http://localhost:8893/virtual-assets/enable_combo",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "uid",
+							"value": "26",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "id",
+							"value": "test-combo-1",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "禁用一个套餐。",
+			"request": {
+				"url": "http://localhost:8893/virtual-assets/disable_combo",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "uid",
+							"value": "26",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "id",
+							"value": "test-combo-1",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
 		}
 	]
 }

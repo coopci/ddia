@@ -14,9 +14,9 @@ import coopci.ddia.virtual.assets.Engine;
 import coopci.ddia.GrizzlyUtils;
 
 /**
- * 获取所有套餐。
+ *  获取单个套餐的详情。
  * */
-public class GetCombosHandler extends HttpHandler {
+public class GetComboHandler extends HttpHandler {
 	public Engine getEngine() {
 		return engine;
 	}
@@ -31,8 +31,9 @@ public class GetCombosHandler extends HttpHandler {
 			response.getWriter().write(HttpStatus.METHOD_NOT_ALLOWED_405.getReasonPhrase());
 			return;
 		}
-        
-        Result res = this.engine.getCombos();
+		
+        String id = request.getParameter("id");
+        Result res = this.engine.getCombo(id);
         GrizzlyUtils.writeJson(response, res);
 		return;
     }

@@ -11,7 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import coopci.ddia.virtual.assets.handlers.CreatePurchaseOrderHandler;
+import coopci.ddia.virtual.assets.handlers.DisableComboHandler;
+import coopci.ddia.virtual.assets.handlers.EnableComboHandler;
 import coopci.ddia.virtual.assets.handlers.GetAssetsHandler;
+import coopci.ddia.virtual.assets.handlers.GetComboHandler;
 import coopci.ddia.virtual.assets.handlers.GetCombosHandler;
 import coopci.ddia.virtual.assets.handlers.IncrbyHandler;
 import coopci.ddia.virtual.assets.handlers.PostprocessPurchaseOrderHandler;
@@ -87,6 +90,28 @@ public class HttpServer {
 		server.getServerConfiguration().addHttpHandler(
 				getCombosHandler,
 				"/virtual-assets/get_combos");
+		
+
+		GetComboHandler getComboHandler = new GetComboHandler();
+		getComboHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				getComboHandler,
+				"/virtual-assets/get_combo");
+		
+		
+		DisableComboHandler disableComboHandler = new DisableComboHandler();
+		disableComboHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				disableComboHandler,
+				"/virtual-assets/disable_combo");
+		
+
+		EnableComboHandler enableComboHandler = new EnableComboHandler();
+		enableComboHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				enableComboHandler,
+				"/virtual-assets/enable_combo");
+		
 		
 		try {
 			server.removeListener("grizzly");
