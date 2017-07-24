@@ -90,6 +90,16 @@
             <classpath refid="user-basic.classpath"/>
         </java>
     </target>
+    <target name="Engine (1)">
+        <java classname="coopci.ddia.user.basic.Engine" failonerror="true" fork="yes">
+            <classpath refid="user-basic.classpath"/>
+        </java>
+    </target>
+    <target name="PasswordUtils">
+        <java classname="coopci.ddia.user.basic.PasswordUtils" failonerror="true" fork="yes">
+            <classpath refid="user-basic.classpath"/>
+        </java>
+    </target>
     <target name="SendEmail">
         <java classname="SendEmail" failonerror="true" fork="yes">
             <classpath refid="user-basic.classpath"/>
@@ -105,6 +115,22 @@
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
             <test name="coopci.ddia.user.basic.tests.TestEngine" todir="${junit.output.dir}"/>
+            <classpath refid="user-basic.classpath"/>
+        </junit>
+    </target>
+    <target name="TestEngine.testLoginWithPassword">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="coopci.ddia.user.basic.tests.TestEngine" todir="${junit.output.dir}"/>
+            <classpath refid="user-basic.classpath"/>
+        </junit>
+    </target>
+    <target name="TestPasswordUtils">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="coopci.ddia.user.basic.tests.TestPasswordUtils" todir="${junit.output.dir}"/>
             <classpath refid="user-basic.classpath"/>
         </junit>
     </target>
@@ -126,11 +152,6 @@
     </target>
     <target name="Utils (1)">
         <java classname="coopci.ddia.user.basic.Utils" failonerror="true" fork="yes">
-            <classpath refid="user-basic.classpath"/>
-        </java>
-    </target>
-    <target name="Engine (1)">
-        <java classname="coopci.ddia.user.basic.Engine" failonerror="true" fork="yes">
             <classpath refid="user-basic.classpath"/>
         </java>
     </target>

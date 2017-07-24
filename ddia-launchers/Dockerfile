@@ -8,3 +8,4 @@ CMD ["java", "-classpath", "./bin/ddia.jar", "coopci.ddia.launchers.AllInOneLaun
 
 # docker build -t ddia-all-in-one .
 
+# java -classpath ./bin/ddia.jar coopci.ddia.launchers.AllInOneLauncher
