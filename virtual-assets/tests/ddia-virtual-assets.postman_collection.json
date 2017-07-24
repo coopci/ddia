@@ -284,6 +284,63 @@
 				"description": ""
 			},
 			"response": []
+		},
+		{
+			"name": "创建一个套餐。",
+			"request": {
+				"url": "http://localhost:8893/virtual-assets/create_combo",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "uid",
+							"value": "26",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "id",
+							"value": "test-combo-2",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "price.USD",
+							"value": "2",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "item.va_item1",
+							"value": "7",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "field.desc",
+							"value": "测试的",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "item.item1",
+							"value": "09",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
 		}
 	]
 }
