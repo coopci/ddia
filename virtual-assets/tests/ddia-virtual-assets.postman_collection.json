@@ -341,6 +341,45 @@
 				"description": ""
 			},
 			"response": []
+		},
+		{
+			"name": "更新一个套餐的属性和/或价格。",
+			"request": {
+				"url": "http://localhost:8893/virtual-assets/update_combo",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "uid",
+							"value": "26",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "id",
+							"value": "test-combo-2",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "price.EUR",
+							"value": "9",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
 		}
 	]
 }

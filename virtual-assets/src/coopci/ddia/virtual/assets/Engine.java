@@ -747,7 +747,49 @@ public class Engine implements IMongodbAspect {
 	 * @param fields 套餐的其他属性  和 支付无关。
 	 * */
 	public Result updateCombo(long uid, String comboId, HashMap<String, Long> price, HashMap<String, String> fields) {
-		Result res = new Result();
+		DictResult res = new DictResult();
+		
+		
+		if (Funcs.isEmpty(comboId)) {
+			res.code = 400;
+			res.msg = "Combo id is required.";
+			return res;
+		}
+		
+		Document combo = new Document(); 
+		combo.append("_id", comboId);
+		combo.append("update_time", new Date());
+		
+		if (price!=null) {
+			for (Entry<String, Long> entry: price.entrySet()) {
+				String currency = entry.getKey().toUpperCase();
+				combo.append("price." + currency, entry.getValue());	
+			}
+				
+		}
+		if (fields!=null) {
+			for (Entry<String, String> entry: fields.entrySet()) {
+				String k = entry.getKey();
+				combo.append("fields." + k, entry.getValue());	
+			}
+		}
+		this.updateMongoDocumentById(this.mongodbDBName, this.mongodbDBCollCombo, combo, comboId);
+		
+		
+		
+		
+		
+		Document doc = this.getMongoDocumentById(this.mongodbDBName, this.mongodbDBCollCombo, comboId);
+		if (doc != null) {
+			Combo c = new Combo();
+			c.set(doc);
+			c.put(res);	
+		} else {
+			res.code = 404;
+			res.msg = "No such combo.";
+		}
+		
+		
 		return res;
 	}
 	

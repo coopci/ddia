@@ -42,8 +42,13 @@ public class UpdateComboHandler extends HttpHandler {
         	if (segs.length == 2) {
         		if (segs[0].equals("price")) {
         			String currency = segs[1].toUpperCase();
-        			long value = Long.parseLong(request.getParameter(fn));
-        			price.put(currency, value);
+        			if (request.getParameter(fn).toLowerCase().equals("null")) {
+        				price.put(currency, null);
+        			} else {
+        				long value = Long.parseLong(request.getParameter(fn));
+            			price.put(currency, value);
+        			}
+        			
         		} else if (segs[0].equals("field")) {
         			String k = segs[1];
         			String v = request.getParameter(fn);
