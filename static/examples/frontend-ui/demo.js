@@ -516,6 +516,7 @@ $scope.chatUsers = [];
 		
 	  }, function errorCallback(response) {
 		console.log("errorCallback");
+		alert(response.data.msg);
 	  });
 	
 	
