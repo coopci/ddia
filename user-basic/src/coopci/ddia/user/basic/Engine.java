@@ -349,16 +349,53 @@ public class Engine implements IMongodbAspect {
 			ret.data = properties;
 		}
 		
-		this.addNewUserToMongo(this.mongodbDBName, this.mongodbDBCollUserInfo, uid, userdata);
-		
-		
-		
-		ret.put("uid", uid);
-		ret.put("nickname", nickname);
-		ret.data.remove("password");
-		
+		try {
+			this.addNewUserToMongo(this.mongodbDBName, this.mongodbDBCollUserInfo, uid, userdata);
+			ret.put("uid", uid);
+			ret.put("nickname", nickname);
+			ret.data.remove("password");
+			
+		} catch (com.mongodb.MongoWriteException ex) {
+			if (ex.getCode() == 11000) {
+				ret.code = 400;
+				ret.msg = "Duplicate nickname.";
+			}
+		}
 		return ret;
 		
+	}
+	
+	/**
+	 * 用于后台程序 更新用户的密码。
+	 * @throws NoSuchAlgorithmException 
+	 * @throws BadPaddingException 
+	 * @throws IllegalBlockSizeException 
+	 * */
+	public Result modifyPassword(long uid, String newPassword) throws IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException {
+		Result res = new Result();
+		
+		String storedPassword = this.passwordUtils.genStoredPassword(newPassword);
+		Document update = new Document();
+		update.append("password", storedPassword);
+		this.updateMongoDocumentById(this.mongodbDBName, this.mongodbDBCollUserInfo, update, uid);
+		return res;
+	}
+	
+	/**
+	 * 用于后台程序 更新用户的密码。
+	 * @throws NoSuchAlgorithmException 
+	 * @throws BadPaddingException 
+	 * @throws IllegalBlockSizeException 
+	 * */
+	public Result modifyPassword(String nickname, String newPassword) throws IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException {
+		Result res = new Result();
+		Document doc = this.getUserinfoDocsByNickname(nickname).getFirst();
+		if (doc == null) {
+			res.code = 404;
+			res.msg = "No such user.";
+		}
+		res = this.modifyPassword(doc.getLong("_id"), newPassword);
+		return res;
 	}
 	
 	public LinkedList<Document> getUserinfoDocsByNickname(String nickname) {
