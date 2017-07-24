@@ -1,4 +1,4 @@
-package coopci.ddia.virtual.assets.handlers;
+package coopci.ddia.virtual.assets.combos.handlers;
 
 import org.glassfish.grizzly.http.Method;
 import org.glassfish.grizzly.http.server.HttpHandler;
@@ -13,7 +13,7 @@ import coopci.ddia.GrizzlyUtils;
 /**
  * 
  * */
-public class DisableComboHandler extends HttpHandler {
+public class EnableComboHandler extends HttpHandler {
 	public Engine getEngine() {
 		return engine;
 	}
@@ -30,7 +30,7 @@ public class DisableComboHandler extends HttpHandler {
 		}
 		long uid = Long.parseLong(request.getParameter("uid"));
         String id = request.getParameter("id");
-        Result res = this.engine.disableCombo(uid, id);
+        Result res = this.engine.enableCombo(uid, id);
         GrizzlyUtils.writeJson(response, res);
 		return;
     }

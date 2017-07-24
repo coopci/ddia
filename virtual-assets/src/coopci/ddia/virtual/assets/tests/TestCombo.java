@@ -42,16 +42,12 @@ public class TestCombo {
 		assertEquals(400, createRes.code);
 		assertEquals("A combo must contain at least 1 item.", createRes.msg);
 		
-		
-		
 		HashMap<String, Long> items = new HashMap<String, Long>();
 		items.put("item1", 10L);
 
 		createRes = engine.createCombo(uid, comboId, price, items, null);
 		assertEquals(400, createRes.code);
 		assertEquals("Items key must start with va_ : item1", createRes.msg);
-		
-		
 		
 		
 		items.clear();
@@ -67,13 +63,8 @@ public class TestCombo {
 		long uid = 26;
 		String comboId = "test-combo-1";
 		HashMap<String, Long> price = new HashMap<String, Long>();
-		
 		engine.init();
-		
 		Result res = engine.getCombos();
-		
-		
-		
 		return;
 	}
 	

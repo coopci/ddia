@@ -1,4 +1,4 @@
-package coopci.ddia.virtual.assets.handlers;
+package coopci.ddia.virtual.assets.combos.handlers;
 
 import java.util.HashMap;
 import java.util.HashSet;
