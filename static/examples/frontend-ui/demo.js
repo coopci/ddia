@@ -300,8 +300,14 @@ app.directive('dragMe', ['$drag', function($drag) {
 
 function getAPIUrlPrefix() {
 	// return "http://10.2.9.98:8000/"
-	return "http://localhost:8887/"
 	
+	var loc = window.location.href;
+	
+	if (loc.startsWith("http://localhost")) {
+		return "http://localhost:8887/";
+	}
+	
+	return window.location.origin + "/";
 }
 //
 // For this trivial demo we have just a unique MainController
