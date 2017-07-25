@@ -3,6 +3,7 @@ package coopci.ddia.launchers;
 import coopci.ddia.user.relation.HttpServer;
 
 // 在同一个jvm中  启动gateway和所有的微服务。
+//docker run --net="host" coopci/ddia
 public class AllInOneLauncher {
 	public void launch() throws Exception {
 		coopci.ddia.gateway.HttpServer httpGateway = new coopci.ddia.gateway.HttpServer();

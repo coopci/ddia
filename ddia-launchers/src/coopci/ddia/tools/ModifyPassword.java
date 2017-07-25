@@ -2,6 +2,7 @@ package coopci.ddia.tools;
 
 
 // java coopci.ddia.tools.ModifyPassword admin q298tgy9
+// docker run --net="host" coopci/ddia java -classpath ./bin/ddia.jar coopci.ddia.tools.ModifyPassword admin q298tgy9
 public class ModifyPassword {
 
 	public static void help() throws Exception {

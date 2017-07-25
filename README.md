@@ -32,3 +32,8 @@ docker run --net="host" coopci/ddia
 docker ps
 
 docker stop
+
+从命令行添加用户并指定密码:
+
+docker run --net="host" coopci/ddia java -classpath ./bin/ddia.jar coopci.ddia.tools.ModifyPassword $用户名 $密码
+
