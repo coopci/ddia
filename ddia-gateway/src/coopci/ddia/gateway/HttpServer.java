@@ -1,5 +1,8 @@
 package coopci.ddia.gateway;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import org.glassfish.grizzly.http.server.ErrorPageGenerator;
 import org.glassfish.grizzly.http.server.HttpHandler;
 import org.glassfish.grizzly.http.server.NetworkListener;
@@ -35,8 +38,14 @@ public class HttpServer {
 	
 	public static int listenPort = 8887;
 	
+	String staticPath = "static";
 	
-	
+	public String getStaticPath() {
+		return staticPath;
+	}
+	public void setStaticPath(String staticPath) {
+		this.staticPath = staticPath;
+	}
 	public void start () throws Exception {
 		DemoEngine engine = new DemoEngine();
 		engine.init();
@@ -159,9 +168,12 @@ public class HttpServer {
 				"/set_cms_global_name");
 		
 		
+		Path currentRelativePath = Paths.get("");
+		String s = currentRelativePath.toAbsolutePath().toString();
+		System.out.println("Current relative path is: " + s);
 		
 		server.getServerConfiguration().addHttpHandler(
-		            new StaticHttpHandler("."), "/static");
+		            new StaticHttpHandler(staticPath), "/static/");
 		
 		try {
 			server.removeListener("grizzly");

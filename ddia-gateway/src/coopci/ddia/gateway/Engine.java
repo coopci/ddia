@@ -85,7 +85,7 @@ public class Engine implements IMongodbAspect, IGatewayEngine {
 		initPublisher();
 		return;
 	}
-	String deskeyPath = "../triple-des.key";
+	String deskeyPath = "triple-des.key";
 	SessidPacker sessidPacker = new SessidPacker();
 	public void initSessidPacker() throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, IOException {
 		sessidPacker.initDes(deskeyPath);
