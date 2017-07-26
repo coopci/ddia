@@ -243,7 +243,9 @@ public class Engine implements IMongodbAspect, IGatewayEngine {
 		Document doc = new Document();
 		doc.append("_id", sessid);
 		doc.append("uid", uid);
-		this.insertMongoDocumentWithId(this.mongodbDBName, this.mongodbDBCollSessionid, doc);
+		// this.insertMongoDocumentWithId(this.mongodbDBName, this.mongodbDBCollSessionid, doc);
+		this.upsertMongoDocumentWithId(this.mongodbDBName, this.mongodbDBCollSessionid, doc);
+		
 		return;
 	}
 	/**
