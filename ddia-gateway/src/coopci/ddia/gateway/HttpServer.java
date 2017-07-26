@@ -30,6 +30,7 @@ import coopci.ddia.gateway.handlers.SendChatMessageHandler;
 import coopci.ddia.gateway.handlers.SendMsgHandler;
 import coopci.ddia.gateway.handlers.UnfollowHandler;
 import coopci.ddia.gateway.login.handlers.RegisterHandler;
+import coopci.ddia.gateway.virtual.assets.handlers.GetMyVirtualAssetsHandler;
 import coopci.ddia.gateway.websocket.BroadcastApplication;
 import coopci.ddia.gateway.websocket.GatewayApplication;
 
@@ -173,6 +174,12 @@ public class HttpServer {
 		server.getServerConfiguration().addHttpHandler(
 				registerHandler,
 				"/register");
+		
+		GetMyVirtualAssetsHandler getMyVirtualAssetsHandler = new GetMyVirtualAssetsHandler();
+		getMyVirtualAssetsHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				getMyVirtualAssetsHandler,
+				"/get_my_virtual_assets");
 		
 		Path currentRelativePath = Paths.get("");
 		String s = currentRelativePath.toAbsolutePath().toString();

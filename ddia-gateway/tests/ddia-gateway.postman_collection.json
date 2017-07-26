@@ -539,6 +539,42 @@
 				"description": ""
 			},
 			"response": []
+		},
+		{
+			"name": "获取自己的虚拟资产数量。",
+			"request": {
+				"url": {
+					"raw": "http://localhost:8887/get_my_virtual_assets?sessid=sess-3y8g82de54&asset_names=va_coder_coin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8887",
+					"path": [
+						"get_my_virtual_assets"
+					],
+					"query": [
+						{
+							"key": "sessid",
+							"value": "sess-3y8g82de54",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "asset_names",
+							"value": "va_coder_coin",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
 		}
 	]
 }
