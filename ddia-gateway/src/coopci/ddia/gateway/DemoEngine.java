@@ -15,7 +15,7 @@ import coopci.ddia.Result;
 import coopci.ddia.results.DictResult;
 import coopci.ddia.results.ListResult;
 
-public class DemoEngine extends Engine implements ICMSAspect {
+public class DemoEngine extends Engine implements ICMSAspect, ILoginAspect {
 	
 	// followee 是昵称或者 其他 用户可以从界面上看到的 能标出 跟随目标的 字符串
 	public Result follow(String sessid, String followee) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException, InterruptedException, ExecutionException {

@@ -29,6 +29,7 @@ import coopci.ddia.gateway.handlers.NewSessionHandler;
 import coopci.ddia.gateway.handlers.SendChatMessageHandler;
 import coopci.ddia.gateway.handlers.SendMsgHandler;
 import coopci.ddia.gateway.handlers.UnfollowHandler;
+import coopci.ddia.gateway.login.handlers.RegisterHandler;
 import coopci.ddia.gateway.websocket.BroadcastApplication;
 import coopci.ddia.gateway.websocket.GatewayApplication;
 
@@ -167,6 +168,11 @@ public class HttpServer {
 				setGlobalNameHandler,
 				"/set_cms_global_name");
 		
+		RegisterHandler registerHandler = new RegisterHandler();
+		registerHandler.setEngine(engine);
+		server.getServerConfiguration().addHttpHandler(
+				registerHandler,
+				"/register");
 		
 		Path currentRelativePath = Paths.get("");
 		String s = currentRelativePath.toAbsolutePath().toString();

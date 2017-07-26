@@ -19,6 +19,9 @@ import coopci.ddia.Result;
 import coopci.ddia.results.DictResult;
 import coopci.ddia.results.ListResult;
 
+/**
+ * 和CMS有关的操作。
+ * */
 public interface ICMSAspect extends IGatewayEngine {
 
 	public long getUidFromSessid(String sessid) throws Exception;
@@ -98,8 +101,4 @@ public interface ICMSAspect extends IGatewayEngine {
 		Result result = getObjectMapper().readValue(cmsResponse, Result.class);
 		return result;
 	}
-	
-	
-	
-	
 }
