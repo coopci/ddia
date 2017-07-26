@@ -220,6 +220,21 @@ public interface IMongodbAspect {
 	}
 	
 
+	default void upsertMongoDocumentWithId(String dbname, String collname, Document doc) {
+		MongoClient client = this.getMongoClient();
+		MongoDatabase db = client.getDatabase(dbname);
+		MongoCollection<Document> collection = db.getCollection(collname);
+		Document filter = new Document();
+		filter.append("_id", doc.get("_id"));
+		
+		Document update = new Document();
+		update.append("$set", doc);
+		
+		UpdateOptions opt = new UpdateOptions().upsert(true); 
+		collection.updateOne(filter, update, opt);
+		return;
+	}
+	
 	default void insertMongoDocumentWithId(String dbname, String collname, Document doc) {
 		MongoClient client = this.getMongoClient();
 		MongoDatabase db = client.getDatabase(dbname);
