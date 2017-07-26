@@ -1,0 +1,33 @@
+<div ui-content-for="title">
+  <span>我的虚拟资产</span>
+</div>
+
+<div class="scrollable" ui-shared-state="searchBar">
+  <input
+    ng-if="Ui.active('searchBar')"
+    type="search"
+    class="form-control scrollable-header"
+    placeholder="Search.." />
+
+	
+	 <table style="background-color: white; margin: 5px 5px 5px 5px;">
+	 <tr ng-repeat="item in virtualAssets track by item.name" ="list-group-item"> 
+	 
+    <!--  <a ng-repeat="item in virtualAssets track by item.item_id" class="list-group-item"> -->
+		<!-- <i class="fa fa-chevron-right pull-right"></i> -->
+		<!-- <p>{{ item.item_id }}: {{ item.amount }}</p> -->
+		
+		<td style="text-align: right;">{{ item.name }}: </td>
+		<td style="text-align: right; padding-left:10px"> {{ item.amount }} </td>
+     <!-- </a> -->
+	 </tr>
+	 </table>
+ 
+  
+  <a class="btn btn-block btn-lg btn-primary scrollable-footer" ui-toggle="searchBar">
+    <i class="fa fa-search"></i>
+    <span ui-hide="searchBar">Show</span>
+    <span ui-show="searchBar">Hide</span>
+    Search Bar
+  </a>
+</div>

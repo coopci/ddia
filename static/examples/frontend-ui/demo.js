@@ -83,6 +83,8 @@ app.config(function($routeProvider) {
   $routeProvider.when('/cms-root', {templateUrl: 'cms-root.html', reloadOnSearch: false});
   $routeProvider.when('/cms-content/:item_id', {templateUrl: 'cms-content.html', reloadOnSearch: false});
   
+
+  
   // $routeProvider.when('/cms-tree', {templateUrl: 'cms-tree.html', reloadOnSearch: false, controller: "CMSTreeController"});
   
   
@@ -1111,4 +1113,63 @@ app.controller('CMSTreeController', function($rootScope, $scope, $http, $locatio
 app.config(function($routeProvider) {
   $routeProvider.when('/cms-tree', {templateUrl: 'cms-tree.html', reloadOnSearch: false, controller: "CMSTreeController"});
 });
+
+
+app.controller('VirtualAssetsController', function($rootScope, $scope, $http, $location, $routeParams, IntegralUITreeViewService, $timeout) {
+	console.log("VirtualAssetsController");
+	
+	$scope.virtualAssets = [
+		{name: "adf", amount: 120},
+		{name: "adf3", amount: 100},
+	];
+	
+	$scope.fetchMyVirtualAssets = function() {
+		console.log("$scope.fetchMyVirtualAssets in VirtualAssetsController");
+		
+	
+		
+		var url = getAPIUrlPrefix() + "get_my_virtual_assets/?";
+		var sessid = $scope.getLocalSessionid();
+		console.log("sessid: " + sessid);
+		//	http://localhost:8887/get_my_virtual_assets?sessid=sess-3y8g82de54&asset_names=va_coder_coin
+		url += toQueryStirng({
+				"sessid": sessid,
+				"asset_names": "va_coder_coin,va_diamond",
+				});
+		var req = {
+			url: url,
+			method: 'GET',
+		};
+		$http(req).then(function successCallback(response) {
+			console.log("fetchMyVirtualAssets successCallback");
+			// $scope.cmsRoot = response.data.data;
+			var arr = [];
+			for (var va_name in response.data.data) {
+				var item = {
+					name: va_name,
+					amount: response.data.data[va_name],
+				}
+				arr.push(item);
+			}
+			$scope.virtualAssets = arr;
+			console.log(response);
+		  }, function errorCallback(response) {
+			console.log("fetchSentByMeList errorCallback");
+		  });
+	}
+	
+	$scope.fetchMyVirtualAssets();
+});
+
+app.config(function($routeProvider) {
+	
+    $routeProvider.when('/my-virtual-assets', {templateUrl: 'my-virtual-assets.html', reloadOnSearch: false, controller: "VirtualAssetsController"});
+});
+
+
+
+
+
+
+
 
