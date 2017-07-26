@@ -71,7 +71,7 @@ public class Funcs {
 		for (String n:request.getParameterNames()) {
 			if (blockFields!= null && blockFields.contains(n))
 				continue;
-			ret.put(n, request.getAttribute(n));
+			ret.put(n, request.getParameter(n));
 		}
 		
 		return ret;
@@ -108,5 +108,17 @@ public class Funcs {
 		for (Entry<String, Object> entry: from.entrySet()) {
 			dest.put(entry.getKey(), entry.getValue());
 		}
+	}
+	
+	public static long toLong(Object o, long defaultValue) {
+		if (o instanceof Integer) {
+			return ((Integer)o).longValue();
+		} else if(o instanceof Long) {
+			return ((Long)o).longValue();
+		} else if (o instanceof String) {
+			return Long.parseLong((String)o);
+		} 
+		
+		return defaultValue;
 	}
 }
