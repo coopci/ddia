@@ -1186,7 +1186,8 @@ app.controller('VirtualAssetsController', function($rootScope, $scope, $http, $l
 			console.log("incrVirtualAssets successCallback");
 			$scope.fetchMyVirtualAssets();
 		  }, function errorCallback(response) {
-			console.log("fetchSentByMeList errorCallback");
+			console.log("incrVirtualAssets errorCallback");
+			alert(response.data.msg);
 		  });
 	}
 	
