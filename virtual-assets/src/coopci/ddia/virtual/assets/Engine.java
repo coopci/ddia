@@ -114,7 +114,7 @@ public class Engine implements IMongodbAspect {
 		boolean includeDecrease = false;
 		for (Entry<String, Long> entry : args.entrySet()) {
 			if (entry.getValue() < 0 ) {
-				filter.append(entry.getKey(), new Document("$gte", entry.getValue()));
+				filter.append(entry.getKey(), new Document("$gte", -entry.getValue()));
 				includeDecrease = true;
 			}
 		}
@@ -140,6 +140,7 @@ public class Engine implements IMongodbAspect {
 		if (ur.getUpsertedId() == null && ur.getModifiedCount() == 0) {
 			// 说明有 资产的数量不足。
 			res.code = 402;
+			res.msg = "Insufficient asset.";
 		}
 		
 		return res;
