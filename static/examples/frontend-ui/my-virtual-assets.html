@@ -17,12 +17,18 @@
 		<!-- <i class="fa fa-chevron-right pull-right"></i> -->
 		<!-- <p>{{ item.item_id }}: {{ item.amount }}</p> -->
 		
-		<td style="text-align: right;">{{ item.name }}: </td>
-		<td style="text-align: right; padding-left:10px"> {{ item.amount }} </td>
+		<td style="text-align: right; padding-left:10px; ">{{ item.name }}: </td>
+		<td style="text-align: right; padding-left:10px; padding-right:10px; "> {{ item.amount }} </td>
      <!-- </a> -->
 	 </tr>
 	 </table>
- 
+<div style="padding-top:50px; ">
+</div>	
+	资产名:
+	<input ng-model="incrAssetName"> </input>
+	资产数量:
+	<input ng-model="incrAssetAmount"> </input>
+	<button ng-click="incrVirtualAssets()">增加(减少)资产</button>
   
   <a class="btn btn-block btn-lg btn-primary scrollable-footer" ui-toggle="searchBar">
     <i class="fa fa-search"></i>

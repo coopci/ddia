@@ -428,7 +428,10 @@ $scope.chatUsers = [];
 	var token = localStorage.getItem("sessid");
 	return token;
   }
-  
+  $scope.getLocalUid = function(){
+	var token = localStorage.getItem("uid");
+	return token;
+  }
   
   $scope.gotoSentList = function(){
 	  $location.path("/sent");
@@ -1126,8 +1129,6 @@ app.controller('VirtualAssetsController', function($rootScope, $scope, $http, $l
 	$scope.fetchMyVirtualAssets = function() {
 		console.log("$scope.fetchMyVirtualAssets in VirtualAssetsController");
 		
-	
-		
 		var url = getAPIUrlPrefix() + "get_my_virtual_assets/?";
 		var sessid = $scope.getLocalSessionid();
 		console.log("sessid: " + sessid);
@@ -1157,6 +1158,45 @@ app.controller('VirtualAssetsController', function($rootScope, $scope, $http, $l
 			console.log("fetchSentByMeList errorCallback");
 		  });
 	}
+	$scope.incrVirtualAssets = function() {
+		console.log("$scope.incrVirtualAssets in VirtualAssetsController");
+		console.log("$scope.incrAssetName: " + $scope.incrAssetName);
+		console.log("$scope.incrAssetAmount: " + $scope.incrAssetAmount);
+		
+		
+		var url = getAPIUrlPrefix() + "incr_virtual_assets";
+		var sessid = $scope.getLocalSessionid();
+		
+		var data ={
+			"sessid": sessid,
+			"uid": $scope.getLocalUid(),
+		};
+		data[$scope.incrAssetName] = $scope.incrAssetAmount;
+		
+		data = toQueryStirng(data);
+		var req = {
+			url: url,
+			method: 'POST',
+			headers: {
+				'Content-Type': "application/x-www-form-urlencoded"
+			},
+			data: data,
+		};
+		$http(req).then(function successCallback(response) {
+			console.log("incrVirtualAssets successCallback");
+			$scope.fetchMyVirtualAssets();
+		  }, function errorCallback(response) {
+			console.log("fetchSentByMeList errorCallback");
+		  });
+	}
+	
+	
+	
+	
+	
+	$scope.incrAssetName = "va_coder_coin"
+	$scope.incrAssetAmount = 0;
+	
 	
 	$scope.fetchMyVirtualAssets();
 });
@@ -1165,6 +1205,7 @@ app.config(function($routeProvider) {
 	
     $routeProvider.when('/my-virtual-assets', {templateUrl: 'my-virtual-assets.html', reloadOnSearch: false, controller: "VirtualAssetsController"});
 });
+
 
 
 
