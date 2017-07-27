@@ -92,8 +92,17 @@ public class Engine implements IMongodbAspect, IGatewayEngine {
 	}
 	
 	
-	
-	
+	/**
+	 * 
+	 * @return true表示uid有perm权限，false表示没有这个权限。
+	 * */
+	public boolean checkPermission(long uid, String perm) {
+		// TODO 实现检查权限的逻辑。
+		if (uid < 0) {
+			return false;
+		}
+		return true;
+	}
 	
 	public long getUidFromSessid(String sessid) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException {
 		

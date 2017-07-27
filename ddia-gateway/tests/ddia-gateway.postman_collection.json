@@ -575,6 +575,45 @@
 				"description": ""
 			},
 			"response": []
+		},
+		{
+			"name": "给特定uid增减虚拟资产。",
+			"request": {
+				"url": "http://localhost:8887/incr_virtual_assets",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "sessid",
+							"value": "sess-3y8g82de54",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "uid",
+							"value": "27",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "va_coder_coin",
+							"value": "10",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
 		}
 	]
 }
