@@ -1120,11 +1120,8 @@ app.config(function($routeProvider) {
 
 app.controller('VirtualAssetsController', function($rootScope, $scope, $http, $location, $routeParams, IntegralUITreeViewService, $timeout) {
 	console.log("VirtualAssetsController");
+	$scope.assetNames = "va_coder_coin,va_diamond";
 	
-	$scope.virtualAssets = [
-		{name: "adf", amount: 120},
-		{name: "adf3", amount: 100},
-	];
 	
 	$scope.fetchMyVirtualAssets = function() {
 		console.log("$scope.fetchMyVirtualAssets in VirtualAssetsController");
@@ -1135,7 +1132,7 @@ app.controller('VirtualAssetsController', function($rootScope, $scope, $http, $l
 		//	http://localhost:8887/get_my_virtual_assets?sessid=sess-3y8g82de54&asset_names=va_coder_coin
 		url += toQueryStirng({
 				"sessid": sessid,
-				"asset_names": "va_coder_coin,va_diamond",
+				"asset_names": $scope.assetNames,
 				});
 		var req = {
 			url: url,

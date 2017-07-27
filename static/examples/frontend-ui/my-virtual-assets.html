@@ -8,9 +8,13 @@
     type="search"
     class="form-control scrollable-header"
     placeholder="Search.." />
-
 	
-	 <table style="background-color: white; margin: 5px 5px 5px 5px;">
+	需要列出的资产名:
+	<input ng-model="assetNames" style="width:100%"> </input>
+	<button ng-click="fetchMyVirtualAssets()">刷新</button>
+	
+	
+	<table style="background-color: white; margin: 5px 5px 5px 5px;">
 	 <tr ng-repeat="item in virtualAssets track by item.name" ="list-group-item"> 
 	 
     <!--  <a ng-repeat="item in virtualAssets track by item.item_id" class="list-group-item"> -->
