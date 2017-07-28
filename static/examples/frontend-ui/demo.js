@@ -441,6 +441,12 @@ $scope.chatUsers = [];
 	  $location.path("/received");
   }
   
+  
+  $scope.gotoRegister = function(){
+	  console.log("$scope.gotoRegister");
+	  $location.path("/register");
+  }
+  
   $scope.checkLocalToken = function(){
 	var token = $scope.getLocalToken();
 	console.log("token in localStorage: " + token);
@@ -533,6 +539,10 @@ $scope.chatUsers = [];
 	
   };
 
+	$scope.registerClicked = function() {
+		console.log("$scope.registerClicked");
+		$scope.gotoRegister();
+	}
   //
   // 'Drag' screen
   //
@@ -1203,6 +1213,75 @@ app.config(function($routeProvider) {
 	
     $routeProvider.when('/my-virtual-assets', {templateUrl: 'my-virtual-assets.html', reloadOnSearch: false, controller: "VirtualAssetsController"});
 });
+
+app.controller('RegisterController', function($rootScope, $scope, $http, $location, $routeParams, IntegralUITreeViewService, $timeout) {
+	console.log("RegisterController");
+	$scope.registerForm = {
+	//	"username": "",
+	//	"password": "",
+	};
+	
+	$scope.registerForm.username = "";
+	$scope.registerForm.password = "";
+	$scope.registerForm.password2 = "";
+	
+	
+	
+	$scope.submitRegisterForm = function(){
+		console.log("$scope.submitRegisterForm");
+		if ($scope.registerForm.username == "") {
+			alert("请输入用户名。");
+			return;
+		}
+		if ($scope.registerForm.password == "") {
+			alert("请输入密码。");
+			return;
+		}
+		if ($scope.registerForm.password != $scope.registerForm.password2) {
+			alert("两次输入的密码不一致。");
+			return;
+		} 
+		
+		// http://localhost:8887/register
+		// 
+		
+		var url = getAPIUrlPrefix() + "register";
+		var sessid = $scope.getLocalSessionid();
+		
+		var data ={
+			"sessid": sessid,
+			"username": $scope.registerForm.username,
+			"password": $scope.registerForm.password
+		};
+		
+		data = toQueryStirng(data);
+		var req = {
+			url: url,
+			method: 'POST',
+			headers: {
+				'Content-Type': "application/x-www-form-urlencoded"
+			},
+			data: data,
+		};
+		$http(req).then(function successCallback(response) {
+			console.log("register successCallback");
+		  }, function errorCallback(response) {
+			console.log("register errorCallback");
+			alert(response.data.msg);
+		  });
+		  
+		
+	};
+	
+});
+
+app.config(function($routeProvider) {
+	
+    $routeProvider.when('/register', {templateUrl: 'register.html', reloadOnSearch: false, controller: "RegisterController"});
+});
+
+
+
 
 
 

@@ -1,0 +1,68 @@
+<div class="scrollable">
+  <div class="scrollable-content">
+
+    <div class="list-group text-center">
+	
+	<div class="panel panel-default" style="margin: 60px 30px; height: 450px">
+	  <div class="panel-heading">
+	
+		<h4 class="panel-title">
+			注册新用户
+		</h4>
+	  </div>
+
+	  <div>
+		<div class="panel-body">
+		  <form role="form" ng-submit='login()'>
+			<fieldset>
+			  
+				<div class="form-group has-success has-feedback">
+				  <label>输入用户名</label>
+				  <input type="text"
+						autocomplete="off"
+						 ng-model="registerForm.username"
+						 class="form-control"
+						 placeholder="Enter username">
+				</div>
+
+				<div class="form-group">
+				  <label>输入密码</label>
+				  <input type="password" 
+				  autocomplete="off"
+				  ng-model="registerForm.password"
+						 class="form-control"
+						 placeholder="输入密码">
+				</div>
+				
+				<div class="form-group">
+				  <label>再次输入密码</label>
+				  <input type="password" 
+				  autocomplete="off"
+				  ng-model="registerForm.password2"
+						 class="form-control"
+						 placeholder="再次输入密码">
+				</div>
+<!--
+				<div class="form-group">
+				  <label>Remember Me</label>
+				  <ui-switch 
+					ng-model="rememberMe"></ui-switch>
+				</div>
+				-->
+			</fieldset>
+			<hr>
+
+		  </form>
+		  
+			<button class="btn btn-primary btn-block" ng-click="submitRegisterForm()">
+			  提交
+			</button>
+		</div>
+	  </div>
+	</div>
+		
+	
+    </div>
+
+  </div>
+</div>
