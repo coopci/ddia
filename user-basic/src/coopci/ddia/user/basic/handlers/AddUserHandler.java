@@ -23,9 +23,9 @@ public class AddUserHandler extends HttpHandler {
 	
 	static {
 		blockFields.add("password");
-		blockFields.add("nickname");
+		blockFields.add("username");
 		blockFields.add("uid");
-		blockFields.add("_uid");
+		blockFields.add("_id");
 		blockFields.add("create_time");
 	}
 	public Engine getEngine() {
@@ -43,7 +43,7 @@ public class AddUserHandler extends HttpHandler {
 			return;
 		}
 		String password = request.getParameter("password");
-		String nickname = request.getParameter("nickname");
+		String username = request.getParameter("username");
 		
 		if (password == null) {
 			password = "";
@@ -51,7 +51,7 @@ public class AddUserHandler extends HttpHandler {
 		
 		HashMap<String, Object> properties = Funcs.parametersToHashMap(request, blockFields);
 		
-        Result res = this.engine.addUser(nickname, password, properties);
+        Result res = this.engine.addUser(username, password, properties);
         GrizzlyUtils.writeJson(response, res);
 		
 		return;

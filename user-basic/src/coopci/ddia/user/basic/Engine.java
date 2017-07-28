@@ -269,6 +269,14 @@ public class Engine implements IMongodbAspect {
 		this.ensureIndex(this.mongodbDBName, this.mongodbDBCollUserInfo, fields, opt);
 		
 		
+
+		fields = new Document();
+		fields.append("username", 1);
+		opt = new IndexOptions();
+		opt.unique(true);
+		opt.sparse(true);
+		boolean userIndexResult = this.ensureIndex(this.mongodbDBName, this.mongodbDBCollUserInfo, fields, opt);
+		
 		
 		//saveSmsVcode("34", "234");
 		//long uid1 = genNewUserid();
@@ -280,6 +288,7 @@ public class Engine implements IMongodbAspect {
 		this.uniqueFields = new HashSet<String>();
 		uniqueFields.add("phone");
 		uniqueFields.add("nickname");
+		uniqueFields.add("username");
 		
 	}
 	public void saveSmsVcode(String vcode, String phone) {
@@ -328,21 +337,21 @@ public class Engine implements IMongodbAspect {
 	 * @throws BadPaddingException 
 	 * @throws IllegalBlockSizeException 
 	 * */
-	public DictResult addUser(String nickname, String password, HashMap<String, Object> properties) throws IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException {
+	public DictResult addUser(String username, String password, HashMap<String, Object> properties) throws IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException {
 		DictResult ret = new DictResult();
 		long uid = this.genNewUserid();
-		if (nickname == null || nickname.length() == 0) {
-			nickname = "user"+uid;
+		if (username == null || username.length() == 0) {
+			username = "user"+uid;
 		}
 		
 		String storedPassword = this.passwordUtils.genStoredPassword(password);
 		Document userdata = new Document();
-		userdata.append("nickname", nickname);
+		userdata.append("username", username);
 		userdata.append("password", storedPassword);
 		
 		if (properties != null) {
 			properties.remove("password");
-			properties.remove("nickname");
+			properties.remove("username");
 			for (Entry<String, Object> entry : properties.entrySet()) {
 				userdata.append(entry.getKey(), entry.getValue());
 			}
@@ -352,13 +361,13 @@ public class Engine implements IMongodbAspect {
 		try {
 			this.addNewUserToMongo(this.mongodbDBName, this.mongodbDBCollUserInfo, uid, userdata);
 			ret.put("uid", uid);
-			ret.put("nickname", nickname);
+			ret.put("username", username);
 			ret.data.remove("password");
 			
 		} catch (com.mongodb.MongoWriteException ex) {
 			if (ex.getCode() == 11000) {
 				ret.code = 400;
-				ret.msg = "Duplicate nickname.";
+				ret.msg = "Duplicate username.";
 			}
 		}
 		return ret;
@@ -405,6 +414,14 @@ public class Engine implements IMongodbAspect {
 		return ret;	
 	}
 	
+
+	public LinkedList<Document> getUserinfoDocsByUsername(String username) {
+		Document query = new Document();
+		query.append("username", username);
+		LinkedList<Document>  ret = this.getMongoDocuments(this.mongodbDBName, this.mongodbDBCollUserInfo, query, 0, 10);
+		return ret;	
+	}
+	
 	
 	
 	/***
@@ -415,7 +432,7 @@ public class Engine implements IMongodbAspect {
 		
 		LoginResult res = new LoginResult();
 		
-		LinkedList<Document> docs = this.getUserinfoDocsByNickname(ident);
+		LinkedList<Document> docs = this.getUserinfoDocsByUsername(ident);
 		
 		if (docs == null || docs.isEmpty()) {
 			res.code = 404;

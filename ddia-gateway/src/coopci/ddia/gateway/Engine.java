@@ -293,7 +293,7 @@ public class Engine implements IMongodbAspect, IGatewayEngine {
 		HashMap<String, String> args = new HashMap<String, String> (); 
 		args.put("ident", ident);
 		args.put("password", password);
-		args.put("fields", "nickname,");
+		args.put("fields", "username,");
 		String httpPrefix = this.getMicroserviceHttpPrefix(MICROSERVICE_NAME_USER_BASIC, ident);
 		String url = httpPrefix + "user-basic/login/password";
 		byte[] response = HttpClientUtil.post(url, args);
