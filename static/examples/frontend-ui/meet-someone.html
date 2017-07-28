@@ -1,0 +1,19 @@
+<div ui-content-for="title">
+  <span>Meet someone</span>
+</div>
+
+<div class="scrollable" ui-shared-state="searchBar">
+  <input
+    ng-if="Ui.active('searchBar')"
+    type="search"
+    class="form-control scrollable-header"
+    placeholder="Search.." />
+	
+  
+  <a class="btn btn-block btn-lg btn-primary scrollable-footer" ui-toggle="searchBar">
+    <i class="fa fa-search"></i>
+    <span ui-hide="searchBar">Show</span>
+    <span ui-show="searchBar">Hide</span>
+    Search Bar
+  </a>
+</div>

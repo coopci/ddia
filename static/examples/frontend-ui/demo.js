@@ -1218,7 +1218,6 @@ app.controller('VirtualAssetsController', function($rootScope, $scope, $http, $l
 });
 
 app.config(function($routeProvider) {
-	
     $routeProvider.when('/my-virtual-assets', {templateUrl: 'my-virtual-assets.html', reloadOnSearch: false, controller: "VirtualAssetsController"});
 });
 
@@ -1285,16 +1284,24 @@ app.controller('RegisterController', function($rootScope, $scope, $http, $locati
 			console.log("register errorCallback");
 			alert(response.data.msg);
 		  });
-		  
-		
 	};
-	
 });
 
 app.config(function($routeProvider) {
-	
     $routeProvider.when('/register', {templateUrl: 'register.html', reloadOnSearch: false, controller: "RegisterController"});
 });
+
+
+
+app.controller('MeetSomeoneController', function($rootScope, $scope, $http, $location, $routeParams, IntegralUITreeViewService, $timeout) {
+	console.log("MeetSomeoneController");
+});
+
+app.config(function($routeProvider) {
+    $routeProvider.when('/meet-someone', {templateUrl: 'meet-someone.html', reloadOnSearch: false, controller: "MeetSomeoneController"});
+});
+
+
 
 
 
