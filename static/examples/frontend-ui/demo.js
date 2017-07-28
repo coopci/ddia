@@ -485,10 +485,10 @@ $scope.chatUsers = [];
   
   $scope.saveToLocalStorage = function() {
 	  
-	localStorage.setItem("logedin", $scope.logedin);
-	localStorage.setItem("username", $scope.username);
-	localStorage.setItem("sessid", $scope.sessid);
-	localStorage.setItem("username", $scope.username);
+	localStorage.setItem("logedin", this.logedin);
+	localStorage.setItem("username", this.username);
+	localStorage.setItem("sessid", this.sessid);
+	localStorage.setItem("uid", this.uid);
 			
 	
   }
@@ -528,16 +528,14 @@ $scope.chatUsers = [];
 		console.log("sessid=" + sessid);
 		console.log("uid=" + uid);
 		
-		localStorage.setItem("sessid", sessid);
-		localStorage.setItem("uid", uid);
-		
-		
 		if (response.data.code==200) {
 			
 			$scope.logedin = true;
 			$scope.username = response.data.data.username;
 			$scope.sessid = response.data.sessid;
 			$scope.uid = response.data.uid;
+			
+			$scope.saveToLocalStorage();
 			
 		}
 		$scope.uid = uid;
@@ -1275,16 +1273,13 @@ app.controller('RegisterController', function($rootScope, $scope, $http, $locati
 		};
 		$http(req).then(function successCallback(response) {
 			console.log("register successCallback");
-			var uid = response.data.data.uid;
-			var username = response.data.data.username;
-			var sessid = response.data.data.sessid;
 			
-
-  
-			localStorage.setItem("sessid", sessid);
-			localStorage.setItem("uid", uid);
-			localStorage.setItem("username", username);			
-			localStorage.setItem("logedin", true);
+			$scope.sessid = response.data.data.sessid;
+			$scope.username = response.data.data.username;
+			$scope.uid = response.data.data.uid;
+			$scope.logedin = true;
+			
+			$scope.saveToLocalStorage();
 			$location.path("/");
 		  }, function errorCallback(response) {
 			console.log("register errorCallback");
