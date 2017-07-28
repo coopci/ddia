@@ -540,10 +540,7 @@ $scope.chatUsers = [];
 			$scope.uid = response.data.uid;
 			
 		}
-		
 		$scope.uid = uid;
-		// $scope.gotoSentList();
-		
 	  }, function errorCallback(response) {
 		console.log("errorCallback");
 		alert(response.data.msg);
