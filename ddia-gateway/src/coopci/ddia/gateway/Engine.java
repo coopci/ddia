@@ -210,7 +210,7 @@ public class Engine implements IMongodbAspect, IGatewayEngine {
 	}
 	
 	
-	String newSessid() {
+	public String newSessid() {
 		String newSessid =  UUID.randomUUID().toString();
 		return newSessid;
 	}

@@ -38,7 +38,11 @@ public interface ILoginAspect extends IGatewayEngine {
 	 * */
 	default Result register(String sessid, String username, String password) throws Exception {
 		DictResult res = new DictResult();
-		
+		if (Funcs.isEmpty(sessid)) {
+			sessid = this.newSessid();
+		} else if (sessid.equals("null")) {
+			sessid = this.newSessid();
+		}
 		// TODO 以后可以在这里加验证captcha之类的。
 		HashMap<String, String> args = new HashMap<String, String> (); 
 		args.put("username", username);
