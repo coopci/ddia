@@ -455,7 +455,6 @@ $scope.chatUsers = [];
 	}
   }
   $scope.logedin = true;
-  $scope.nickname = "";
   $scope.checkLogedin = function() {
 	  var ret = localStorage.getItem("logedin");
 	  console.log("$scope.checkLogedin: ret= " + ret);
@@ -466,13 +465,15 @@ $scope.chatUsers = [];
 	  ret = (ret == 'true');
 	  console.log("$scope.logedin = " + ret);
 	  $scope.logedin = ret;
+	  $scope.sessid = $scope.getLocalSessionid();
 	  // $scope.logedin = true;
 	  return ret;
   }
   
   $scope.clearLocalData = function() {
 	  console.log("$scope.clearLocalData");
-	  
+	  localStorage.clear();
+	  return;
   }
   
   $scope.logout = function() {
@@ -480,6 +481,16 @@ $scope.chatUsers = [];
 	  $scope.clearLocalData();
 	  localStorage.setItem("logedin", false);
 	  $scope.logedin = false;
+  }
+  
+  $scope.saveToLocalStorage = function() {
+	  
+	localStorage.setItem("logedin", $scope.logedin);
+	localStorage.setItem("username", $scope.username);
+	localStorage.setItem("sessid", $scope.sessid);
+	localStorage.setItem("username", $scope.username);
+			
+	
   }
   $scope.login = function() {
 	  
@@ -522,10 +533,12 @@ $scope.chatUsers = [];
 		
 		
 		if (response.data.code==200) {
-			localStorage.setItem("logedin", true);
-			localStorage.setItem("nickname", response.data.data.nickname);
+			
 			$scope.logedin = true;
-			$scope.nickname = response.data.data.nickname;
+			$scope.username = response.data.data.username;
+			$scope.sessid = response.data.sessid;
+			$scope.uid = response.data.uid;
+			
 		}
 		
 		$scope.uid = uid;
@@ -538,11 +551,8 @@ $scope.chatUsers = [];
 	
 	
   };
-
-	$scope.registerClicked = function() {
-		console.log("$scope.registerClicked");
-		$scope.gotoRegister();
-	}
+	
+	
   //
   // 'Drag' screen
   //
@@ -704,7 +714,7 @@ $scope.chatUsers = [];
 	$scope.currentPrediction = null;
 	$scope.$on('$routeChangeSuccess', function (next, last) {
 		$scope.sessid = $scope.getLocalSessionid();
-		$scope.nickname = localStorage.getItem("nickname");
+		
 		
 		console.log('$routeChangeSuccess: ' + $location.$$path);
 		if ($location.$$path == "/sent") {
@@ -747,7 +757,10 @@ $scope.chatUsers = [];
 			var item_id = $routeParams.item_id;
 			console.log("/cms-content, item_id: " + item_id);
 			$scope.fetchCMSItem(item_id);
-		}
+		} else if ($location.$$path.startsWith("/")) {
+			console.log("changed to / .");
+			$scope.checkLogedin();
+		} 
 		
 	});
 	$scope.new_prediction = function() {
@@ -1265,6 +1278,17 @@ app.controller('RegisterController', function($rootScope, $scope, $http, $locati
 		};
 		$http(req).then(function successCallback(response) {
 			console.log("register successCallback");
+			var uid = response.data.data.uid;
+			var username = response.data.data.username;
+			var sessid = response.data.data.sessid;
+			
+
+  
+			localStorage.setItem("sessid", sessid);
+			localStorage.setItem("uid", uid);
+			localStorage.setItem("username", username);			
+			localStorage.setItem("logedin", true);
+			$location.path("/");
 		  }, function errorCallback(response) {
 			console.log("register errorCallback");
 			alert(response.data.msg);
