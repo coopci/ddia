@@ -51,6 +51,7 @@ public interface ILoginAspect extends IGatewayEngine {
 			long uid = Funcs.toLong(res.data.get("uid"), -1L); 
 			this.saveSessionUid(sessid, uid);
 		}
+		res.put("sessid", sessid);
 		return res;
 	}
 }

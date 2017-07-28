@@ -53,6 +53,7 @@ import com.taobao.api.TaobaoClient;
 import com.taobao.api.request.AlibabaAliqinFcSmsNumSendRequest;
 import com.taobao.api.response.AlibabaAliqinFcSmsNumSendResponse;
 
+import coopci.ddia.Consts;
 import coopci.ddia.IMongodbAspect;
 import coopci.ddia.LoginResult;
 import coopci.ddia.Result;
@@ -271,7 +272,7 @@ public class Engine implements IMongodbAspect {
 		
 
 		fields = new Document();
-		fields.append("username", 1);
+		fields.append(Consts.FIELD_USERNAME, 1);
 		opt = new IndexOptions();
 		opt.unique(true);
 		opt.sparse(true);
@@ -288,7 +289,7 @@ public class Engine implements IMongodbAspect {
 		this.uniqueFields = new HashSet<String>();
 		uniqueFields.add("phone");
 		uniqueFields.add("nickname");
-		uniqueFields.add("username");
+		uniqueFields.add(Consts.FIELD_USERNAME);
 		
 	}
 	public void saveSmsVcode(String vcode, String phone) {
@@ -346,12 +347,12 @@ public class Engine implements IMongodbAspect {
 		
 		String storedPassword = this.passwordUtils.genStoredPassword(password);
 		Document userdata = new Document();
-		userdata.append("username", username);
-		userdata.append("password", storedPassword);
+		userdata.append(Consts.FIELD_USERNAME, username);
+		userdata.append(Consts.FIELD_PASSWORD, storedPassword);
 		
 		if (properties != null) {
-			properties.remove("password");
-			properties.remove("username");
+			properties.remove(Consts.FIELD_PASSWORD);
+			properties.remove(Consts.FIELD_USERNAME);
 			for (Entry<String, Object> entry : properties.entrySet()) {
 				userdata.append(entry.getKey(), entry.getValue());
 			}
@@ -361,8 +362,8 @@ public class Engine implements IMongodbAspect {
 		try {
 			this.addNewUserToMongo(this.mongodbDBName, this.mongodbDBCollUserInfo, uid, userdata);
 			ret.put("uid", uid);
-			ret.put("username", username);
-			ret.data.remove("password");
+			ret.put(Consts.FIELD_USERNAME, username);
+			ret.data.remove(Consts.FIELD_PASSWORD);
 			
 		} catch (com.mongodb.MongoWriteException ex) {
 			if (ex.getCode() == 11000) {
@@ -385,7 +386,7 @@ public class Engine implements IMongodbAspect {
 		
 		String storedPassword = this.passwordUtils.genStoredPassword(newPassword);
 		Document update = new Document();
-		update.append("password", storedPassword);
+		update.append(Consts.FIELD_PASSWORD, storedPassword);
 		this.updateMongoDocumentById(this.mongodbDBName, this.mongodbDBCollUserInfo, update, uid);
 		return res;
 	}
@@ -417,7 +418,7 @@ public class Engine implements IMongodbAspect {
 
 	public LinkedList<Document> getUserinfoDocsByUsername(String username) {
 		Document query = new Document();
-		query.append("username", username);
+		query.append(Consts.FIELD_USERNAME, username);
 		LinkedList<Document>  ret = this.getMongoDocuments(this.mongodbDBName, this.mongodbDBCollUserInfo, query, 0, 10);
 		return ret;	
 	}
@@ -441,7 +442,7 @@ public class Engine implements IMongodbAspect {
 		}
 		
 		Document doc = docs.getFirst();
-		String storedPassword = doc.getString("password");
+		String storedPassword = doc.getString(Consts.FIELD_PASSWORD);
 		boolean authed = this.passwordUtils.checkPassword(password, storedPassword);
 		if (!authed) {
 			res.code = 401;
